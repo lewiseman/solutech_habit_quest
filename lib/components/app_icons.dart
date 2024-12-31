@@ -19,4 +19,11 @@ class CustomIcons {
   static const IconData setting = IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData target = IconData(0xe809, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData target_filled = IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData share = IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData copy_writing = IconData(0xe80c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData rate = IconData(0xe80d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData theme = IconData(0xe80e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData achieve = IconData(0xe80f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group = IconData(0xe810, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_avatar = IconData(0xe811, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

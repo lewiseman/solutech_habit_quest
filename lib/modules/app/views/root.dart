@@ -14,8 +14,7 @@ class _RootAppState extends State<RootApp> {
   Widget build(BuildContext context) {
     final currPath = GoRouterState.of(context).uri.path;
     final currPage = _pages.where((page) => page.page == currPath).firstOrNull;
-    print(currPage);
-    print('currPath: $currPath');
+
     return AnnotatedRegion(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -33,8 +32,8 @@ class _RootAppState extends State<RootApp> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Divider(
-              height: 1,
-              thickness: .3,
+              height: .9,
+              thickness: .1,
             ),
             BottomNavigationBar(
               elevation: 0,

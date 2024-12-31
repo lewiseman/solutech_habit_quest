@@ -52,6 +52,12 @@ final routerProvider = Provider(
             ),
           ],
         ),
+        GoRoute(
+          path: '/notifications',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: NotificationPage(),
+          ),
+        ),
       ],
     );
   },
