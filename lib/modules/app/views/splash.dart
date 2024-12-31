@@ -173,7 +173,7 @@ class _AuthSplashPageState extends State<AuthSplashPage>
                               tag: 'splash_filled_button',
                               child: FilledButton(
                                 onPressed: () {
-                                  context.push('/onboarding');
+                                  context.push('/');
                                 },
                                 style: FilledButton.styleFrom(
                                   backgroundColor: Colors.white,

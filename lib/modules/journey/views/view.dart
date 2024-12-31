@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class JourneyPage extends StatelessWidget {
+  const JourneyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
