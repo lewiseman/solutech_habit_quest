@@ -37,6 +37,7 @@ class HabitTextInput extends StatelessWidget {
     this.showRequired = false,
     this.onValueChanged,
     this.canBeNullWhenEmpty = false,
+    this.fillColor,
   });
 
   final TextEditingController? controller;
@@ -61,6 +62,7 @@ class HabitTextInput extends StatelessWidget {
   final bool showRequired;
   final bool canBeNullWhenEmpty;
   final ValueChanged<String?>? onValueChanged;
+  final Color? fillColor;
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +141,8 @@ class HabitTextInput extends StatelessWidget {
         decoration: InputDecoration(
           isDense: true,
           hintText: placeholder,
+          filled: fillColor != null,
+          fillColor: fillColor,
           helperText: helperText,
           border: const OutlineInputBorder(),
           suffixIcon: () {
@@ -263,7 +267,7 @@ class _MultiOptionsSelectorState extends State<MultiOptionsSelector> {
     loadPrevOptions();
   }
 
-  loadPrevOptions() {
+  void loadPrevOptions() {
     if (widget.oldSelectedOption.isNotEmpty) {
       selectedOptions = widget.oldSelectedOption.split(', ');
     }

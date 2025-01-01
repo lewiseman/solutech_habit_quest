@@ -26,3 +26,8 @@ class AppTheme {
     colorScheme: const ColorScheme.light(primary: primaryBlue),
   );
 }
+
+extension AppThemeExtension on BuildContext {
+  ThemeData get theme => Theme.of(this);
+  bool get isDarkMode => theme.brightness == Brightness.dark;
+}

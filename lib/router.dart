@@ -1,9 +1,13 @@
 import 'package:habit_quest/common.dart';
 
+final _rootNAvigatorKey = GlobalKey<NavigatorState>();
+
 final routerProvider = Provider(
   (ref) {
     return GoRouter(
       initialLocation: '/auth',
+      navigatorKey: _rootNAvigatorKey,
+      restorationScopeId: 'solutech_router',
       routes: [
         // Auth routes
         GoRoute(
@@ -49,6 +53,46 @@ final routerProvider = Provider(
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: UserPage(),
               ),
+              routes: [
+                GoRoute(
+                  parentNavigatorKey: _rootNAvigatorKey,
+                  path: 'avatars',
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const PickAvatarPage(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) =>
+                            SlideTransition(
+                      position: animation.drive(
+                        Tween(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).chain(CurveTween(curve: Curves.easeInOut)),
+                      ),
+                      child: child,
+                    ),
+                  ),
+                ),
+                GoRoute(
+                  parentNavigatorKey: _rootNAvigatorKey,
+                  path: 'profile',
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const ProfileEditPAge(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) =>
+                            SlideTransition(
+                      position: animation.drive(
+                        Tween(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).chain(CurveTween(curve: Curves.easeInOut)),
+                      ),
+                      child: child,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

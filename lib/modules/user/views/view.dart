@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habit_quest/common.dart';
+import 'package:share_plus/share_plus.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
@@ -52,12 +53,59 @@ class UserPage extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
+          Container(
+            margin: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 24,
+            ),
+            padding: const EdgeInsets.all(12),
+            clipBehavior: Clip.antiAlias,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              color: AppTheme.primaryBlue,
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  CustomIcons.cloud_sync,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'DATA SYNCED',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Last synced 2 hours ago',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  CupertinoIcons.check_mark,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
           settingsGroup(
             actions: [
               (
                 name: 'Avatars',
                 subtitle: 'Buy or change your avatar',
-                action: () {},
+                action: () {
+                  context.push('/user/avatars');
+                },
                 leading: const Icon(CustomIcons.group),
               ),
               (
@@ -69,8 +117,10 @@ class UserPage extends StatelessWidget {
               (
                 name: 'My Profile',
                 subtitle: null,
-                action: () {},
-                leading: const Icon(CustomIcons.user_avatar),
+                action: () {
+                  context.push('/user/profile');
+                },
+                leading: const Icon(CustomIcons.user_edit),
               ),
             ],
           ),
@@ -97,25 +147,40 @@ class UserPage extends StatelessWidget {
               (
                 name: 'Privacy Policy',
                 subtitle: null,
-                action: () {},
+                action: () {
+                  openLink(
+                    'https://www.solutech.co.ke/policies-2/#privacy-policy',
+                  );
+                },
                 leading: const Icon(CustomIcons.file),
               ),
               (
                 name: 'Share with friends',
                 subtitle: null,
-                action: () {},
+                action: () {
+                  Share.share(
+                    '''Check out the amaizing Habit Quest app by Solutech\n\nhttps://play.google.com/store/apps/details?id=com.solutech.sat.solutech_sat&hl=en&pli=1''',
+                    subject: 'Habit Quest',
+                  );
+                },
                 leading: const Icon(CustomIcons.share),
               ),
               (
                 name: 'Rate us',
                 subtitle: null,
-                action: () {},
+                action: () {
+                  openLink(
+                    'https://play.google.com/store/apps/details?id=com.solutech.sat.solutech_sat&hl=en&pli=1',
+                  );
+                },
                 leading: const Icon(CustomIcons.rate),
               ),
               (
                 name: 'Feedback',
                 subtitle: null,
-                action: () {},
+                action: () {
+                  openLink('https://www.solutech.co.ke/contact-us/');
+                },
                 leading: const Icon(CustomIcons.copy_writing),
               ),
             ],
