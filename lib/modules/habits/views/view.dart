@@ -213,7 +213,7 @@ class _HabitsPageState extends State<HabitsPage> {
                     margin: const EdgeInsets.only(top: 20),
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.red.shade50,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.red.shade300),
                     ),
@@ -248,6 +248,68 @@ class _HabitsPageState extends State<HabitsPage> {
                           icon: const Icon(
                             CustomIcons.arrow_miss,
                             color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'COMPLETED',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: AppTheme.poppinsFont,
+                    color: Colors.green,
+                  ),
+                ),
+                for (var i = 0; i < 2; i++)
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green.shade300),
+                    ),
+                    child: Row(
+                      children: [
+                        const Text(
+                          '💪🏼',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Evening Walk',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                              ),
+                              Text('6:00 PM'),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            CustomIcons.checklist,
+                            color: Colors.green,
                           ),
                         ),
                       ],

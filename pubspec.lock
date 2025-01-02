@@ -121,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.2"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   fake_async:
     dependency: transitive
     description:
@@ -153,11 +161,27 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  fl_chart:
+    dependency: "direct main"
+    description:
+      name: fl_chart
+      sha256: "74959b99b92b9eebeed1a4049426fd67c4abc3c5a0f4d12e2877097d6a11ae08"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.69.2"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_calendar_carousel:
+    dependency: "direct main"
+    description:
+      name: flutter_calendar_carousel
+      sha256: "675a2331da6ecd7ba180ba7cd6551a18d41861187bb7537c11859a2df72d1646"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.4"
   flutter_riverpod:
     dependency: "direct main"
     description:

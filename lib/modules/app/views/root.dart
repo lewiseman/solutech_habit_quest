@@ -26,8 +26,17 @@ class _RootAppState extends State<RootApp> {
         appBar: switch (currPath) {
           '/' => HabitsPage.appBar(context),
           '/user' => UserPage.appBar(context),
+          '/journey' => JourneyPage.appBar(context),
           _ => null
         },
+        floatingActionButton: currPage?.page == '/'
+            ? FloatingActionButton.small(
+                elevation: 1,
+                onPressed: () {},
+                backgroundColor: AppTheme.primaryBlue,
+                child: const Icon(Icons.add),
+              )
+            : null,
         bottomNavigationBar: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

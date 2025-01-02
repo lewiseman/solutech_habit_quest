@@ -30,4 +30,10 @@ class CustomIcons {
   static const IconData trace = IconData(0xe813, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData arrow_miss = IconData(0xe814, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData upcoming = IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData checklist = IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData running = IconData(0xe817, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData ok = IconData(0xe818, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData fireworks = IconData(0xe819, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData progression = IconData(0xe81a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData quotes = IconData(0xe81b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
