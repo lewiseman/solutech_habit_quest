@@ -29,6 +29,50 @@ final routerProvider = Provider(
                 ),
               ),
             ),
+            GoRoute(
+              path: 'register',
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const RegisterPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              ),
+            ),
+            GoRoute(
+              path: 'onboarding',
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const OnboardingPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              ),
+              routes: [
+                GoRoute(
+                  path: 'questions',
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const OnboardingQuestionPage(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) =>
+                            SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(1, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
         ShellRoute(

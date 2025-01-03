@@ -36,7 +36,6 @@ class _JourneyPageState extends State<JourneyPage>
   late final _tabController = TabController(
     length: 3,
     vsync: this,
-    initialIndex: 1,
   );
   @override
   Widget build(BuildContext context) {

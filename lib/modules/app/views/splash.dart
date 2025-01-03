@@ -87,7 +87,6 @@ class _AuthSplashPageState extends State<AuthSplashPage>
                     child: Image.asset(
                       'assets/images/bg_pattern.png',
                       repeat: ImageRepeat.repeat,
-                      // fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -173,7 +172,7 @@ class _AuthSplashPageState extends State<AuthSplashPage>
                               tag: 'splash_filled_button',
                               child: FilledButton(
                                 onPressed: () {
-                                  context.push('/');
+                                  context.push('/auth/onboarding');
                                 },
                                 style: FilledButton.styleFrom(
                                   backgroundColor: Colors.white,

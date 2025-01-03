@@ -26,6 +26,7 @@ dependencies:
   carousel_slider_plus: ^7.1.0
   flutter_calendar_carousel: ^2.4.4
   fl_chart: ^0.69.2
+  flutter_animate: ^4.5.2
 
 dev_dependencies:
   flutter_test:
@@ -37,9 +38,10 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/lottie/
+    - assets/images/banana/
+    - assets/images/achievements/
     - assets/images/temp/
-  #   - images/a_dot_ham.jpeg
+    - assets/lottie/
 
   fonts:
     - family: CustomIcons

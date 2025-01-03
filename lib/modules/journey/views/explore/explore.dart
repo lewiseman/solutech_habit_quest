@@ -20,7 +20,7 @@ class ExploreSection extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    width: 4,
+                    width: 2,
                     margin: const EdgeInsets.only(right: 10),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryBlue,
@@ -29,7 +29,7 @@ class ExploreSection extends StatelessWidget {
                   ),
                   const Expanded(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: EdgeInsets.symmetric(vertical: 2),
                       child: Text.rich(
                         TextSpan(
                           text:
