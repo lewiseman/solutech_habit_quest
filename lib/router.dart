@@ -4,10 +4,12 @@ final _rootNAvigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider(
   (ref) {
+    final routeService = ref.watch(appRouteService);
     return GoRouter(
-      initialLocation: '/auth',
+      initialLocation: '/',
       navigatorKey: _rootNAvigatorKey,
       restorationScopeId: 'solutech_router',
+      redirect: routeService.handleRedirect,
       routes: [
         // Auth routes
         GoRoute(
@@ -122,7 +124,7 @@ final routerProvider = Provider(
                   path: 'profile',
                   pageBuilder: (context, state) => CustomTransitionPage(
                     key: state.pageKey,
-                    child: const ProfileEditPAge(),
+                    child: const ProfileEditPage(),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) =>
                             SlideTransition(
@@ -150,3 +152,30 @@ final routerProvider = Provider(
     );
   },
 );
+
+final appRouteService = ChangeNotifierProvider(
+  (ref) => AppRouteService(),
+);
+
+class AppRouteService extends ChangeNotifier {
+  AppRouteService() {
+    userCredentials = LocalStorage.instance.userCredentials;
+  }
+  UserCredentials? userCredentials;
+
+  String? handleRedirect(BuildContext context, GoRouterState state) {
+    final pathLocaton = state.matchedLocation;
+    if (userCredentials == null) {
+      if (pathLocaton.startsWith('/auth')) {
+        return null;
+      }
+      return '/auth';
+    }
+    return null;
+  }
+
+  void refreshUser() {
+    userCredentials = LocalStorage.instance.userCredentials;
+    notifyListeners();
+  }
+}

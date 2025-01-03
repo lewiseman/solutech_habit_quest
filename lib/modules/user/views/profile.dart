@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:habit_quest/components/inputs.dart';
+import 'package:habit_quest/common.dart';
 
-class ProfileEditPAge extends StatefulWidget {
-  const ProfileEditPAge({super.key});
+class ProfileEditPage extends ConsumerStatefulWidget {
+  const ProfileEditPage({super.key});
 
   @override
-  State<ProfileEditPAge> createState() => _ProfileEditPAgeState();
+  ConsumerState<ProfileEditPage> createState() => _ProfileEditPageState();
 }
 
-class _ProfileEditPAgeState extends State<ProfileEditPAge> {
+class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   @override
@@ -18,7 +17,19 @@ class _ProfileEditPAgeState extends State<ProfileEditPAge> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         actions: [
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              AppDialog.confirm(
+                context,
+                title: 'LOG OUT ?',
+                message: 'Are you sure you want to log out?',
+              ).then((res) {
+                if (res ?? false) {
+                  // ignore: use_build_context_synchronously
+                  context.showInfoLoad('Logging out...');
+                  ref.read(userServiceProvider.notifier).logout();
+                }
+              });
+            },
             label: const Text('Log Out'),
             icon: const Icon(Icons.logout),
           ),
@@ -40,7 +51,7 @@ class _ProfileEditPAgeState extends State<ProfileEditPAge> {
                 fillColor: Colors.white,
                 label: 'Name',
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               FilledButton(
                 onPressed: () {},
                 style: FilledButton.styleFrom(

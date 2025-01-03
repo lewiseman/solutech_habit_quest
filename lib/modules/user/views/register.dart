@@ -78,8 +78,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             HabitTextInput(
                               label: 'Name',
                               controller: nameController,
-                              type: HabitTextInputType.email,
-                              autofillHints: const [AutofillHints.email],
+                              type: HabitTextInputType.text,
+                              autofillHints: const [AutofillHints.name],
+                              textInputAction: TextInputAction.next,
+                              validator: emptyValidation,
                               bSpacing: 24,
                             ),
                             HabitTextInput(
@@ -87,6 +89,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               controller: emailController,
                               type: HabitTextInputType.email,
                               autofillHints: const [AutofillHints.email],
+                              textInputAction: TextInputAction.next,
                               bSpacing: 24,
                             ),
                             HabitTextInput(
@@ -94,7 +97,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               controller: passwordController,
                               type: HabitTextInputType.password,
                               autofillHints: const [AutofillHints.password],
-                              textInputAction: TextInputAction.done,
+                              textInputAction: TextInputAction.next,
+                              validator: emptyValidation,
                               obscureText: obscureText,
                               bSpacing: 24,
                               onSuffixTap: () {
@@ -104,12 +108,17 @@ class _RegisterPageState extends State<RegisterPage> {
                               },
                             ),
                             HabitTextInput(
-                              label: 'Password',
+                              label: 'Confirm Password',
                               controller: password2Controller,
-                              type: HabitTextInputType.password,
                               autofillHints: const [AutofillHints.password],
                               textInputAction: TextInputAction.done,
-                              obscureText: obscure2Text,
+                              obscureText: true,
+                              validator: (value) {
+                                if (value != passwordController.text) {
+                                  return 'Passwords do not match';
+                                }
+                                return null;
+                              },
                               onSuffixTap: () {
                                 setState(() {
                                   obscure2Text = !obscure2Text;
@@ -117,10 +126,36 @@ class _RegisterPageState extends State<RegisterPage> {
                               },
                             ),
                             const SizedBox(height: 40),
-                            FilledButton(
-                              style: fullBtnStyle(),
-                              onPressed: () {},
-                              child: const Text('Sign in'),
+                            Consumer(
+                              builder: (context, ref, _) {
+                                ref.watch(userServiceProvider);
+                                return FilledButton(
+                                  style: fullBtnStyle(),
+                                  onPressed: () {
+                                    if (fromKey.currentState!.validate()) {
+                                      context.showInfoLoad('Creating account');
+                                      ref
+                                          .read(userServiceProvider.notifier)
+                                          .register(
+                                            name: nameController.text.trim(),
+                                            email: emailController.text.trim(),
+                                            password:
+                                                passwordController.text.trim(),
+                                          )
+                                          .then((_) {
+                                        context
+                                          ..pop()
+                                          ..showSuccessToast('Account created');
+                                      }).onError((error, stack) {
+                                        context
+                                          ..pop()
+                                          ..showErrorToast(error.toString());
+                                      });
+                                    }
+                                  },
+                                  child: const Text('Sign in'),
+                                );
+                              },
                             ),
                             Padding(
                               padding: const EdgeInsets.only(

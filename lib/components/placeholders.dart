@@ -7,12 +7,19 @@ typedef CustomAppDialog = Widget Function(
 );
 
 class AppDialog {
-  static alert(BuildContext context, {String? title, String? message}) {
+  static Future alert(BuildContext context, {String? title, String? message}) {
     return showDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
-          title: title != null ? Text(title) : null,
+          title: title != null
+              ? Text(
+                  title,
+                  style: const TextStyle(
+                    fontFamily: AppTheme.poppinsFont,
+                  ),
+                )
+              : null,
           content: message != null ? Text(message) : null,
           actions: [
             CupertinoDialogAction(
@@ -44,13 +51,21 @@ class AppDialog {
           title: title != null
               ? Text(
                   title,
-                  style: TextStyle(color: theme.colorScheme.onSurface),
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontFamily: AppTheme.poppinsFont,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 )
               : null,
           content: message != null
               ? Text(
                   message,
-                  style: TextStyle(color: theme.colorScheme.onSurface),
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontFamily: AppTheme.poppinsFont,
+                  ),
                 )
               : null,
           actionsAlignment: MainAxisAlignment.spaceAround,
@@ -59,12 +74,20 @@ class AppDialog {
               onPressed: () => Navigator.pop(context, false),
               child: Text(
                 'CANCEL',
-                style: TextStyle(color: theme.colorScheme.error),
+                style: TextStyle(
+                  color: theme.colorScheme.error,
+                  fontFamily: AppTheme.poppinsFont,
+                ),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('CONFIRM'),
+              child: const Text(
+                'CONFIRM',
+                style: TextStyle(
+                  fontFamily: AppTheme.poppinsFont,
+                ),
+              ),
             ),
           ],
         );
@@ -86,9 +109,11 @@ class AppDialog {
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: LayoutBuilder(builder: (context, cs) {
-              return builder(theme, cs.biggest);
-            }),
+            child: LayoutBuilder(
+              builder: (context, cs) {
+                return builder(theme, cs.biggest);
+              },
+            ),
           ),
         );
       },
@@ -97,7 +122,7 @@ class AppDialog {
 }
 
 extension PlaceholderExt on BuildContext {
-  showInfoLoad([String? message]) {
+  Future showInfoLoad([String? message]) {
     return showDialog(
       context: this,
       barrierDismissible: false,
@@ -116,7 +141,15 @@ extension PlaceholderExt on BuildContext {
                     children: [
                       const CircularProgressIndicator(),
                       if (message != null) const SizedBox(width: 20),
-                      if (message != null) Expanded(child: Text(message)),
+                      if (message != null)
+                        Expanded(
+                          child: Text(
+                            message,
+                            style: const TextStyle(
+                              fontFamily: AppTheme.poppinsFont,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -125,6 +158,28 @@ extension PlaceholderExt on BuildContext {
           ),
         );
       },
+    );
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSuccessToast(
+    String message,
+  ) {
+    return ScaffoldMessenger.of(this).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showErrorToast(
+    String message,
+  ) {
+    return ScaffoldMessenger.of(this).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
     );
   }
 }

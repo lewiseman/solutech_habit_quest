@@ -1,16 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:habit_quest/common.dart';
 import 'package:lottie/lottie.dart';
-import 'dart:math' as math;
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   bool obscureText = true;
   final fromKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -120,21 +119,33 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(height: 40),
                               FilledButton(
                                 style: fullBtnStyle(),
-                                onPressed: () {},
-                                // onPressed: () => asyncFn(() async {
-                                //   if (fromKey.currentState!.validate()) {
-                                //     FocusScope.of(context).unfocus();
-                                //     return ref
-                                //         .read(userServiceProvider.notifier)
-                                //         .logIn(
-                                //           email: emailController.text.trim(),
-                                //           password: passwordController.text.trim(),
-                                //         );
-                                //   }
-                                // }).then(
-                                //   ref.read(userServiceProvider.notifier).afterAuth,
-                                // ),
-                                // child: asyncBtn('Sign in'),
+                                onPressed: () {
+                                  if (fromKey.currentState!.validate()) {
+                                    context.showInfoLoad('Signing in...');
+                                    ref
+                                        .read(userServiceProvider.notifier)
+                                        .newLogin(
+                                          email: emailController.text.trim(),
+                                          password:
+                                              passwordController.text.trim(),
+                                        )
+                                        .then((_) {
+                                      context
+                                        ..pop()
+                                        ..showSuccessToast(
+                                          'Signed in successfully',
+                                        );
+                                    }).onError((error, stack) {
+                                      var msg = error.toString();
+                                      if (error is AppwriteException) {
+                                        msg = error.message ?? error.toString();
+                                      }
+                                      context
+                                        ..pop()
+                                        ..showErrorToast(msg);
+                                    });
+                                  }
+                                },
                                 child: const Text('Sign in'),
                               ),
                             ],

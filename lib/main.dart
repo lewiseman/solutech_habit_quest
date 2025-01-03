@@ -4,14 +4,15 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:habit_quest/common.dart';
 import 'package:habit_quest/router.dart';
 
-void main() {
+void main() async {
   // Required if you'll ran any code before runApp
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  await LocalStorage.instance.initialize();
   if (kIsWeb) {
     usePathUrlStrategy();
   }
