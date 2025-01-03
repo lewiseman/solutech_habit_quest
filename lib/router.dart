@@ -148,6 +148,12 @@ final routerProvider = Provider(
             child: NotificationPage(),
           ),
         ),
+        GoRoute(
+          path: '/theme',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: SelectThemePage(),
+          ),
+        ),
       ],
     );
   },

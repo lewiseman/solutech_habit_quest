@@ -17,12 +17,33 @@ class UserPage extends StatelessWidget {
         ),
       ),
       centerTitle: false,
-      title: const Text(
-        'PROFILE',
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-        ),
+      // title: const Text(
+      //   'PROFILE',
+      //   style: TextStyle(
+      //     fontSize: 14,
+      //     fontWeight: FontWeight.bold,
+      //   ),
+      // ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'PROFILE',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Consumer(
+            builder: (context, ref, _) {
+              final user = ref.watch(userServiceProvider);
+              return Text(
+                user?.name ?? '',
+                style: const TextStyle(fontSize: 12),
+              );
+            },
+          ),
+        ],
       ),
       actions: [
         IconButton.outlined(
@@ -136,7 +157,9 @@ class UserPage extends StatelessWidget {
               (
                 name: 'Theme',
                 subtitle: null,
-                action: () {},
+                action: () {
+                  context.push('/theme');
+                },
                 leading: const Icon(CustomIcons.theme),
               ),
             ],

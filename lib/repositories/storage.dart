@@ -16,7 +16,7 @@ final class LocalStorage {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  static final String _themeModeKey = 'thememodekey-$_keySuffix';
+  static final String _themeNameKey = 'thememodekey-$_keySuffix';
   static final String _usercredentialKey = 'usercredentialkey-$_keySuffix';
 
   UserCredentials? get userCredentials {
@@ -35,6 +35,23 @@ final class LocalStorage {
 
   Future<void> updateUserCreds(UserCredentials userCreds) async {
     await _prefs.setString(_usercredentialKey, userCreds.toString());
+  }
+
+  Future<void> updateThemeName(String themename) async {
+    final res = await _prefs.setString(
+      _themeNameKey,
+      themename,
+    );
+  }
+
+  String get themeName {
+    try {
+      final theme = _prefs.getString(_themeNameKey);
+      return theme ?? 'system';
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      return 'system';
+    }
   }
 
   Future<void> delete() async {

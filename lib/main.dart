@@ -27,10 +27,11 @@ class HabitQuest extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final settings = ref.watch(settingsServiceProvider);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: router,
-      themeMode: ThemeMode.light,
+      themeMode: AppUserSettings.getThemeMode(settings.themeName),
       darkTheme: AppTheme.darkTheme,
       theme: AppTheme.lightTheme,
       title: 'Habit Quest',

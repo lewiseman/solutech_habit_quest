@@ -10,8 +10,21 @@ class ProfileEditPage extends ConsumerStatefulWidget {
 class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    prefill();
+  }
+
+  void prefill() {
+    final user = ref.read(userServiceProvider);
+    nameController.text = user?.name ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(ref.read(userServiceProvider));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -48,12 +61,29 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             children: [
               HabitTextInput(
                 controller: nameController,
+                validator: emptyValidation,
                 fillColor: Colors.white,
                 label: 'Name',
               ),
               const SizedBox(height: 40),
               FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    context.showInfoLoad('Updating...');
+                    ref
+                        .read(userServiceProvider.notifier)
+                        .update(name: nameController.text.trim())
+                        .then((_) {
+                      context
+                        ..pop()
+                        ..showSuccessToast('Updated');
+                    }).onError((error, stack) {
+                      context
+                        ..pop()
+                        ..showErrorToast(error.toString());
+                    });
+                  }
+                },
                 style: FilledButton.styleFrom(
                   fixedSize: const Size.fromWidth(double.maxFinite),
                 ),

@@ -14,7 +14,7 @@ class AppTheme {
     systemNavigationBarIconBrightness: Brightness.dark,
   );
 
-  static final ThemeData darkTheme = ThemeData.light().copyWith(
+  static final ThemeData darkTheme = ThemeData.dark().copyWith(
     platform: TargetPlatform.iOS,
     primaryColor: primaryBlue,
     colorScheme: const ColorScheme.light(primary: primaryBlue),

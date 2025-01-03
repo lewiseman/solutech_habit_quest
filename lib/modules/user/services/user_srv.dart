@@ -71,6 +71,26 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
         ),
       );
       return user;
+    } on AppwriteException catch (e) {
+      if (e.type == 'user_session_already_exists') {
+        try {
+          final user = await appwriteAccount.get();
+          await LocalStorage.instance.updateUserCreds(
+            UserCredentials(
+              email: email,
+              password: password,
+              name: name ?? user.name,
+            ),
+          );
+          return user;
+        } catch (e) {
+          rethrow;
+        }
+      }
+      if (e.code == 401) {
+        throw 'Invalid email or password';
+      }
+      rethrow;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
@@ -83,6 +103,25 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
   }) async {
     final user = await login(email: email, password: password);
     ref.read(appRouteService).refreshUser();
+    state = user;
+  }
+
+  Future<void> update({String? name, String? themeName}) async {
+    var user = state;
+    if (name != null) {
+      final updateduser = await appwriteAccount.updateName(name: name);
+      user = updateduser;
+    }
+
+    if (themeName != null) {
+      final updateduser = await appwriteAccount.updatePrefs(
+        prefs: {
+          'theme': themeName,
+        },
+      );
+      user = updateduser;
+    }
+
     state = user;
   }
 
