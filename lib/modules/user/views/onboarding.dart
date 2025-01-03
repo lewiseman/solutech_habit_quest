@@ -10,82 +10,90 @@ class OnboardingPage extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     return Material(
       color: AppTheme.primaryBlue,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            SizedBox(
-              height: screenPadding.top + 4,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 400,
+              maxHeight: 800,
             ),
-            Row(
+            child: Column(
               children: [
-                InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onTap: () {
-                    context.canPop() ? context.pop() : context.go('/auth');
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: Hero(
-                      tag: 'splash_back_button',
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
+                SizedBox(
+                  height: screenPadding.top + 4,
+                ),
+                Row(
+                  children: [
+                    InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () {
+                        context.canPop() ? context.pop() : context.go('/auth');
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: 8),
+                        child: Hero(
+                          tag: 'splash_back_button',
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                const ChatBubble(
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text(
+                      "Let's ask you a few questions to get started",
+                      style: TextStyle(
                         color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: AppTheme.poppinsFont,
+                      ),
+                    ),
+                  ),
+                ).animate(delay: 500.ms).fadeIn().slideY(),
+                const SizedBox(height: 16),
+                Hero(
+                  tag: 'splash_mascot',
+                  child: Image.asset(
+                    'assets/images/banana/speech.png',
+                    width: size.width * .3,
+                  ),
+                ),
+                const Spacer(),
+                Hero(
+                  tag: 'splash_filled_button',
+                  child: FilledButton(
+                    onPressed: () {
+                      context.push('/auth/onboarding/questions');
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color.fromARGB(255, 139, 75, 3),
+                      fixedSize: const Size.fromWidth(double.maxFinite),
+                    ),
+                    child: const Text(
+                      "Let's go",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppTheme.poppinsFont,
                       ),
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: screenPadding.bottom,
+                ),
               ],
             ),
-            const Spacer(),
-            const ChatBubble(
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  "Let's ask you a few questions to get started",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: AppTheme.poppinsFont,
-                  ),
-                ),
-              ),
-            ).animate(delay: 500.ms).fadeIn().slideY(),
-            const SizedBox(height: 16),
-            Hero(
-              tag: 'splash_mascot',
-              child: Image.asset(
-                'assets/images/banana/speech.png',
-                width: size.width * .3,
-              ),
-            ),
-            const Spacer(),
-            Hero(
-              tag: 'splash_filled_button',
-              child: FilledButton(
-                onPressed: () {
-                  context.push('/auth/onboarding/questions');
-                },
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color.fromARGB(255, 139, 75, 3),
-                  fixedSize: const Size.fromWidth(double.maxFinite),
-                ),
-                child: const Text(
-                  "Let's go",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: AppTheme.poppinsFont,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: screenPadding.bottom,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -118,134 +126,149 @@ class _OnboardingQuestionPageState extends State<OnboardingQuestionPage> {
           top: screenPadding.top,
           bottom: screenPadding.bottom,
         ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Hero(
-                  tag: 'splash_back_button',
-                  child: IconButton(
-                    onPressed: () {
-                      context.canPop()
-                          ? context.pop()
-                          : context.go('/auth/onboarding');
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    color: Colors.blue.shade900,
-                    backgroundColor: Colors.blue,
-                    value: 0.2,
-                    strokeWidth: 6,
-                    strokeCap: StrokeCap.round,
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-              ],
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 400,
+              maxHeight: 800,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 20, top: 8),
-              child: Row(
-                children: [
-                  Hero(
-                    tag: 'splash_mascot',
-                    child: Image.asset(
-                      'assets/images/banana/hero.png',
-                      width: size.width * .3,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: () {
-                      Widget msg(String value) {
-                        return ChatBubble(
-                          arrowPosition: ArrowPosition.left,
-                          child: Padding(
-                            padding: const EdgeInsets.all(6),
-                            child: Text(
-                              value,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: AppTheme.poppinsFont,
-                              ),
+            child: LayoutBuilder(
+              builder: (context, cs) {
+                final size = cs.biggest;
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        Hero(
+                          tag: 'splash_back_button',
+                          child: IconButton(
+                            onPressed: () {
+                              context.canPop()
+                                  ? context.pop()
+                                  : context.go('/auth/onboarding');
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white,
                             ),
                           ),
-                        )
-                            .animate(delay: 300.ms)
-                            .fadeIn()
-                            .slideX(begin: .2, end: 0)
-                            .then()
-                            .shake();
-                      }
-
-                      if (!_pageController.hasClients) {
-                        return msg('What time do you usually wake up?');
-                      }
-                      if (_pageController.page == 0) {
-                        return msg('What time do you usually wake up?');
-                      } else if (_pageController.page == 1) {
-                        return msg('What time do you usually sleep?');
-                      } else if (_pageController.page == 2) {
-                        return msg('What do you hope to achieve?');
-                      }
-                      return const SizedBox.shrink();
-                    }(),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: PageView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: _pageController,
-                children: [
-                  wakeUpTimeSec(),
-                  sleepTimeSec(),
-                  achieveSec(),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Hero(
-                tag: 'splash_filled_button',
-                child: FilledButton(
-                  onPressed: () {
-                    if ((_pageController.page ?? 0) <= 1) {
-                      _pageController.nextPage(
-                        duration: 500.ms,
-                        curve: Curves.easeInOut,
-                      );
-                    } else {
-                      context.push('/auth/register');
-                    }
-                  },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color.fromARGB(255, 139, 75, 3),
-                    fixedSize: const Size.fromWidth(double.maxFinite),
-                  ),
-                  child: const Text(
-                    'CONTINUE',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppTheme.poppinsFont,
+                        ),
+                        const Spacer(),
+                        SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            color: Colors.blue.shade900,
+                            backgroundColor: Colors.blue,
+                            value: 0.2,
+                            strokeWidth: 6,
+                            strokeCap: StrokeCap.round,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 20, top: 8),
+                      child: Row(
+                        children: [
+                          Hero(
+                            tag: 'splash_mascot',
+                            child: Image.asset(
+                              'assets/images/banana/hero.png',
+                              width: size.width * .3,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: () {
+                              Widget msg(String value) {
+                                return ChatBubble(
+                                  arrowPosition: ArrowPosition.left,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Text(
+                                      value,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                    .animate(delay: 300.ms)
+                                    .fadeIn()
+                                    .slideX(begin: .2, end: 0)
+                                    .then()
+                                    .shake();
+                              }
+
+                              if (!_pageController.hasClients) {
+                                return msg('What time do you usually wake up?');
+                              }
+                              if (_pageController.page == 0) {
+                                return msg('What time do you usually wake up?');
+                              } else if (_pageController.page == 1) {
+                                return msg('What time do you usually sleep?');
+                              } else if (_pageController.page == 2) {
+                                return msg('What do you hope to achieve?');
+                              }
+                              return const SizedBox.shrink();
+                            }(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: PageView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        controller: _pageController,
+                        children: [
+                          wakeUpTimeSec(),
+                          sleepTimeSec(),
+                          achieveSec(),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Hero(
+                        tag: 'splash_filled_button',
+                        child: FilledButton(
+                          onPressed: () {
+                            if ((_pageController.page ?? 0) <= 1) {
+                              _pageController.nextPage(
+                                duration: 500.ms,
+                                curve: Curves.easeInOut,
+                              );
+                            } else {
+                              context.push('/auth/register');
+                            }
+                          },
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor:
+                                const Color.fromARGB(255, 139, 75, 3),
+                            fixedSize: const Size.fromWidth(double.maxFinite),
+                          ),
+                          child: const Text(
+                            'CONTINUE',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppTheme.poppinsFont,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-          ],
+          ),
         ),
       ),
     );

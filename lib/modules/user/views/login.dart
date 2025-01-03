@@ -107,7 +107,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    context.push('/auth/forgot_password');
+                                  },
                                   child: const Text(
                                     'Forgot password?',
                                     style: TextStyle(
@@ -189,11 +191,24 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         ),
                         TextButton.icon(
                           onPressed: () {
-                            // asyncFn(
-                            //   ref.read(userServiceProvider.notifier).googleSignIn,
-                            // ).then(
-                            //   ref.read(userServiceProvider.notifier).afterAuth,
-                            // );
+                            ref
+                                .read(userServiceProvider.notifier)
+                                .googleSignIn()
+                                .then((_) {
+                              context
+                                ..pop()
+                                ..showSuccessToast(
+                                  'Signed in successfully',
+                                );
+                            }).onError((error, stack) {
+                              var msg = error.toString();
+                              if (error is AppwriteException) {
+                                msg = error.message ?? error.toString();
+                              }
+                              context
+                                ..pop()
+                                ..showErrorToast(msg);
+                            });
                           },
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -206,12 +221,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          icon: false
-                              ? null
-                              : Image.asset(
-                                  'assets/images/google_logo.png',
-                                  height: 20,
-                                ),
+                          icon: Image.asset(
+                            'assets/images/google_logo.png',
+                            height: 20,
+                          ),
                           label: const Text(
                             'Sign in with Google',
                             style: TextStyle(
@@ -234,7 +247,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 color: theme.colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
-                              recognizer: TapGestureRecognizer()..onTap = () {},
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  context.push('/auth/register');
+                                },
                             ),
                           ],
                         ),

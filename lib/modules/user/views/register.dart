@@ -70,66 +70,65 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 25),
-                    Form(
-                      key: fromKey,
-                      child: AutofillGroup(
-                        child: Column(
-                          children: [
-                            HabitTextInput(
-                              label: 'Name',
-                              controller: nameController,
-                              type: HabitTextInputType.text,
-                              autofillHints: const [AutofillHints.name],
-                              textInputAction: TextInputAction.next,
-                              validator: emptyValidation,
-                              bSpacing: 24,
-                            ),
-                            HabitTextInput(
-                              label: 'Email',
-                              controller: emailController,
-                              type: HabitTextInputType.email,
-                              autofillHints: const [AutofillHints.email],
-                              textInputAction: TextInputAction.next,
-                              bSpacing: 24,
-                            ),
-                            HabitTextInput(
-                              label: 'Password',
-                              controller: passwordController,
-                              type: HabitTextInputType.password,
-                              autofillHints: const [AutofillHints.password],
-                              textInputAction: TextInputAction.next,
-                              validator: emptyValidation,
-                              obscureText: obscureText,
-                              bSpacing: 24,
-                              onSuffixTap: () {
-                                setState(() {
-                                  obscureText = !obscureText;
-                                });
-                              },
-                            ),
-                            HabitTextInput(
-                              label: 'Confirm Password',
-                              controller: password2Controller,
-                              autofillHints: const [AutofillHints.password],
-                              textInputAction: TextInputAction.done,
-                              obscureText: true,
-                              validator: (value) {
-                                if (value != passwordController.text) {
-                                  return 'Passwords do not match';
-                                }
-                                return null;
-                              },
-                              onSuffixTap: () {
-                                setState(() {
-                                  obscure2Text = !obscure2Text;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 40),
-                            Consumer(
-                              builder: (context, ref, _) {
-                                ref.watch(userServiceProvider);
-                                return FilledButton(
+                    Consumer(
+                      builder: (context, ref, _) {
+                        return Form(
+                          key: fromKey,
+                          child: AutofillGroup(
+                            child: Column(
+                              children: [
+                                HabitTextInput(
+                                  label: 'Name',
+                                  controller: nameController,
+                                  type: HabitTextInputType.text,
+                                  autofillHints: const [AutofillHints.name],
+                                  textInputAction: TextInputAction.next,
+                                  validator: emptyValidation,
+                                  bSpacing: 24,
+                                ),
+                                HabitTextInput(
+                                  label: 'Email',
+                                  controller: emailController,
+                                  type: HabitTextInputType.email,
+                                  autofillHints: const [AutofillHints.email],
+                                  textInputAction: TextInputAction.next,
+                                  bSpacing: 24,
+                                ),
+                                HabitTextInput(
+                                  label: 'Password',
+                                  controller: passwordController,
+                                  type: HabitTextInputType.password,
+                                  autofillHints: const [AutofillHints.password],
+                                  textInputAction: TextInputAction.next,
+                                  validator: emptyValidation,
+                                  obscureText: obscureText,
+                                  bSpacing: 24,
+                                  onSuffixTap: () {
+                                    setState(() {
+                                      obscureText = !obscureText;
+                                    });
+                                  },
+                                ),
+                                HabitTextInput(
+                                  label: 'Confirm Password',
+                                  controller: password2Controller,
+                                  autofillHints: const [AutofillHints.password],
+                                  textInputAction: TextInputAction.done,
+                                  obscureText: true,
+                                  validator: (value) {
+                                    if (value != passwordController.text) {
+                                      return 'Passwords do not match';
+                                    }
+                                    return null;
+                                  },
+                                  onSuffixTap: () {
+                                    setState(() {
+                                      obscure2Text = !obscure2Text;
+                                    });
+                                  },
+                                ),
+                                const SizedBox(height: 40),
+                                FilledButton(
                                   style: fullBtnStyle(),
                                   onPressed: () {
                                     if (fromKey.currentState!.validate()) {
@@ -154,78 +153,92 @@ class _RegisterPageState extends State<RegisterPage> {
                                     }
                                   },
                                   child: const Text('Sign in'),
-                                );
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 40,
-                                right: 40,
-                                top: 20,
-                                bottom: 20,
-                              ),
-                              child: SizedBox(
-                                height: 20,
-                                width: double.maxFinite,
-                                child: Stack(
-                                  children: [
-                                    const Positioned(
-                                      left: 0,
-                                      right: 0,
-                                      top: 10,
-                                      child: Divider(
-                                        thickness: .3,
-                                        height: 1,
-                                      ),
-                                    ),
-                                    Align(
-                                      child: Container(
-                                        color: theme.scaffoldBackgroundColor,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 5,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 40,
+                                    right: 40,
+                                    top: 20,
+                                    bottom: 20,
+                                  ),
+                                  child: SizedBox(
+                                    height: 20,
+                                    width: double.maxFinite,
+                                    child: Stack(
+                                      children: [
+                                        const Positioned(
+                                          left: 0,
+                                          right: 0,
+                                          top: 10,
+                                          child: Divider(
+                                            thickness: .3,
+                                            height: 1,
+                                          ),
                                         ),
-                                        child: const Text('or'),
-                                      ),
+                                        Align(
+                                          child: Container(
+                                            color:
+                                                theme.scaffoldBackgroundColor,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 5,
+                                            ),
+                                            child: const Text('or'),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            TextButton.icon(
-                              onPressed: () {
-                                // asyncFn(
-                                //   ref.read(userServiceProvider.notifier).googleSignIn,
-                                // ).then(
-                                //   ref.read(userServiceProvider.notifier).afterAuth,
-                                // );
-                              },
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.black,
-                                side: BorderSide(
-                                  color: Colors.black.withOpacity(.3),
-                                ),
-                                fixedSize: const Size(double.maxFinite, 20),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                              icon: false
-                                  ? null
-                                  : Image.asset(
-                                      'assets/images/google_logo.png',
-                                      height: 20,
+                                TextButton.icon(
+                                  onPressed: () {
+                                    ref
+                                        .read(userServiceProvider.notifier)
+                                        .googleSignIn()
+                                        .then((_) {
+                                      context
+                                        ..pop()
+                                        ..showSuccessToast(
+                                          'Signed in successfully',
+                                        );
+                                    }).onError((error, stack) {
+                                      var msg = error.toString();
+                                      if (error is AppwriteException) {
+                                        msg = error.message ?? error.toString();
+                                      }
+                                      context
+                                        ..pop()
+                                        ..showErrorToast(msg);
+                                    });
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.black,
+                                    side: BorderSide(
+                                      color: Colors.black.withOpacity(.3),
                                     ),
-                              label: const Text(
-                                'Sign in with Google',
-                                style: TextStyle(
-                                  fontFamily: AppTheme.poppinsFont,
+                                    fixedSize: const Size(double.maxFinite, 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  icon: false
+                                      ? null
+                                      : Image.asset(
+                                          'assets/images/google_logo.png',
+                                          height: 20,
+                                        ),
+                                  label: const Text(
+                                    'Sign in with Google',
+                                    style: TextStyle(
+                                      fontFamily: AppTheme.poppinsFont,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

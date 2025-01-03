@@ -1,3 +1,4 @@
+import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart' as models;
 import 'package:habit_quest/common.dart';
 import 'package:habit_quest/router.dart';
@@ -27,6 +28,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
       final user = await login(
         email: userCredentials!.email,
         password: userCredentials!.password,
+        provider: userCredentials!.provider,
       );
       state = user;
       // ignore: avoid_catches_without_on_clauses
@@ -56,6 +58,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     required String email,
     required String password,
     String? name,
+    String? provider,
   }) async {
     try {
       await appwriteAccount.createEmailPasswordSession(
@@ -68,6 +71,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
           email: email,
           password: password,
           name: name ?? user.name,
+          provider: 'email',
         ),
       );
       return user;
@@ -80,6 +84,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
               email: email,
               password: password,
               name: name ?? user.name,
+              provider: provider ?? 'email',
             ),
           );
           return user;
@@ -106,27 +111,39 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     state = user;
   }
 
-  Future<void> update({String? name, String? themeName}) async {
+  Future<void> update({String? name}) async {
     var user = state;
     if (name != null) {
       final updateduser = await appwriteAccount.updateName(name: name);
       user = updateduser;
     }
 
-    if (themeName != null) {
-      final updateduser = await appwriteAccount.updatePrefs(
-        prefs: {
-          'theme': themeName,
-        },
-      );
-      user = updateduser;
-    }
+    state = user;
+  }
 
+
+  Future<void> googleSignIn() async {
+    await appwriteAccount.createOAuth2Session(
+      provider: OAuthProvider.google,
+    );
+    await Future<void>.delayed(const Duration(seconds: 1));
+    final user = await appwriteAccount.get();
+    await LocalStorage.instance.updateUserCreds(
+      UserCredentials(
+        email: user.email,
+        password: '',
+        name: user.name,
+        provider: 'google',
+      ),
+    );
+    ref.read(appRouteService).refreshUser();
     state = user;
   }
 
   Future<void> logout() async {
-    await appwriteAccount.deleteSession(sessionId: 'current');
+    if (LocalStorage.instance.userCredentials?.provider != 'google') {
+      await appwriteAccount.deleteSession(sessionId: 'current');
+    }
     await LocalStorage.instance.delete();
     ref.read(appRouteService).refreshUser();
     state = null;

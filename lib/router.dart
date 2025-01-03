@@ -75,6 +75,19 @@ final routerProvider = Provider(
                 ),
               ],
             ),
+            GoRoute(
+              path: 'forgot_password',
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const ForgotPasswordPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              ),
+            ),
           ],
         ),
         ShellRoute(

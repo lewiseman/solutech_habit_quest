@@ -47,10 +47,10 @@ final class LocalStorage {
   String get themeName {
     try {
       final theme = _prefs.getString(_themeNameKey);
-      return theme ?? 'system';
+      return theme ?? 'light';
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      return 'system';
+      return 'light';
     }
   }
 
