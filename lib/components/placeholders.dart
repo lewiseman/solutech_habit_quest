@@ -183,3 +183,57 @@ extension PlaceholderExt on BuildContext {
     );
   }
 }
+
+Widget bananaSearch({String? message}) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          'assets/images/banana/search.png',
+          width: 100,
+          height: 100,
+        ),
+        if (message != null) const SizedBox(height: 6),
+        if (message != null)
+          Text(
+            '    $message',
+            style: const TextStyle(
+              fontFamily: AppTheme.poppinsFont,
+            ),
+          ),
+        const SizedBox(height: 20),
+        const SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeCap: StrokeCap.round,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget emptyBanana({String? message}) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          'assets/images/banana/search.png',
+          width: 100,
+          height: 100,
+        ),
+        if (message != null) const SizedBox(height: 8),
+        if (message != null)
+          Text(
+            message,
+            style: const TextStyle(
+              fontFamily: AppTheme.poppinsFont,
+            ),
+          ),
+      ],
+    ),
+  );
+}

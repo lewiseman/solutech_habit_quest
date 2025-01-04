@@ -27,9 +27,45 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
   String emoji = '🙂';
   final titleController = TextEditingController();
   String titleValue = '';
+  Habit? updateHabit;
 
-  void onCreate() {
-    if (selectedFrequency == 'Weekly' && selectedDays.isEmpty) {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEdit) {
+      updateHabit = ref.read(habitsServiceProvider).data()?.firstWhere(
+            (e) => e.id == widget.habitId,
+            orElse: () => Habit(
+              id: '',
+              title: '',
+              emoji: '',
+              time: TimeOfDay.now(),
+              startDate: DateTime.now(),
+              frequency: HabitFrequency.daily,
+              paused: false,
+              userId: '',
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            ),
+          );
+      if (updateHabit != null) {
+        prefillData(updateHabit!);
+      }
+    }
+  }
+
+  void prefillData(Habit habit) {
+    titleController.text = habit.title;
+    titleValue = habit.title;
+    emoji = habit.emoji;
+    selectedTime = habit.time;
+    startDate = habit.startDate;
+    selectedFrequency = habit.frequency;
+    selectedDays = habit.days ?? [];
+  }
+
+  void onAction() {
+    if (selectedFrequency == HabitFrequency.weekly && selectedDays.isEmpty) {
       AppDialog.alert(
         context,
         title: 'No days selected',
@@ -37,6 +73,41 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
       );
       return;
     }
+    if (widget.isEdit && updateHabit != null) {
+      onUpdate(updateHabit!);
+    } else {
+      onCreate();
+    }
+  }
+
+  void onUpdate(Habit oldHabit) {
+    context.showInfoLoad('Updating habit...');
+    ref
+        .read(habitsServiceProvider.notifier)
+        .updateHabit(
+          oldHabit.copyWith(
+            title: titleController.text.trim(),
+            emoji: emoji,
+            time: selectedTime,
+            startDate: startDate,
+            days: selectedDays,
+            frequency: selectedFrequency,
+          ),
+        )
+        .then((_) {
+      context
+        ..pop()
+        ..pop()
+        ..showSuccessToast('Habit updated successfully');
+    }).onError((error, stack) {
+      debugPrint(error.toString());
+      context
+        ..pop()
+        ..showErrorToast('Failed to update habit');
+    });
+  }
+
+  void onCreate() {
     context.showInfoLoad('Creating habit...');
     ref
         .read(habitsServiceProvider.notifier)
@@ -47,8 +118,12 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
             emoji: emoji,
             time: selectedTime,
             startDate: startDate,
-            days: selectedDays.join(','),
+            days: selectedDays,
             frequency: selectedFrequency,
+            paused: false,
+            userId: ref.read(userServiceProvider)?.$id ?? '',
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
           ),
         )
         .then((_) {
@@ -57,6 +132,7 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
         ..pop()
         ..showSuccessToast('Habit created successfully');
     }).onError((error, stack) {
+      debugPrint(error.toString());
       context
         ..pop()
         ..showErrorToast('Failed to create habit');
@@ -279,7 +355,9 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        (selectedFrequency == 'Once' ? 'Date' : 'Start Date'),
+                        (selectedFrequency == HabitFrequency.once
+                            ? 'Date'
+                            : 'Start Date'),
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontFamily: AppTheme.poppinsFont,
@@ -335,7 +413,7 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
                 ),
               ),
             ),
-            if (selectedFrequency == 'Weekly')
+            if (selectedFrequency == HabitFrequency.weekly)
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
                 child: Material(
@@ -426,9 +504,9 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: FilledButton(
-                onPressed: titleValue.length < 3 ? null : onCreate,
+                onPressed: titleValue.length < 3 ? null : onAction,
                 style: fullBtnStyle(),
-                child: const Text('Done'),
+                child: Text(widget.isEdit ? 'Update' : 'Done'),
               ),
             ),
           ],

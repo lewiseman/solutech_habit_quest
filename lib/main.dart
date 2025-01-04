@@ -13,6 +13,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   await LocalStorage.instance.initialize();
+  await AppRepository.initialize();
   if (kIsWeb) {
     usePathUrlStrategy();
   }

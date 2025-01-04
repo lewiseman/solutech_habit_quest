@@ -27,6 +27,8 @@ dependencies:
   flutter_calendar_carousel: ^2.4.4
   fl_chart: ^0.69.2
   flutter_animate: ^4.5.2
+  hive_ce: ^2.8.0+3
+  hive_ce_flutter: ^2.1.0
 
 dev_dependencies:
   flutter_test:

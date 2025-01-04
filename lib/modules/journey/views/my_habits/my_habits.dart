@@ -1,40 +1,175 @@
-import 'package:flutter/material.dart';
-import 'package:habit_quest/config/config.dart';
+import 'dart:async';
 
-class MyHabitsSection extends StatelessWidget {
+import 'package:flutter/cupertino.dart';
+import 'package:habit_quest/common.dart';
+
+class MyHabitsSection extends ConsumerWidget {
   const MyHabitsSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final habitsService = ref.watch(habitsServiceProvider);
+    final habits = habitsService.data();
+    if (habits == null || habits.isEmpty) {
+      return emptyBanana(
+        message: habits == null
+            ? 'Your habits have not loaded yet'
+            : 'You have no habits yet',
+      );
+    }
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 200),
       child: Column(
         children: [
           const SizedBox(height: 30),
-          const HeaderSummary(),
-          ListView.builder(
+          HeaderSummary(
+            habits: habits,
+          ),
+          ListView.separated(
             shrinkWrap: true,
-            itemCount: 10,
+            itemCount: habits.length,
             padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
+              final habit = habits[index];
               return ListTile(
-                title: Text('Habit ${index + 1}'),
-                subtitle: Text('Description ${index + 1}'),
-                trailing: const Icon(Icons.keyboard_arrow_down_rounded),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.grey.shade200,
+                  child: Text(habit.emoji),
+                ),
+                title: Text(habit.title),
+                trailing: habit.paused
+                    ? Container(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                          horizontal: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.shade100,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: Colors.amber.shade200,
+                          ),
+                        ),
+                        child: Text(
+                          'PAUSED',
+                          style: TextStyle(
+                            color: Colors.amber.shade900,
+                            fontFamily: AppTheme.poppinsFont,
+                          ),
+                        ),
+                      )
+                    : null,
+                subtitle: Text(
+                  '''${habit.frequency.displayName} • ${habit.time.format(context)}''',
+                ),
+                onTap: () => onHabitTap(context, habit, ref),
               );
             },
+            separatorBuilder: (context, index) => const Divider(
+              thickness: .2,
+              height: 1,
+            ),
           ),
         ],
       ),
     );
   }
+
+  onHabitTap(BuildContext context, Habit habit, WidgetRef ref) async {
+    final res = await showCupertinoModalPopup<String>(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: CupertinoActionSheet(
+            title: Text(habit.title),
+            actions: [
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.pop(context, 'pause');
+                },
+                child: Text(
+                  habit.paused ? 'Un-pause' : 'Pause',
+                  style: const TextStyle(
+                    fontFamily: AppTheme.poppinsFont,
+                  ),
+                ),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.pop(context, 'edit');
+                },
+                child: const Text(
+                  'Edit',
+                  style: TextStyle(
+                    fontFamily: AppTheme.poppinsFont,
+                  ),
+                ),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.pop(context, 'delete');
+                },
+                isDestructiveAction: true,
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(
+                    fontFamily: AppTheme.poppinsFont,
+                  ),
+                ),
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  fontFamily: AppTheme.poppinsFont,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    if (res != null) {
+      if (res == 'edit') {
+        context.push('/edit_habit/${habit.id}');
+      } else if (res == 'pause') {
+        context.showInfoLoad('Pausing habit');
+        unawaited(
+          ref.read(habitsServiceProvider.notifier).pauseHabit(habit).then((_) {
+            context.pop();
+          }).onError((error, stack) {
+            context
+              ..pop()
+              ..showErrorToast(error.toString());
+          }),
+        );
+      } else if (res == 'delete') {
+        context.showInfoLoad('Deleting habit');
+        unawaited(
+          ref.read(habitsServiceProvider.notifier).deleteHabit(habit).then((_) {
+            context.pop();
+          }).onError((error, stack) {
+            context
+              ..pop()
+              ..showErrorToast(error.toString());
+          }),
+        );
+      }
+    }
+  }
 }
 
 class HeaderSummary extends StatelessWidget {
   const HeaderSummary({
+    required this.habits,
     super.key,
   });
+  final List<Habit> habits;
 
   @override
   Widget build(BuildContext context) {
@@ -52,20 +187,20 @@ class HeaderSummary extends StatelessWidget {
           ),
         ],
       ),
-      child: const Row(
+      child: Row(
         children: [
           Expanded(
             child: Column(
               children: [
-                Text(
+                const Text(
                   'TOTAL',
                   style: TextStyle(
                     fontFamily: AppTheme.poppinsFont,
                   ),
                 ),
                 Text(
-                  '20',
-                  style: TextStyle(
+                  habits.length.toString(),
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontFamily: AppTheme.poppinsFont,
                   ),
@@ -76,15 +211,15 @@ class HeaderSummary extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                Text(
+                const Text(
                   'ACTIVE',
                   style: TextStyle(
                     fontFamily: AppTheme.poppinsFont,
                   ),
                 ),
                 Text(
-                  '13',
-                  style: TextStyle(
+                  habits.where((e) => !e.paused).length.toString(),
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontFamily: AppTheme.poppinsFont,
                   ),
@@ -95,15 +230,15 @@ class HeaderSummary extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                Text(
+                const Text(
                   'PAUSED',
                   style: TextStyle(
                     fontFamily: AppTheme.poppinsFont,
                   ),
                 ),
                 Text(
-                  '7',
-                  style: TextStyle(
+                  habits.where((e) => e.paused).length.toString(),
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontFamily: AppTheme.poppinsFont,
                   ),
