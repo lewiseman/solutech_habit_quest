@@ -32,7 +32,9 @@ class _RootAppState extends State<RootApp> {
         floatingActionButton: currPage?.page == '/'
             ? FloatingActionButton.small(
                 elevation: 1,
-                onPressed: () {},
+                onPressed: () {
+                  context.push('/create_habit');
+                },
                 backgroundColor: AppTheme.primaryBlue,
                 child: const Icon(Icons.add),
               )

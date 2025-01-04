@@ -100,6 +100,24 @@ final routerProvider = Provider(
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: HabitsPage(),
               ),
+              routes: [
+                GoRoute(
+                  parentNavigatorKey: _rootNAvigatorKey,
+                  path: 'create_habit',
+                  pageBuilder: (context, state) => const NoTransitionPage(
+                    child: CreateHabitPage(),
+                  ),
+                ),
+                GoRoute(
+                  parentNavigatorKey: _rootNAvigatorKey,
+                  path: 'edit_habit/:habitId',
+                  pageBuilder: (context, state) => NoTransitionPage(
+                    child: CreateHabitPage(
+                      habitId: state.pathParameters['habitId'],
+                    ),
+                  ),
+                ),
+              ],
             ),
             GoRoute(
               path: '/journey',
