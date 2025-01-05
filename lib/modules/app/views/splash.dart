@@ -135,9 +135,7 @@ class _AuthSplashPageState extends State<AuthSplashPage>
                         child: Hero(
                           tag: 'splash_mascot',
                           child: Image.asset(
-                            kIsWeb
-                                ? 'assets/images/blue_logo.png'
-                                : 'assets/images/white_logo.png',
+                            'assets/images/banana/hero.png',
                             width: size.width * 0.5,
                           ),
                         ),

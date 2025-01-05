@@ -6,14 +6,16 @@ class HabitsPage extends ConsumerStatefulWidget {
   static AppBar appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      surfaceTintColor: Colors.transparent,
-      leading: const Padding(
-        padding: EdgeInsets.all(8),
-        child: Icon(
-          CustomIcons.habit_quest,
-          color: AppTheme.primaryBlue,
-        ),
-      ),
+      // leading: const Padding(
+      //   padding: EdgeInsets.all(8),
+      //   child: Icon(
+      //     CustomIcons.habit_quest,
+      //     color: AppTheme.primaryBlue,
+      //   ),
+      // ),
+      scrolledUnderElevation: 1,
+      shadowColor: Colors.black,
+      leading: Image.asset('assets/images/banana/hero.png'),
       centerTitle: false,
       title: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,

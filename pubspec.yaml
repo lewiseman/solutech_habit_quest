@@ -32,6 +32,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.13
+  flutter_native_splash: ^2.4.4
   flutter_test:
     sdk: flutter
   hive_ce_generator: ^1.8.1
@@ -58,3 +59,14 @@ flutter:
         - asset: assets/fonts/Poppins-Medium.ttf
         - asset: assets/fonts/Poppins-Regular.ttf
         - asset: assets/fonts/Poppins-SemiBold.ttf
+
+flutter_native_splash:
+  image: "assets/images/banana/hero.png"
+  color: "#0066cc"
+  android: true
+  ios: true
+  android_gravity: center
+  fullscreen: false
+  android_12:
+    color: "#0066cc"
+    icon_background_color: "#0066cc"

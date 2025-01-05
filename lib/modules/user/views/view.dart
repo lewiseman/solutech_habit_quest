@@ -10,13 +10,9 @@ class UserPage extends ConsumerWidget {
   static AppBar appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      leading: const Padding(
-        padding: EdgeInsets.all(8),
-        child: Icon(
-          CustomIcons.habit_quest,
-          color: AppTheme.primaryBlue,
-        ),
-      ),
+      leading: Image.asset('assets/images/banana/coffee.png'),
+      scrolledUnderElevation: 1,
+      shadowColor: Colors.black,
       centerTitle: false,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

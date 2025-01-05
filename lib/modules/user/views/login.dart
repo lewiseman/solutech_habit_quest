@@ -62,7 +62,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           child: Hero(
                             tag: 'auth_logo',
                             child: Image.asset(
-                              'assets/images/blue_logo.png',
+                              'assets/images/banana/write.png',
                               width: 110,
                             ),
                           ),
