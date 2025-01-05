@@ -22,6 +22,10 @@ class HabitsNotifier extends StateNotifier<HabitsState> {
     state = HabitsState.data(habits);
   }
 
+  void updateFromSync(List<Habit> habits) {
+    state = HabitsState.data(habits);
+  }
+
   Future<void> createHabit(Habit habit) async {
     final habits = await AppRepository.createHabit(habit);
     state = HabitsState.data(habits);

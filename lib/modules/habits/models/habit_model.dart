@@ -39,10 +39,7 @@ class Habit {
       title: data['title'] as String,
       emoji: data['emoji'] as String,
       description: data['description'] as String?,
-      time: TimeOfDay(
-        hour: int.parse(data['time'].split(':')[0] as String),
-        minute: int.parse(data['time'].split(':')[1] as String),
-      ),
+      time: data['time'] as String,
       days: data['days'] != null ? List<String>.from(data['days'] as List) : [],
       startDate: DateTime.parse(data['start_date'] as String),
       frequency: HabitFrequency.values.firstWhere(
@@ -59,7 +56,7 @@ class Habit {
   final String title;
   final String emoji;
   final String? description;
-  final TimeOfDay time;
+  final String time;
   final DateTime startDate;
   final List<String>? days;
   final HabitFrequency frequency;
@@ -74,8 +71,7 @@ class Habit {
       'title': title,
       'emoji': emoji,
       'description': description,
-      'time':
-          '''${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}''',
+      'time': time,
       'start_date': startDate.toIso8601String(),
       'days': days,
       'frequency': frequency.displayName,
@@ -92,11 +88,18 @@ class Habit {
     return startDayReached;
   }
 
+  TimeOfDay timeValue() {
+    return TimeOfDay(
+      hour: int.parse(time.split(':')[0]),
+      minute: int.parse(time.split(':')[1]),
+    );
+  }
+
   Habit copyWith({
     String? title,
     String? emoji,
     String? description,
-    TimeOfDay? time,
+    String? time,
     DateTime? startDate,
     List<String>? days,
     HabitFrequency? frequency,

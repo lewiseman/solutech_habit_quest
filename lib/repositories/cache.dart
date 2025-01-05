@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:habit_quest/common.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final class LocalStorage {
-  factory LocalStorage() => _instance;
-  LocalStorage._();
-  static final LocalStorage _instance = LocalStorage._();
-  static LocalStorage get instance => _instance;
+final class CacheStorage {
+  factory CacheStorage() => _instance;
+  CacheStorage._();
+  static final CacheStorage _instance = CacheStorage._();
+  static CacheStorage get instance => _instance;
   late final SharedPreferences _prefs;
   static final String _keySuffix = '$_envName-$_docVersion';
 

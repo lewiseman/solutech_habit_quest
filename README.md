@@ -19,3 +19,5 @@ import 'package:appwrite/appwrite.dart';
 
 Client client = Client();
 client.setProject('6772d4a9001f92eafb15');
+
+build_runner

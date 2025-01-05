@@ -100,7 +100,7 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
                   }
                   final remainingHabits = habits.where((habit) {
                     final now = TimeOfDay.now();
-                    final hasPassed = habit.time.compareTo(now);
+                    final hasPassed = habit.timeValue().compareTo(now);
                     return hasPassed > 0;
                   }).toList();
                   final today = DateTime.now();
@@ -332,7 +332,7 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
                             maxLines: 1,
                           ),
                           Text(
-                            habit.time.format(context),
+                            habit.timeValue().format(context),
                             style: const TextStyle(
                               fontFamily: AppTheme.poppinsFont,
                             ),
@@ -396,7 +396,7 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
                       maxLines: 1,
                     ),
                     Text(
-                      'IN THE NEXT ${habit.time.remainingStr().toUpperCase()}',
+                      'IN THE NEXT ${habit.timeValue().remainingStr().toUpperCase()}',
                       style: const TextStyle(
                         fontFamily: AppTheme.poppinsFont,
                         color: Colors.white,

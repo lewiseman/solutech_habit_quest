@@ -196,7 +196,7 @@ final appRouteService = ChangeNotifierProvider(
 
 class AppRouteService extends ChangeNotifier {
   AppRouteService() {
-    userCredentials = LocalStorage.instance.userCredentials;
+    userCredentials = CacheStorage.instance.userCredentials;
   }
   UserCredentials? userCredentials;
 
@@ -212,7 +212,7 @@ class AppRouteService extends ChangeNotifier {
   }
 
   void refreshUser() {
-    userCredentials = LocalStorage.instance.userCredentials;
+    userCredentials = CacheStorage.instance.userCredentials;
     notifyListeners();
   }
 }

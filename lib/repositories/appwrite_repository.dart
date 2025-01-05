@@ -1,11 +1,11 @@
 import 'package:habit_quest/common.dart';
-import 'package:habit_quest/repositories/repository_structure.dart';
+import 'package:habit_quest/repositories/models/repository_structure.dart';
 
 class AppwriteRepository extends StorageRepository {
   final databases = Databases(appwriteClient);
   @override
   Future<void> delete() {
-    return LocalStorage.instance.delete();
+    return CacheStorage.instance.delete();
   }
 
   @override
@@ -40,6 +40,7 @@ class AppwriteRepository extends StorageRepository {
     return res;
   }
 
+  @override
   Future<Habit> updateHabit(Habit habit) async {
     final data = habit.toJson()..remove('id');
     final res = await databases.updateDocument(
@@ -52,11 +53,26 @@ class AppwriteRepository extends StorageRepository {
     return updatedHabit;
   }
 
-  Future deleteHabit(Habit habit) async {
+  @override
+  Future<void> deleteHabit(String habitId) async {
     await databases.deleteDocument(
       databaseId: appwriteDatabaseId,
       collectionId: appwriteHabitsCID,
-      documentId: habit.id,
+      documentId: habitId,
     );
+  }
+
+  @override
+  Future<Habit?> getHabit(String id) async {
+    final res = await databases
+        .getDocument(
+      databaseId: appwriteDatabaseId,
+      collectionId: appwriteHabitsCID,
+      documentId: id,
+    )
+        .then((res) {
+      return Habit.fromJson(res.data);
+    });
+    return res;
   }
 }

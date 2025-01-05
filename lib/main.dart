@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/repositories/services/sync_srv.dart';
 import 'package:habit_quest/router.dart';
 
 void main() async {
@@ -12,7 +13,7 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  await LocalStorage.instance.initialize();
+  await CacheStorage.instance.initialize();
   await AppRepository.initialize();
   if (kIsWeb) {
     usePathUrlStrategy();
@@ -29,6 +30,7 @@ class HabitQuest extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final settings = ref.watch(settingsServiceProvider);
+    ref.read(syncServiceProvider);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: router,

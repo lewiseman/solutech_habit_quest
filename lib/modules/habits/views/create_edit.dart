@@ -39,7 +39,7 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
               id: '',
               title: '',
               emoji: '',
-              time: TimeOfDay.now(),
+              time: TimeOfDay.now().toTimeString(),
               startDate: DateTime.now(),
               frequency: HabitFrequency.daily,
               paused: false,
@@ -58,7 +58,7 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
     titleController.text = habit.title;
     titleValue = habit.title;
     emoji = habit.emoji;
-    selectedTime = habit.time;
+    selectedTime = habit.timeValue();
     startDate = habit.startDate;
     selectedFrequency = habit.frequency;
     selectedDays = habit.days ?? [];
@@ -88,7 +88,7 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
           oldHabit.copyWith(
             title: titleController.text.trim(),
             emoji: emoji,
-            time: selectedTime,
+            time: selectedTime.toTimeString(),
             startDate: startDate,
             days: selectedDays,
             frequency: selectedFrequency,
@@ -116,7 +116,7 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
             id: AppRepository.getUniqueID(),
             title: titleController.text.trim(),
             emoji: emoji,
-            time: selectedTime,
+            time: selectedTime.toTimeString(),
             startDate: startDate,
             days: selectedDays,
             frequency: selectedFrequency,

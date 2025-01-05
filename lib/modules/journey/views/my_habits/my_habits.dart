@@ -60,7 +60,7 @@ class MyHabitsSection extends ConsumerWidget {
                       )
                     : null,
                 subtitle: Text(
-                  '''${habit.frequency.displayName} • ${habit.time.format(context)}''',
+                  '''${habit.frequency.displayName} • ${habit.timeValue().format(context)}''',
                 ),
                 onTap: () => onHabitTap(context, habit, ref),
               );

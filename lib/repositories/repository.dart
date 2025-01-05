@@ -19,28 +19,29 @@ final class AppRepository {
   }
 
   static Future<List<Habit>> getHabits() async {
-    final xx =await instance.localRepository.getHabits();
-    return xx;
-    // try {
-    //   final res = await instance.remoteRepository.getHabits();
-    //   return res;
-    // } catch (e) {
-    //   rethrow;
-    // }
+    return instance.localRepository.getHabits();
   }
 
   static Future<List<Habit>> createHabit(Habit habit) async {
-    final res = await instance.localRepository.createHabit(habit);
-    return [];
+    await instance.localRepository.createHabit(habit);
+    final updatedLocal = await instance.localRepository.getHabits();
+
+    return updatedLocal;
   }
 
   static Future<List<Habit>> updateHabit(Habit habit) async {
-    await instance.remoteRepository.updateHabit(habit);
-    return [];
+    await instance.localRepository.updateHabit(habit);
+    // await instance.remoteRepository.updateHabit(habit);
+    final updatedLocal = await instance.localRepository.getHabits();
+
+    return updatedLocal;
   }
 
   static Future<List<Habit>> deleteHabit(Habit habit) async {
-    await instance.remoteRepository.deleteHabit(habit);
-    return [];
+    await instance.localRepository.deleteHabit(habit.id);
+    // await instance.remoteRepository.deleteHabit(habit);
+    final updatedLocal = await instance.localRepository.getHabits();
+
+    return updatedLocal;
   }
 }

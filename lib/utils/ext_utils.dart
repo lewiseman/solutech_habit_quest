@@ -28,4 +28,8 @@ extension TimeOfDayExtension on TimeOfDay {
     }
     return '${hours == 1 ? '1 hour' : '$hours hours'} $minutes minutes';
   }
+
+  String toTimeString() {
+    return '''${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}''';
+  }
 }

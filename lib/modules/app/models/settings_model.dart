@@ -8,7 +8,7 @@ class AppUserSettings {
 
   factory AppUserSettings.initial({models.User? user}) {
     final livethemename = user?.prefs.data['theme'] as String?;
-    final themename = livethemename ?? LocalStorage.instance.themeName;
+    final themename = livethemename ?? CacheStorage.instance.themeName;
     return AppUserSettings(
       themeName: themename,
     );

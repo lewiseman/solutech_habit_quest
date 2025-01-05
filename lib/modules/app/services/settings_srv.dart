@@ -16,7 +16,7 @@ class SettingsNotifier extends StateNotifier<AppUserSettings> {
   final models.User? user;
 
   Future<void> updateTheme(String themeName) async {
-    await LocalStorage.instance.updateThemeName(themeName);
+    await CacheStorage.instance.updateThemeName(themeName);
     try {
       await appwriteAccount.updatePrefs(
         prefs: {

@@ -7,7 +7,7 @@ final userServiceProvider =
     StateNotifierProvider<UserServiceNotifier, models.User?>(
   (ref) => UserServiceNotifier(
     ref: ref,
-    userCredentials: LocalStorage.instance.userCredentials,
+    userCredentials: CacheStorage.instance.userCredentials,
   ),
 );
 
@@ -66,7 +66,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
         password: password,
       );
       final user = await appwriteAccount.get();
-      await LocalStorage.instance.updateUserCreds(
+      await CacheStorage.instance.updateUserCreds(
         UserCredentials(
           email: email,
           password: password,
@@ -79,7 +79,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
       if (e.type == 'user_session_already_exists') {
         try {
           final user = await appwriteAccount.get();
-          await LocalStorage.instance.updateUserCreds(
+          await CacheStorage.instance.updateUserCreds(
             UserCredentials(
               email: email,
               password: password,
@@ -121,14 +121,13 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     state = user;
   }
 
-
   Future<void> googleSignIn() async {
     await appwriteAccount.createOAuth2Session(
       provider: OAuthProvider.google,
     );
     await Future<void>.delayed(const Duration(seconds: 1));
     final user = await appwriteAccount.get();
-    await LocalStorage.instance.updateUserCreds(
+    await CacheStorage.instance.updateUserCreds(
       UserCredentials(
         email: user.email,
         password: '',
@@ -141,10 +140,10 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
   }
 
   Future<void> logout() async {
-    if (LocalStorage.instance.userCredentials?.provider != 'google') {
+    if (CacheStorage.instance.userCredentials?.provider != 'google') {
       await appwriteAccount.deleteSession(sessionId: 'current');
     }
-    await LocalStorage.instance.delete();
+    await CacheStorage.instance.delete();
     ref.read(appRouteService).refreshUser();
     state = null;
   }

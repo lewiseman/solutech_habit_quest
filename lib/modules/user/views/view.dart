@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habit_quest/common.dart';
+import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
-class UserPage extends StatelessWidget {
+class UserPage extends ConsumerWidget {
   const UserPage({super.key});
 
   static AppBar appBar(BuildContext context) {
@@ -17,13 +18,6 @@ class UserPage extends StatelessWidget {
         ),
       ),
       centerTitle: false,
-      // title: const Text(
-      //   'PROFILE',
-      //   style: TextStyle(
-      //     fontSize: 14,
-      //     fontWeight: FontWeight.bold,
-      //   ),
-      // ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -59,7 +53,8 @@ class UserPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final syncState = ref.watch(syncServiceProvider);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -74,50 +69,8 @@ class UserPage extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          Container(
-            margin: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 24,
-            ),
-            padding: const EdgeInsets.all(12),
-            clipBehavior: Clip.antiAlias,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              color: AppTheme.primaryBlue,
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  CustomIcons.cloud_sync,
-                  color: Colors.white,
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'DATA SYNCED',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        'Last synced 2 hours ago',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(
-                  CupertinoIcons.check_mark,
-                  color: Colors.white,
-                ),
-              ],
-            ),
+          syncCard(
+            syncState: syncState,
           ),
           settingsGroup(
             actions: [
@@ -216,6 +169,70 @@ class UserPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 200),
+        ],
+      ),
+    );
+  }
+
+  Widget syncCard({required SyncState syncState}) {
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 24,
+      ),
+      padding: const EdgeInsets.all(12),
+      clipBehavior: Clip.antiAlias,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        color: AppTheme.primaryBlue,
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            CustomIcons.cloud_sync,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  () {
+                    if (syncState is LoadingSyncState) {
+                      return 'SYNCING...';
+                    }
+                    if (syncState is ErrorSyncState) {
+                      return 'SYNC ERROR';
+                    }
+                    if (syncState is SyncedSyncState) {
+                      return 'DATA SYNCED';
+                    }
+                    return '';
+                  }(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  'Last synced ${() {
+                    if (syncState is SyncedSyncState) {
+                      return DateFormat.yMEd().add_jm().format(syncState.time);
+                    }
+                    return '';
+                  }()}',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Icon(
+            CupertinoIcons.check_mark,
+            color: Colors.white,
+          ),
         ],
       ),
     );
