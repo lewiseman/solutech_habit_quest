@@ -44,7 +44,6 @@ flutter:
     - assets/images/
     - assets/images/banana/
     - assets/images/achievements/
-    - assets/images/temp/
     - assets/lottie/
 
   fonts:

@@ -9,6 +9,7 @@ class JourneyPage extends StatefulWidget {
   static AppBar appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      surfaceTintColor: Colors.transparent,
       leading: Transform.flip(
         flipX: true,
         child: Image.asset('assets/images/banana/laptop.png'),
