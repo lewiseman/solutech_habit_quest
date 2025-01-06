@@ -16,3 +16,7 @@ class ErrorSyncState extends SyncState {
 
   final String error;
 }
+
+class InactiveSyncState extends SyncState {
+  const InactiveSyncState();
+}

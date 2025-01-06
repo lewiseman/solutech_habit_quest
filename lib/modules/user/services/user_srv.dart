@@ -111,10 +111,18 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     state = user;
   }
 
-  Future<void> update({String? name}) async {
+  Future<void> update({String? name, String? avatar}) async {
     var user = state;
     if (name != null) {
       final updateduser = await appwriteAccount.updateName(name: name);
+      user = updateduser;
+    }
+    if (avatar != null) {
+      final updateduser = await appwriteAccount.updatePrefs(
+        prefs: {
+          'avatar': avatar,
+        },
+      );
       user = updateduser;
     }
 
@@ -139,10 +147,12 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     state = user;
   }
 
+
   Future<void> logout() async {
     if (CacheStorage.instance.userCredentials?.provider != 'google') {
       await appwriteAccount.deleteSession(sessionId: 'current');
     }
+    await AppRepository.instance.clear();
     await CacheStorage.instance.delete();
     ref.read(appRouteService).refreshUser();
     state = null;

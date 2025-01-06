@@ -8,9 +8,29 @@ class PickAvatarPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isdarkmode = context.isDarkMode;
     final size = MediaQuery.sizeOf(context);
+    final coins = ref.watch(rewardsServiceProvider).coins;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        scrolledUnderElevation: 1,
+        shadowColor: Colors.black,
+        centerTitle: true,
+        title: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          decoration: BoxDecoration(
+            color: Colors.yellow.shade900.withOpacity(.8),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            '💰 $coins',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.white,
+              fontFamily: AppTheme.poppinsFont,
+            ),
+          ),
+        ),
         actions: [
           GestureDetector(
             onTap: () {
@@ -53,7 +73,7 @@ class PickAvatarPage extends ConsumerWidget {
                   ),
                   child: InkWell(
                     onTap: () {
-                      pickedIcon(context, dicebear, ref);
+                      pickedIcon(context, dicebear, ref, coins);
                     },
                     borderRadius: BorderRadius.circular(10),
                     child: Padding(
@@ -84,6 +104,7 @@ class PickAvatarPage extends ConsumerWidget {
     BuildContext context,
     ({String name, String url}) style,
     WidgetRef ref,
+    int coins,
   ) async {
     var count = 1;
     final confirmedurl = await AppDialog.custom<String>(
@@ -123,16 +144,24 @@ class PickAvatarPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 FilledButton(
-                  onPressed: () {
-                    Navigator.pop(
-                      context,
-                      'https://api.dicebear.com/9.x/${style.url}/svg?seed=$count',
-                    );
-                  },
+                  onPressed: (coins >= 2)
+                      ? () {
+                          Navigator.pop(
+                            context,
+                            'https://api.dicebear.com/9.x/${style.url}/svg?seed=$count',
+                          );
+                        }
+                      : null,
                   style: FilledButton.styleFrom(
                     fixedSize: const Size.fromWidth(double.maxFinite),
                   ),
-                  child: const Text('CONFIRM'),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('CONFIRM'),
+                      Text('💰 2'),
+                    ],
+                  ),
                 ),
               ],
             );
@@ -143,21 +172,22 @@ class PickAvatarPage extends ConsumerWidget {
 
     if (confirmedurl != null) {
       // ignore: use_build_context_synchronously
-      // context.showInfoLoad('Updating profile image ...');
-      // try {
-      //   await ref.read(wiseNoteUserServiceProvider.notifier).updateProfile({
-      //     'photo_url': confirmedurl,
-      //   });
-      //   Navigator.of(context)
-      //     ..pop()
-      //     ..pop();
-      // } catch (e) {
-      //   Navigator.of(context).pop();
-      //   AppDialog.alert(
-      //     context,
-      //     message: 'Unable to update profile image',
-      //   );
-      // }
+      context.showInfoLoad('Updating profile image ...');
+      try {
+        await ref
+            .read(userServiceProvider.notifier)
+            .update(avatar: confirmedurl);
+        await ref.read(rewardsServiceProvider.notifier).removeCoins(2);
+        Navigator.of(context)
+          ..pop()
+          ..pop();
+      } catch (e) {
+        Navigator.of(context).pop();
+        AppDialog.alert(
+          context,
+          message: 'Unable to update the avatar',
+        );
+      }
     }
   }
 

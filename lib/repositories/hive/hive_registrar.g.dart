@@ -7,6 +7,8 @@ import 'package:habit_quest/repositories/hive/hive_adapters.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(HabitActionAdapter());
+    registerAdapter(HabitActionTypeAdapter());
     registerAdapter(HabitAdapter());
     registerAdapter(HabitFrequencyAdapter());
     registerAdapter(SyncActionAdapter());

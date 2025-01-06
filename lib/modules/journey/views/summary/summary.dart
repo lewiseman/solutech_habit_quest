@@ -1,24 +1,42 @@
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/journey/views/summary/calc_data.dart';
 import 'package:habit_quest/modules/journey/views/summary/week_graph.dart';
 
-class SummarySection extends StatelessWidget {
+class SummarySection extends ConsumerWidget {
   const SummarySection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.only(left: 20, right: 20, bottom: 200),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final habitsState = ref.watch(habitsServiceProvider);
+    final habits = () {
+      if (habitsState is DataHabitsState) {
+        return habitsState.habits;
+      }
+      return <Habit>[];
+    }();
+    final habitActions = ref.watch(habitsActionServiceProvider);
+    final data = JourneySummaryData(habits: habits, habitActions: habitActions);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 200),
       child: Column(
         children: [
-          SizedBox(height: 30),
-          StatsCard(),
-          SizedBox(height: 40),
-          SummaryWeekGraph(),
-          SizedBox(height: 40),
-          SummaryMonthTable(),
-          SizedBox(height: 40),
-          TextSummary(),
+          const SizedBox(height: 30),
+          StatsCard(
+            data: data.statsCardData(),
+          ),
+          const SizedBox(height: 40),
+          SummaryWeekGraph(
+            data: data.weekData(),
+          ),
+          const SizedBox(height: 40),
+          SummaryMonthTable(
+            dates: data.calculateColorGrid(),
+          ),
+          const SizedBox(height: 40),
+          TextSummary(
+            data: data.textSummaryData(),
+          ),
         ],
       ),
     );
@@ -27,8 +45,10 @@ class SummarySection extends StatelessWidget {
 
 class SummaryMonthTable extends StatelessWidget {
   const SummaryMonthTable({
+    required this.dates,
     super.key,
   });
+  final Map<DateTime, Color> dates;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +96,9 @@ class SummaryMonthTable extends StatelessWidget {
                 day,
               ) {
                 final today = DateTime.now();
+                final dayColor =
+                    dates[DateTime(day.year, day.month, day.day)] ??
+                        Colors.transparent;
                 return Center(
                   child: Container(
                     alignment: Alignment.center,
@@ -90,7 +113,7 @@ class SummaryMonthTable extends StatelessWidget {
                         } else if (day.isAfter(today)) {
                           return Colors.transparent;
                         } else {
-                          return Colors.green.shade300;
+                          return dayColor;
                         }
                       }(),
                       borderRadius: BorderRadius.circular(6),
@@ -111,8 +134,15 @@ class SummaryMonthTable extends StatelessWidget {
 
 class TextSummary extends StatelessWidget {
   const TextSummary({
+    required this.data,
     super.key,
   });
+
+  final ({
+    String activeDay,
+    int habitsCompleted,
+    int habitsCompletedThisWeek
+  }) data;
 
   @override
   Widget build(BuildContext context) {
@@ -129,21 +159,21 @@ class TextSummary extends StatelessWidget {
           ),
         ],
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'GENERAL',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: AppTheme.poppinsFont,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              const Expanded(
                 flex: 2,
                 child: Text(
                   'Most active day  ',
@@ -156,8 +186,8 @@ class TextSummary extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'MONDAY',
-                  style: TextStyle(
+                  data.activeDay,
+                  style: const TextStyle(
                     fontFamily: AppTheme.poppinsFont,
                   ),
                   textAlign: TextAlign.end,
@@ -165,14 +195,14 @@ class TextSummary extends StatelessWidget {
               ),
             ],
           ),
-          Divider(
+          const Divider(
             thickness: .1,
             height: 30,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              const Expanded(
                 flex: 2,
                 child: Text(
                   'Total Habits Completed This Month      ',
@@ -185,8 +215,8 @@ class TextSummary extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  '3',
-                  style: TextStyle(
+                  data.habitsCompleted.toString(),
+                  style: const TextStyle(
                     fontFamily: AppTheme.poppinsFont,
                   ),
                   textAlign: TextAlign.end,
@@ -194,14 +224,14 @@ class TextSummary extends StatelessWidget {
               ),
             ],
           ),
-          Divider(
+          const Divider(
             thickness: .1,
             height: 30,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              const Expanded(
                 flex: 2,
                 child: Text(
                   'Total Habits Completed This Week      ',
@@ -214,8 +244,8 @@ class TextSummary extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  '1',
-                  style: TextStyle(
+                  data.habitsCompletedThisWeek.toString(),
+                  style: const TextStyle(
                     fontFamily: AppTheme.poppinsFont,
                   ),
                   textAlign: TextAlign.end,
@@ -231,8 +261,16 @@ class TextSummary extends StatelessWidget {
 
 class StatsCard extends StatelessWidget {
   const StatsCard({
+    required this.data,
     super.key,
   });
+
+  final ({
+    String completionRate,
+    String overallStreak,
+    String habitsFinished,
+    String perfectDays
+  }) data;
 
   @override
   Widget build(BuildContext context) {
@@ -248,11 +286,25 @@ class StatsCard extends StatelessWidget {
       ),
       itemCount: 4,
       itemBuilder: (context, index) {
-        final data = _coloredCards[index];
+        final cardStyle = _coloredCards[index];
+        final value = () {
+          switch (index) {
+            case 0:
+              return data.overallStreak;
+            case 1:
+              return data.habitsFinished;
+            case 2:
+              return data.completionRate;
+            case 3:
+              return data.perfectDays;
+            default:
+              return '';
+          }
+        }();
         return Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: data.color,
+            color: cardStyle.color,
             borderRadius: BorderRadius.circular(6),
           ),
           child: Column(
@@ -263,7 +315,7 @@ class StatsCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      data.title,
+                      cardStyle.title,
                       style: const TextStyle(
                         color: Colors.white,
                         fontFamily: AppTheme.poppinsFont,
@@ -272,13 +324,13 @@ class StatsCard extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    data.icon,
+                    cardStyle.icon,
                     color: Colors.white,
                   ),
                 ],
               ),
               Text(
-                data.value,
+                value,
                 style: const TextStyle(
                   color: Colors.white,
                   fontFamily: AppTheme.poppinsFont,
@@ -298,25 +350,21 @@ final _coloredCards = [
   (
     color: AppTheme.primaryBlue,
     title: 'CURRENT\nSTREAK',
-    value: '2',
     icon: CustomIcons.fireworks,
   ),
   (
     color: Colors.green,
-    title: 'HABIT\nFINISHED',
-    value: '12',
+    title: 'HABITS\nFINISHED',
     icon: CustomIcons.running,
   ),
   (
     color: Colors.purple,
     title: 'COMPLETION\nRATE',
-    value: '25%',
     icon: CustomIcons.progression,
   ),
   (
     color: Colors.yellow.shade800,
     title: 'PERFECT\nDAYS',
-    value: '3',
     icon: CustomIcons.ok,
   ),
 ];

@@ -18,7 +18,7 @@ class HabitsNotifier extends StateNotifier<HabitsState> {
   final models.User? user;
 
   Future<void> init() async {
-    final habits = await AppRepository.getHabits();
+    final habits = await AppRepository.getHabits(user!.$id);
     state = HabitsState.data(habits);
   }
 

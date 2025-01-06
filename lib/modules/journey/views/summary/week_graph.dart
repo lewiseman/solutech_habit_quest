@@ -1,9 +1,16 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:habit_quest/config/config.dart';
+import 'package:intl/intl.dart';
 
 class SummaryWeekGraph extends StatefulWidget {
-  const SummaryWeekGraph({super.key});
+  const SummaryWeekGraph({required this.data, super.key});
+  final ({
+    Map<String, double> bar,
+    DateTime start,
+    DateTime end,
+    double avg
+  }) data;
 
   @override
   State<SummaryWeekGraph> createState() => _SummaryWeekGraphState();
@@ -47,7 +54,7 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
                         ),
                       ),
                       Text(
-                        'DEC 29 - JAN 4',
+                        '''${DateFormat.yMMMd().format(widget.data.start).toUpperCase()} - ${DateFormat.yMMMd().format(widget.data.end).toUpperCase()}''',
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontFamily: AppTheme.poppinsFont,
@@ -69,9 +76,9 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const Text(
-                      '7.5%',
-                      style: TextStyle(
+                    Text(
+                      widget.data.avg.toStringAsFixed(1),
+                      style: const TextStyle(
                         color: AppTheme.primaryBlue,
                         fontFamily: AppTheme.poppinsFont,
                         fontWeight: FontWeight.w600,
@@ -208,19 +215,47 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
         (i) {
           switch (i) {
             case 0:
-              return makeGroupData(0, 5, isTouched: i == touchedIndex);
+              return makeGroupData(
+                0,
+                widget.data.bar['Mon'] ?? 0,
+                isTouched: i == touchedIndex,
+              );
             case 1:
-              return makeGroupData(1, 6.5, isTouched: i == touchedIndex);
+              return makeGroupData(
+                1,
+                widget.data.bar['Tue'] ?? 0,
+                isTouched: i == touchedIndex,
+              );
             case 2:
-              return makeGroupData(2, 5, isTouched: i == touchedIndex);
+              return makeGroupData(
+                2,
+                widget.data.bar['Wed'] ?? 0,
+                isTouched: i == touchedIndex,
+              );
             case 3:
-              return makeGroupData(3, 7.5, isTouched: i == touchedIndex);
+              return makeGroupData(
+                3,
+                widget.data.bar['Thu'] ?? 0,
+                isTouched: i == touchedIndex,
+              );
             case 4:
-              return makeGroupData(4, 9, isTouched: i == touchedIndex);
+              return makeGroupData(
+                4,
+                widget.data.bar['Fri'] ?? 0,
+                isTouched: i == touchedIndex,
+              );
             case 5:
-              return makeGroupData(5, 11.5, isTouched: i == touchedIndex);
+              return makeGroupData(
+                5,
+                widget.data.bar['Sat'] ?? 0,
+                isTouched: i == touchedIndex,
+              );
             case 6:
-              return makeGroupData(6, 6.5, isTouched: i == touchedIndex);
+              return makeGroupData(
+                6,
+                widget.data.bar['Sun'] ?? 0,
+                isTouched: i == touchedIndex,
+              );
             default:
               return throw Error();
           }

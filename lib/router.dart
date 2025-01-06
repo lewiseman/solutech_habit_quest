@@ -169,6 +169,25 @@ final routerProvider = Provider(
                     ),
                   ),
                 ),
+                GoRoute(
+                  parentNavigatorKey: _rootNAvigatorKey,
+                  path: 'badges',
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const BadgesPage(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) =>
+                            SlideTransition(
+                      position: animation.drive(
+                        Tween(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).chain(CurveTween(curve: Curves.easeInOut)),
+                      ),
+                      child: child,
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

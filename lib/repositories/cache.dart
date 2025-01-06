@@ -18,6 +18,7 @@ final class CacheStorage {
 
   static final String _themeNameKey = 'thememodekey-$_keySuffix';
   static final String _usercredentialKey = 'usercredentialkey-$_keySuffix';
+  static final String _coinsKey = 'coinskey-$_keySuffix';
 
   UserCredentials? get userCredentials {
     try {
@@ -51,6 +52,23 @@ final class CacheStorage {
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       return 'light';
+    }
+  }
+
+  Future<void> updateCoins(int coin) async {
+    final res = await _prefs.setInt(
+      _coinsKey,
+      coin,
+    );
+  }
+
+  int get coins {
+    try {
+      final coins = _prefs.getInt(_coinsKey);
+      return coins ?? 0;
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      return 0;
     }
   }
 

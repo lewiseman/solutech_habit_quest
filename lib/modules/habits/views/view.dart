@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/habits/services/habits_action_srv.dart';
+import 'package:intl/intl.dart';
 
 class HabitsPage extends ConsumerStatefulWidget {
   const HabitsPage({super.key});
@@ -6,13 +9,6 @@ class HabitsPage extends ConsumerStatefulWidget {
   static AppBar appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      // leading: const Padding(
-      //   padding: EdgeInsets.all(8),
-      //   child: Icon(
-      //     CustomIcons.habit_quest,
-      //     color: AppTheme.primaryBlue,
-      //   ),
-      // ),
       scrolledUnderElevation: 1,
       shadowColor: Colors.black,
       leading: Image.asset('assets/images/banana/hero.png'),
@@ -47,9 +43,11 @@ class HabitsPage extends ConsumerStatefulWidget {
 
 class _HabitsPageState extends ConsumerState<HabitsPage> {
   DateTime selectedDate = DateTime.now();
+  String? openedHabitId;
   @override
   Widget build(BuildContext context) {
     final habitsState = ref.watch(habitsServiceProvider);
+    final habitActions = ref.watch(habitsActionServiceProvider);
     return RefreshIndicator(
       onRefresh: () {
         return Future.delayed(const Duration(seconds: 1), () {
@@ -95,7 +93,27 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
                 final habits = habitsState.habits.where((habit) {
                   return habit.relevant(selectedDate);
                 }).toList();
+                if (habits.isEmpty) {
+                  return [
+                    SizedBox(
+                      height: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: emptyBanana(
+                          message:
+                              '''Nothing for today\nCreate a habit from the  bottom right button''',
+                        ),
+                      ),
+                    ),
+                  ];
+                }
+
                 habits.sort((a, b) => a.time.compareTo(b.time));
+                final todaysActions = habitActions.where((action) {
+                  return action.createdAt.day == selectedDate.day &&
+                      action.createdAt.month == selectedDate.month &&
+                      action.createdAt.year == selectedDate.year;
+                });
                 final remainingHabits = () {
                   if (habits.isEmpty) {
                     return <Habit>[];
@@ -105,24 +123,65 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
                     final hasPassed = habit.timeValue().compareTo(now);
                     return hasPassed > 0;
                   }).toList();
+                  final withNoActions = remainingHabits.where((habit) {
+                    return todaysActions.every((action) {
+                      return action.habitId != habit.id;
+                    });
+                  }).toList();
                   final today = DateTime.now();
                   if (selectedDate.day == today.day) {
-                    return remainingHabits;
+                    return withNoActions;
                   }
                   return <Habit>[];
                 }();
+
+                final actionedHabits = () {
+                  final withaction = habits.where((habit) {
+                    return habitActions.any((action) {
+                      return action.habitId == habit.id &&
+                          action.createdAt.day == selectedDate.day &&
+                          action.createdAt.month == selectedDate.month &&
+                          action.createdAt.year == selectedDate.year;
+                    });
+                  }).toList();
+                  return withaction;
+                }();
+
+                final actionedHabitsWithActions = () {
+                  final habitsAction = actionedHabits.map((habit) {
+                    final action = todaysActions.firstWhere((action) {
+                      return habit.id == action.habitId;
+                    });
+                    return (habit: habit, action: action);
+                  }).toList();
+                  return habitsAction;
+                }();
+                final completedHabits = () {
+                  final thehabits = actionedHabitsWithActions.where((habit) {
+                    return habit.action.action == HabitActionType.done;
+                  }).toList();
+                  return thehabits;
+                }();
+
+                final skippedHabits = () {
+                  final thehabits = actionedHabitsWithActions.where((habit) {
+                    return habit.action.action == HabitActionType.skipped;
+                  }).toList();
+                  return thehabits;
+                }();
+
                 final upcomingHabits = () {
                   if (remainingHabits.length <= 1) {
                     return null;
                   }
-                  return remainingHabits.sublist(0, remainingHabits.length - 1);
+                  return remainingHabits.sublist(1);
                 }();
 
                 final nextHabit = () {
                   if (remainingHabits.isEmpty) {
                     return null;
                   }
-                  return remainingHabits.last;
+                  return remainingHabits.first;
                 }();
 
                 final futureHabits = () {
@@ -130,146 +189,75 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
                   if (selectedDate.day <= today.day) {
                     return null;
                   }
-                  return habits;
+                  final notSkipped = habits.where((habit) {
+                    return skippedHabits.every((action) {
+                      return habit.id != action.habit.id;
+                    });
+                  }).toList();
+                  return notSkipped;
+                }();
+
+                final missedHabits = () {
+                  final filter1 = habits.where((habit) {
+                    final inupcoming = (upcomingHabits ?? []).any((upcoming) {
+                      return habit.id == upcoming.id;
+                    });
+                    return !inupcoming;
+                  });
+
+                  final filter2 = filter1.where((habit) {
+                    final incompleted = completedHabits.any((upcoming) {
+                      return habit.id == upcoming.habit.id;
+                    });
+                    return !incompleted;
+                  });
+
+                  final filter3 = filter2.where((habit) {
+                    return habit.id != nextHabit?.id;
+                  });
+
+                  final filter4 = filter3.where((habit) {
+                    final incompleted = skippedHabits.any((upcoming) {
+                      return habit.id == upcoming.habit.id;
+                    });
+                    return !incompleted;
+                  });
+
+                  final filter5 = filter4.where((habit) {
+                    final incompleted = (futureHabits ?? []).any((future) {
+                      return habit.id == future.id;
+                    });
+                    return !incompleted;
+                  });
+
+                  final res = filter5;
+                  return res.toList();
                 }();
                 return [
                   if (nextHabit != null) nextCard(habit: nextHabit),
-                  if (upcomingHabits != null)
+                  if (upcomingHabits != null && upcomingHabits.isNotEmpty)
                     upcomingCards(
                       habits: upcomingHabits,
                       context: context,
                       title: 'UPCOMING',
                     ),
-                  if (futureHabits != null)
+                  if (futureHabits != null && futureHabits.isNotEmpty)
                     upcomingCards(
                       habits: futureHabits,
                       context: context,
                     ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'MISSED',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: AppTheme.poppinsFont,
-                            color: Colors.red,
-                          ),
-                        ),
-                        for (var i = 0; i < 2; i++)
-                          Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.red.shade300),
-                            ),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  '💪🏼',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                const Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Evening Walk',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        maxLines: 1,
-                                      ),
-                                      Text('6:00 PM'),
-                                    ],
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    CustomIcons.arrow_miss,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
+                  if (missedHabits.isNotEmpty)
+                    missedCards(
+                      habits: missedHabits,
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'COMPLETED',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: AppTheme.poppinsFont,
-                            color: Colors.green,
-                          ),
-                        ),
-                        for (var i = 0; i < 2; i++)
-                          Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: Colors.green.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.green.shade300),
-                            ),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  '💪🏼',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                const Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Evening Walk',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        maxLines: 1,
-                                      ),
-                                      Text('6:00 PM'),
-                                    ],
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    CustomIcons.checklist,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
+                  if (skippedHabits.isNotEmpty)
+                    skippedCards(
+                      actionHabits: skippedHabits,
                     ),
-                  ),
+                  if (completedHabits.isNotEmpty)
+                    completedCard(
+                      actionHabits: completedHabits,
+                    ),
                 ];
               }
 
@@ -277,6 +265,477 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
             }(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget missedCards({
+    required List<Habit> habits,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        bottom: 24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'MISSED',
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: AppTheme.poppinsFont,
+              color: Colors.red,
+            ),
+          ),
+          for (var i = 0; i < habits.length; i++)
+            () {
+              final habit = habits[i];
+              return Container(
+                margin: const EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.shade300),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      habit.emoji,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            habit.title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: AppTheme.poppinsFont,
+                            ),
+                            maxLines: 1,
+                          ),
+                          Text(
+                            habit.timeValue().format(context),
+                            style: const TextStyle(
+                              fontFamily: AppTheme.poppinsFont,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: CupertinoActionSheet(
+                                title: Text(
+                                  habit.title,
+                                  style: const TextStyle(
+                                    fontFamily: AppTheme.poppinsFont,
+                                  ),
+                                ),
+                                actions: [
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      ref
+                                          .read(
+                                            habitsActionServiceProvider
+                                                .notifier,
+                                          )
+                                          .createSkipAction(
+                                            habit,
+                                          )
+                                          .onError((error, stack) {
+                                        context.showErrorToast(
+                                          'Unable to perform action',
+                                        );
+                                      });
+                                    },
+                                    child: const Text(
+                                      'Skip',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      ref
+                                          .read(
+                                            habitsActionServiceProvider
+                                                .notifier,
+                                          )
+                                          .sendCompleteAction(
+                                            habit,
+                                          )
+                                          .onError((error, stack) {
+                                        context.showErrorToast(
+                                          'Unable to perform action',
+                                        );
+                                      });
+                                    },
+                                    child: const Text(
+                                      'Completed',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                cancelButton: CupertinoActionSheetAction(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                      fontFamily: AppTheme.poppinsFont,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(
+                        CustomIcons.arrow_miss,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }(),
+        ],
+      ),
+    );
+  }
+
+  Widget completedCard({
+    required List<({HabitAction action, Habit habit})> actionHabits,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        bottom: 24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'COMPLETED',
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: AppTheme.poppinsFont,
+              color: Colors.green,
+            ),
+          ),
+          for (var i = 0; i < actionHabits.length; i++)
+            () {
+              final actionHabit = actionHabits[i];
+              return Container(
+                margin: const EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.green.shade300),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      actionHabit.habit.emoji,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            actionHabit.habit.title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: AppTheme.poppinsFont,
+                            ),
+                            maxLines: 1,
+                          ),
+                          Text(
+                            '''COMPLETED AT ${DateFormat.jm().format(actionHabit.action.updatedAt)}''',
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: CupertinoActionSheet(
+                                title: Text(
+                                  actionHabit.habit.title,
+                                  style: const TextStyle(
+                                    fontFamily: AppTheme.poppinsFont,
+                                  ),
+                                ),
+                                actions: [
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      ref
+                                          .read(
+                                            habitsActionServiceProvider
+                                                .notifier,
+                                          )
+                                          .undoCompletedAction(
+                                            actionHabit.action,
+                                          )
+                                          .onError((error, stack) {
+                                        context.showErrorToast(
+                                          'Unable to perform action',
+                                        );
+                                      });
+                                    },
+                                    child: const Text(
+                                      'Undo',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      ref
+                                          .read(
+                                            habitsActionServiceProvider
+                                                .notifier,
+                                          )
+                                          .skipAction(
+                                            actionHabit.action,
+                                          )
+                                          .onError((error, stack) {
+                                        context.showErrorToast(
+                                          'Unable to perform action',
+                                        );
+                                      });
+                                    },
+                                    child: const Text(
+                                      'Skipped',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                cancelButton: CupertinoActionSheetAction(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                      fontFamily: AppTheme.poppinsFont,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(
+                        CustomIcons.checklist,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }(),
+        ],
+      ),
+    );
+  }
+
+  Widget skippedCards({
+    required List<({HabitAction action, Habit habit})> actionHabits,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'SKIPPED',
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: AppTheme.poppinsFont,
+              color: Colors.grey,
+            ),
+          ),
+          for (var i = 0; i < actionHabits.length; i++)
+            () {
+              final actionHabit = actionHabits[i];
+              return Container(
+                margin: const EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      actionHabit.habit.emoji,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            actionHabit.habit.title,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: AppTheme.poppinsFont,
+                              color: Colors.grey.shade600,
+                            ),
+                            maxLines: 1,
+                          ),
+                          Text(
+                            actionHabit.habit.timeValue().format(context),
+                            style: const TextStyle(
+                              fontFamily: AppTheme.poppinsFont,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        final today = DateTime.now();
+                        final showComplete = selectedDate.day == today.day &&
+                            selectedDate.month == today.month &&
+                            selectedDate.year == today.year;
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: CupertinoActionSheet(
+                                title: Text(
+                                  actionHabit.habit.title,
+                                  style: const TextStyle(
+                                    fontFamily: AppTheme.poppinsFont,
+                                  ),
+                                ),
+                                actions: [
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      ref
+                                          .read(
+                                            habitsActionServiceProvider
+                                                .notifier,
+                                          )
+                                          .undoCompletedAction(
+                                            actionHabit.action,
+                                          )
+                                          .onError((error, stack) {
+                                        context.showErrorToast(
+                                          'Unable to perform action',
+                                        );
+                                      });
+                                    },
+                                    child: const Text(
+                                      'Undo',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
+                                  if (showComplete)
+                                    CupertinoActionSheetAction(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        ref
+                                            .read(
+                                              habitsActionServiceProvider
+                                                  .notifier,
+                                            )
+                                            .skipToCompletion(
+                                              actionHabit.action,
+                                            )
+                                            .onError((error, stack) {
+                                          context.showErrorToast(
+                                            'Unable to perform action',
+                                          );
+                                        });
+                                      },
+                                      child: const Text(
+                                        'Completed',
+                                        style: TextStyle(
+                                          fontFamily: AppTheme.poppinsFont,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                                cancelButton: CupertinoActionSheetAction(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                      fontFamily: AppTheme.poppinsFont,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(
+                        CustomIcons.next,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }(),
+        ],
       ),
     );
   }
@@ -343,7 +802,103 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: CupertinoActionSheet(
+                                title: Text(
+                                  habit.title,
+                                  style: const TextStyle(
+                                    fontFamily: AppTheme.poppinsFont,
+                                  ),
+                                ),
+                                actions: [
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      if (title == null) {
+                                        ref
+                                            .read(
+                                              habitsActionServiceProvider
+                                                  .notifier,
+                                            )
+                                            .skipFutureAction(
+                                              habit,
+                                              selectedDate,
+                                            )
+                                            .onError((error, stack) {
+                                          context.showErrorToast(
+                                            'Unable to perform action',
+                                          );
+                                        });
+                                      } else {
+                                        ref
+                                            .read(
+                                              habitsActionServiceProvider
+                                                  .notifier,
+                                            )
+                                            .createSkipAction(
+                                              habit,
+                                            )
+                                            .onError((error, stack) {
+                                          context.showErrorToast(
+                                            'Unable to perform action',
+                                          );
+                                        });
+                                      }
+                                    },
+                                    child: const Text(
+                                      'Skip',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
+                                  if (title == 'UPCOMING')
+                                    CupertinoActionSheetAction(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        ref
+                                            .read(
+                                              habitsActionServiceProvider
+                                                  .notifier,
+                                            )
+                                            .sendCompleteAction(
+                                              habit,
+                                            )
+                                            .onError((error, stack) {
+                                          context.showErrorToast(
+                                            'Unable to perform action',
+                                          );
+                                        });
+                                      },
+                                      child: const Text(
+                                        'Completed',
+                                        style: TextStyle(
+                                          fontFamily: AppTheme.poppinsFont,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                                cancelButton: CupertinoActionSheetAction(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                      fontFamily: AppTheme.poppinsFont,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                       icon: const Icon(CustomIcons.upcoming),
                     ),
                   ],
@@ -356,73 +911,229 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
   }
 
   Widget nextCard({required Habit habit}) {
-    return Container(
-      margin: const EdgeInsets.only(left: 16, right: 16, bottom: 24),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24),
+      child: Material(
         color: Colors.green,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'NEXT ITEM ?',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Text(
-                habit.emoji,
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: InkWell(
+          onTap: () {
+            if (openedHabitId == habit.id) {
+              setState(() {
+                openedHabitId = null;
+              });
+            } else {
+              setState(() {
+                openedHabitId = habit.id;
+              });
+            }
+          },
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      habit.title,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                    const Expanded(
+                      child: Text(
+                        'NEXT ITEM ?',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
-                      maxLines: 1,
                     ),
                     Text(
-                      'IN THE NEXT ${habit.timeValue().remainingStr().toUpperCase()}',
+                      habit.timeValue().format(context),
                       style: const TextStyle(
-                        fontFamily: AppTheme.poppinsFont,
                         color: Colors.white,
                         fontSize: 12,
+                        fontFamily: AppTheme.poppinsFont,
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 2),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade700,
-                  borderRadius: BorderRadius.circular(8),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Text(
+                      habit.emoji,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            habit.title,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                            maxLines: 1,
+                          ),
+                          Text(
+                            'IN THE NEXT ${habit.timeValue().remainingStr().toUpperCase()}',
+                            style: const TextStyle(
+                              fontFamily: AppTheme.poppinsFont,
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    if (openedHabitId != habit.id)
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade700,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          CustomIcons.trace,
+                          color: Colors.white,
+                        ),
+                      ),
+                  ],
                 ),
-                child: const Icon(
-                  CustomIcons.trace,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+                if (openedHabitId == habit.id)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Material(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: FilledButton(
+                                onPressed: () {
+                                  ref
+                                      .read(
+                                        habitsActionServiceProvider.notifier,
+                                      )
+                                      .sendCompleteAction(habit)
+                                      .then((_) {
+                                    setState(() {
+                                      openedHabitId = null;
+                                    });
+                                    ref
+                                        .read(rewardsServiceProvider.notifier)
+                                        .activityCompleted(context);
+                                  }).onError((error, stack) {
+                                    context.showErrorToast(
+                                      'Failed to perform action',
+                                    );
+                                  });
+                                },
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Icon(
+                                      CustomIcons.trace,
+                                      color: Colors.white,
+                                    ),
+                                    Text('DONE'),
+                                    SizedBox.shrink(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            FilledButton(
+                              onPressed: () {
+                                showCupertinoModalPopup(
+                                  context: context,
+                                  builder: (context) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: CupertinoActionSheet(
+                                        title: Text(
+                                          habit.title,
+                                          style: const TextStyle(
+                                            fontFamily: AppTheme.poppinsFont,
+                                          ),
+                                        ),
+                                        actions: [
+                                          CupertinoActionSheetAction(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              ref
+                                                  .read(
+                                                    habitsActionServiceProvider
+                                                        .notifier,
+                                                  )
+                                                  .createSkipAction(
+                                                    habit,
+                                                  )
+                                                  .onError((error, stack) {
+                                                context.showErrorToast(
+                                                  'Unable to perform action',
+                                                );
+                                              });
+                                            },
+                                            child: const Text(
+                                              'Skip',
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    AppTheme.poppinsFont,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                        cancelButton:
+                                            CupertinoActionSheetAction(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              fontFamily: AppTheme.poppinsFont,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              style: FilledButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child:
+                                  const Icon(Icons.keyboard_arrow_down_rounded),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

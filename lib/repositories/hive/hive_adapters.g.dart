@@ -237,3 +237,89 @@ class SyncActionAdapter extends TypeAdapter<SyncAction> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class HabitActionAdapter extends TypeAdapter<HabitAction> {
+  @override
+  final int typeId = 5;
+
+  @override
+  HabitAction read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return HabitAction(
+      id: fields[0] as String,
+      habitId: fields[1] as String,
+      userId: fields[2] as String,
+      action: fields[3] as HabitActionType,
+      updatedAt: fields[5] as DateTime,
+      createdAt: fields[6] as DateTime,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, HabitAction obj) {
+    writer
+      ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.habitId)
+      ..writeByte(2)
+      ..write(obj.userId)
+      ..writeByte(3)
+      ..write(obj.action)
+      ..writeByte(5)
+      ..write(obj.updatedAt)
+      ..writeByte(6)
+      ..write(obj.createdAt);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HabitActionAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class HabitActionTypeAdapter extends TypeAdapter<HabitActionType> {
+  @override
+  final int typeId = 6;
+
+  @override
+  HabitActionType read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return HabitActionType.done;
+      case 1:
+        return HabitActionType.skipped;
+      default:
+        return HabitActionType.done;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, HabitActionType obj) {
+    switch (obj) {
+      case HabitActionType.done:
+        writer.writeByte(0);
+      case HabitActionType.skipped:
+        writer.writeByte(1);
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HabitActionTypeAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

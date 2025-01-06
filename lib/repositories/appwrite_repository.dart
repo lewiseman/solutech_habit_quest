@@ -28,13 +28,14 @@ class AppwriteRepository extends StorageRepository {
   }
 
   @override
-  Future<List<Habit>> getHabits() async {
-    final res = await databases
-        .listDocuments(
+  Future<List<Habit>> getHabits(String userId) async {
+    final res = await databases.listDocuments(
       databaseId: appwriteDatabaseId,
       collectionId: appwriteHabitsCID,
-    )
-        .then((res) {
+      queries: [
+        Query.equal('user_id', userId),
+      ],
+    ).then((res) {
       return res.documents.map((e) => Habit.fromJson(e.data)).toList();
     });
     return res;
@@ -74,5 +75,103 @@ class AppwriteRepository extends StorageRepository {
       return Habit.fromJson(res.data);
     });
     return res;
+  }
+
+  @override
+  Future<void> createHabits(List<Habit> habits) async {
+    for (final habit in habits) {
+      await createHabit(habit);
+    }
+  }
+
+  @override
+  Future<void> deleteHabits(List<String> habitIds) async {
+    for (final id in habitIds) {
+      await deleteHabit(id);
+    }
+  }
+
+  @override
+  Future<void> updateHabits(List<Habit> habits) async {
+    for (final habit in habits) {
+      await updateHabit(habit);
+    }
+  }
+
+  @override
+  Future<HabitAction> createHabitAction(HabitAction action) async {
+    final data = action.toJson()..remove('id');
+    final res = await databases.createDocument(
+      databaseId: appwriteDatabaseId,
+      collectionId: appwriteHabitActionsCID,
+      documentId: action.id,
+      data: data,
+    );
+    final newHabit = HabitAction.fromJson(res.data);
+
+    return newHabit;
+  }
+
+  @override
+  Future<void> createHabitActions(List<HabitAction> actions) async {
+    for (final action in actions) {
+      await createHabitAction(action);
+    }
+  }
+
+  @override
+  Future<void> deleteHabitAction(String actionId) async {
+    await databases.deleteDocument(
+      databaseId: appwriteDatabaseId,
+      collectionId: appwriteHabitActionsCID,
+      documentId: actionId,
+    );
+  }
+
+  @override
+  Future<void> deleteHabitActions(List<String> actionIds) async {
+    for (final id in actionIds) {
+      await deleteHabitAction(id);
+    }
+  }
+
+  @override
+  Future<HabitAction> updateHabitAction(HabitAction action) async {
+    final data = action.toJson()..remove('id');
+    final res = await databases.updateDocument(
+      databaseId: appwriteDatabaseId,
+      collectionId: appwriteHabitActionsCID,
+      documentId: action.id,
+      data: data,
+    );
+    final updatedHabitAction = HabitAction.fromJson(res.data);
+    return updatedHabitAction;
+  }
+
+  @override
+  Future<void> updateHabitActions(List<HabitAction> actions) async {
+    for (final action in actions) {
+      await updateHabitAction(action);
+    }
+  }
+
+  @override
+  Future<List<HabitAction>> getHabitActions(String userId) async {
+    final res = await databases.listDocuments(
+      databaseId: appwriteDatabaseId,
+      collectionId: appwriteHabitActionsCID,
+      queries: [
+        Query.equal('user_id', userId),
+      ],
+    ).then((res) {
+      return res.documents.map((e) => HabitAction.fromJson(e.data)).toList();
+    });
+    return res;
+  }
+
+  @override
+  Future<HabitAction?> getHabitAction(String habitId) {
+    // TODO: implement getHabitAction
+    throw UnimplementedError();
   }
 }

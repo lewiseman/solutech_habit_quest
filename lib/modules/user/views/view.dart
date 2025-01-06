@@ -51,12 +51,14 @@ class UserPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncServiceProvider);
+    final user = ref.watch(userServiceProvider);
     return SingleChildScrollView(
       child: Column(
         children: [
           const SizedBox(height: 16),
           SvgPicture.network(
-            'https://api.dicebear.com/9.x/adventurer-neutral/svg?radius=50',
+            (user?.prefs.data['avatar'] as String?) ??
+                'https://api.dicebear.com/9.x/adventurer-neutral/svg?radius=50',
             height: 160,
             placeholderBuilder: (context) {
               return const Center(
@@ -64,7 +66,69 @@ class UserPage extends ConsumerWidget {
               );
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
+          Container(
+            margin: const EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 24,
+              bottom: 20,
+            ),
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/banana/trophy.png',
+                        height: 50,
+                      ),
+                      const Text(
+                        'LEVEL',
+                        style: TextStyle(
+                          fontFamily: AppTheme.poppinsFont,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text(
+                        '5',
+                        style: TextStyle(
+                          fontFamily: AppTheme.poppinsFont,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const VerticalDivider(
+                    thickness: .2,
+                    indent: 10,
+                    endIndent: 6,
+                  ),
+                  Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/banana/diamond.png',
+                        height: 50,
+                      ),
+                      const Text(
+                        'COINS',
+                        style: TextStyle(
+                          fontFamily: AppTheme.poppinsFont,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text(
+                        '48',
+                        style: TextStyle(
+                          fontFamily: AppTheme.poppinsFont,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
           syncCard(
             syncState: syncState,
           ),
@@ -81,7 +145,9 @@ class UserPage extends ConsumerWidget {
               (
                 name: 'My Badges',
                 subtitle: null,
-                action: () {},
+                action: () {
+                  context.push('/user/badges');
+                },
                 leading: const Icon(CustomIcons.achieve),
               ),
               (

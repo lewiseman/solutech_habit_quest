@@ -52,6 +52,21 @@ class Habit {
     );
   }
 
+  factory Habit.justId(String id) {
+    return Habit(
+      id: id,
+      title: '',
+      emoji: '',
+      time: '00:00',
+      startDate: DateTime.now(),
+      frequency: HabitFrequency.daily,
+      paused: false,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      userId: '',
+    );
+  }
+
   final String id;
   final String title;
   final String emoji;

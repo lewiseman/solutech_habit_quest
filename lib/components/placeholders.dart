@@ -221,7 +221,7 @@ Widget emptyBanana({String? message}) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image.asset(
-          'assets/images/banana/search.png',
+          'assets/images/banana/box.png',
           width: 100,
           height: 100,
         ),
@@ -232,6 +232,7 @@ Widget emptyBanana({String? message}) {
             style: const TextStyle(
               fontFamily: AppTheme.poppinsFont,
             ),
+            textAlign: TextAlign.center,
           ),
       ],
     ),

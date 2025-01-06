@@ -35,5 +35,5 @@ class CustomIcons {
   static const IconData ok = IconData(0xe818, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData fireworks = IconData(0xe819, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData progression = IconData(0xe81a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData quotes = IconData(0xe81b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData next = IconData(0xe81c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
