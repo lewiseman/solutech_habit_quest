@@ -6,8 +6,9 @@ class SelectThemePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsServiceProvider);
-    final themename = settings.themeName;
+    // final settings = ref.watch(settingsServiceProvider);
+    final user = ref.watch(userServiceProvider);
+    final themename = user?.prefs.data['theme_mode'] as String? ?? 'light';
     final themes = [
       (
         name: 'System',
@@ -78,8 +79,10 @@ class SelectThemePage extends ConsumerWidget {
                           onTap: () {
                             context.showInfoLoad('Updating theme...');
                             ref
-                                .read(settingsServiceProvider.notifier)
-                                .updateTheme(theme.value)
+                                .read(userServiceProvider.notifier)
+                                .update(
+                                  themeMode: theme.value,
+                                )
                                 .then((_) {
                               context.pop();
                             }).onError((error, stack) {

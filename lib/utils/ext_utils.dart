@@ -29,12 +29,16 @@ extension TimeOfDayExtension on TimeOfDay {
     return '${hours == 1 ? '1 hour' : '$hours hours'} $minutes minutes';
   }
 
-  String removeMinutes(int minutes) {
+  TimeOfDay removeMinutes(int minutes) {
     final timeInMinutes = hour * 60 + minute;
     final newTimeInMinutes = timeInMinutes - minutes;
     final newHour = newTimeInMinutes ~/ 60;
     final newMinute = newTimeInMinutes % 60;
-    return TimeOfDay(hour: newHour, minute: newMinute).toTimeString();
+    return TimeOfDay(hour: newHour, minute: newMinute);
+  }
+
+  String removeMinutesStr(int minutes) {
+    return removeMinutes(minutes).toTimeString();
   }
 
   String toTimeString() {

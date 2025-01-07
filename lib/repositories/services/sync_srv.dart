@@ -441,11 +441,11 @@ class SyncNotifier extends StateNotifier<SyncState> {
   ///
 
   setSyncOk() {
-    state = SyncedSyncState(DateTime.now());
+    if (mounted) state = SyncedSyncState(DateTime.now());
   }
 
   setSyncFailed(String message) {
-    state = ErrorSyncState(message);
+    if (mounted) state = ErrorSyncState(message);
   }
 
   void continuousSync() {

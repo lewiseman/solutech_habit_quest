@@ -46,7 +46,7 @@ class NotificationHelper {
     await instance.initialize(
       initializationSettings,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-      onDidReceiveNotificationResponse: aa,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
     );
 
     await instance
@@ -60,22 +60,22 @@ class NotificationHelper {
   }
 
   static Future<void> createNotification(Habit habit) async {
-    // final reminderTime = habit.reminderTime();
     final title = habit.title;
     final body = 'In the next ${habit.reminderMinutes} minutes';
     final notificationId = habit.notificationId;
-    final timeofday = habit.timeValue();
     final payload = habit.id;
+
+    final timeofday = habit.timeValue().removeMinutes(habit.reminderMinutes);
+    final time = DateTime.now().copyWith(
+      day: habit.startDate.day,
+      month: habit.startDate.month,
+      hour: timeofday.hour,
+      minute: timeofday.minute,
+    );
 
     if (habit.frequency == HabitFrequency.daily) {
       return scheduledNotification(
-        time: DateTime(
-          habit.startDate.year,
-          habit.startDate.month,
-          habit.startDate.day,
-          timeofday.hour,
-          timeofday.minute,
-        ),
+        time: time,
         payload: payload,
         title: title,
         body: body,
@@ -119,9 +119,9 @@ class NotificationHelper {
     }
   }
 
-  static void aa(NotificationResponse response) {}
+  static void onDidReceiveNotificationResponse(NotificationResponse response) {}
 
-  static showInstant() async {
+  static showInstantTest() async {
     const platformChannelSpecifics = NotificationDetails(
       android: AndroidNotificationDetails(
         'testchannel',
@@ -180,7 +180,7 @@ class NotificationHelper {
     );
   }
 
-  static showPlanned() async {
+  static showPlannedTest() async {
     const platformChannelSpecifics = NotificationDetails(
       android: AndroidNotificationDetails(
         'testchannel',
@@ -194,7 +194,7 @@ class NotificationHelper {
         threadIdentifier: 'habit_actions',
       ),
     );
-    final time = DateTime.now().add(const Duration(seconds: 3));
+    final time = DateTime.now().add(const Duration(seconds: 2));
 
     await instance.zonedSchedule(
       0,

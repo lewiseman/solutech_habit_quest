@@ -1,38 +1,28 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:habit_quest/common.dart';
 
 final notificationsServiceProvider =
     StateNotifierProvider<NotificationsNotifier, List<HabitNotification>>(
         (ref) {
-  final habitsService = ref.watch(habitsServiceProvider);
-  final habits = () {
-    if (habitsService is DataHabitsState) {
-      return habitsService.habits;
-    }
-    return null;
-  }();
   return NotificationsNotifier(
-    habits: habits,
+    ref: ref,
   );
 });
 
 class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
-  NotificationsNotifier({
-    required this.habits,
-  }) : super([]) {
-    if (habits != null) {
-      _init();
-    }
+  NotificationsNotifier({required this.ref}) : super([]) {
+    if (!kIsWeb) _init();
   }
 
-  final List<Habit>? habits;
+  final Ref ref;
 
   Future<void> _init() async {
-    final processedNotifications = await processNotifications();
-    state = processedNotifications.good;
+    final habits = ref.read(habitsServiceProvider).data();
+    final processedNotifications = await processNotifications(habits ?? []);
+    if (mounted) state = processedNotifications.good;
     await deleteNotifications(processedNotifications.toRemove);
     await createNotifications(processedNotifications.toAdd).then((value) {
-      state = [...state, ...value];
+      if (mounted) state = [...state, ...value];
     });
   }
 
@@ -45,11 +35,13 @@ class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
   ) async {
     final created = <HabitNotification>[];
     for (final notification in notifications) {
-      try {
-        await NotificationHelper.createNotification(notification.habit);
-        created.add(notification);
-      } catch (e) {
-        print(e);
+      if (mounted) {
+        try {
+          await NotificationHelper.createNotification(notification.habit);
+          created.add(notification);
+        } catch (e) {
+          print(e);
+        }
       }
     }
     return created;
@@ -57,10 +49,12 @@ class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
 
   Future<void> deleteNotifications(List<int> notifications) async {
     for (final notificationId in notifications) {
-      try {
-        await NotificationHelper.instance.cancel(notificationId);
-      } catch (e) {
-        print(e);
+      if (mounted) {
+        try {
+          await NotificationHelper.instance.cancel(notificationId);
+        } catch (e) {
+          print(e);
+        }
       }
     }
   }
@@ -69,8 +63,8 @@ class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
       ({
         List<HabitNotification> good,
         List<HabitNotification> toAdd,
-        List<int> toRemove
-      })> processNotifications() async {
+        List<int> toRemove,
+      })> processNotifications(List<Habit> habits) async {
     final pendingNotificationData =
         await NotificationHelper.instance.pendingNotificationRequests();
     final activeNotificationsData =
@@ -83,7 +77,7 @@ class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
     final notificationsTobeRemoved = <int>[];
     final notificationsTobeAdded = <HabitNotification>[];
 
-    for (final habit in habits!) {
+    for (final habit in habits) {
       final isOk = allNotifications.any((notification) {
         return (notification.payload == habit.id && habit.reminder) ||
             (notification.payload != habit.id && !habit.reminder);

@@ -13,11 +13,16 @@ final class CacheStorage {
   static const String _docVersion = 'V001';
 
   Future<void> initialize() async {
-    _prefs = await SharedPreferences.getInstance();
+    try {
+      _prefs = await SharedPreferences.getInstance();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   static final String _themeNameKey = 'thememodekey-$_keySuffix';
   static final String _usercredentialKey = 'usercredentialkey-$_keySuffix';
+  static final String _userprefsKey = 'userprefskey-$_keySuffix';
   static final String _coinsKey = 'coinskey-$_keySuffix';
 
   UserCredentials? get userCredentials {
@@ -36,6 +41,24 @@ final class CacheStorage {
 
   Future<void> updateUserCreds(UserCredentials userCreds) async {
     await _prefs.setString(_usercredentialKey, userCreds.toString());
+  }
+
+  LocalUserPrefs? get userPrefs {
+    try {
+      final userPrefsString = _prefs.getString(_userprefsKey);
+      if (userPrefsString != null && userPrefsString.isNotEmpty) {
+        final authUser = LocalUserPrefs.fromString(userPrefsString);
+        return authUser;
+      }
+      return null;
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> updateUserPrefs(LocalUserPrefs userPrefs) async {
+    await _prefs.setString(_userprefsKey, userPrefs.toString());
   }
 
   Future<void> updateThemeName(String themename) async {

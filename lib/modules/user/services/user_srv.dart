@@ -31,9 +31,35 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
         provider: userCredentials!.provider,
       );
       state = user;
+      updateLocalPrefs(user);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
+      try {
+        final localPrefs = CacheStorage.instance.userPrefs;
+        if (localPrefs != null) {
+          state = localPrefs.toUser(null);
+        }
+      } catch (e) {}
       debugPrint(e.toString());
+    }
+  }
+
+  void updateLocalPrefs(models.User user) {
+    final userPrefs = CacheStorage.instance.userPrefs;
+    if (userPrefs == null) {
+      CacheStorage.instance.updateUserPrefs(
+        LocalUserPrefs.fromUser(user),
+      );
+      return;
+    }
+    if (userPrefs.updatedAt.isAfter(DateTime.parse(user.$updatedAt))) {
+      update(
+        avatar: userPrefs.avatar,
+        themeMode: userPrefs.themeMode,
+        collectedCoins: userPrefs.collectedCoins,
+        spentCoins: userPrefs.spentCoins,
+      );
+      return;
     }
   }
 
@@ -68,6 +94,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
       final user = await appwriteAccount.get();
       await CacheStorage.instance.updateUserCreds(
         UserCredentials(
+          userId: user.$id,
           email: email,
           password: password,
           name: name ?? user.name,
@@ -81,6 +108,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
           final user = await appwriteAccount.get();
           await CacheStorage.instance.updateUserCreds(
             UserCredentials(
+              userId: user.$id,
               email: email,
               password: password,
               name: name ?? user.name,
@@ -111,19 +139,57 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     state = user;
   }
 
-  Future<void> update({String? name, String? avatar}) async {
+  Future<void> update({
+    String? name,
+    String? avatar,
+    String? themeMode,
+    int? collectedCoins,
+    int? spentCoins,
+  }) async {
     var user = state;
-    if (name != null) {
-      final updateduser = await appwriteAccount.updateName(name: name);
-      user = updateduser;
-    }
-    if (avatar != null) {
-      final updateduser = await appwriteAccount.updatePrefs(
-        prefs: {
-          'avatar': avatar,
-        },
+    try {
+      if (name != null) {
+        final updateduser = await appwriteAccount.updateName(name: name);
+        user = updateduser;
+      }
+      if (avatar != null ||
+          themeMode != null ||
+          collectedCoins != null ||
+          spentCoins != null) {
+        final updateduser = await appwriteAccount.updatePrefs(
+          prefs: {
+            if (avatar != null) 'avatar': avatar,
+            if (themeMode != null) 'theme_mode': themeMode,
+            if (collectedCoins != null) 'collected_coins': collectedCoins,
+            if (spentCoins != null) 'spent_coins': spentCoins,
+          },
+        );
+        user = updateduser;
+      }
+      try {
+        if (user != null) {
+          await CacheStorage.instance.updateUserPrefs(
+            LocalUserPrefs.fromUser(user),
+          );
+        }
+      } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+      final LocalUserPrefs? localPrefs;
+      localPrefs = CacheStorage.instance.userPrefs;
+      if (localPrefs == null) {
+        return;
+      }
+      final updated = localPrefs.copyWith(
+        avatar: avatar ?? localPrefs.avatar,
+        themeMode: themeMode ?? localPrefs.themeMode,
+        collectedCoins: collectedCoins ?? localPrefs.collectedCoins,
+        spentCoins: spentCoins ?? localPrefs.spentCoins,
       );
-      user = updateduser;
+      await CacheStorage.instance.updateUserPrefs(updated);
+      if (state != null) {
+        user = updated.toUser(state);
+      }
     }
 
     state = user;
@@ -137,6 +203,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     final user = await appwriteAccount.get();
     await CacheStorage.instance.updateUserCreds(
       UserCredentials(
+        userId: user.$id,
         email: user.email,
         password: '',
         name: user.name,

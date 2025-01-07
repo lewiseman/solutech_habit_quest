@@ -126,7 +126,7 @@ class Habit {
   }
 
   String remainderTime() {
-    return timeValue().removeMinutes(reminderMinutes);
+    return timeValue().removeMinutesStr(reminderMinutes);
   }
 
   Habit copyWith({
