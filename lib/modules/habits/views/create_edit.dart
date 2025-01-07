@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:habit_quest/common.dart';
 import 'package:intl/intl.dart';
 
@@ -28,6 +29,8 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
   final titleController = TextEditingController();
   String titleValue = '';
   Habit? updateHabit;
+  bool reminder = true;
+  int remiderMinutes = 10;
 
   @override
   void initState() {
@@ -46,6 +49,9 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
               userId: '',
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
+              reminder: false,
+              reminderMinutes: 10,
+              notificationId: 0,
             ),
           );
       if (updateHabit != null) {
@@ -62,6 +68,8 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
     startDate = habit.startDate;
     selectedFrequency = habit.frequency;
     selectedDays = habit.days ?? [];
+    reminder = habit.reminder;
+    remiderMinutes = habit.reminderMinutes;
   }
 
   void onAction() {
@@ -92,6 +100,8 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
             startDate: startDate,
             days: selectedDays,
             frequency: selectedFrequency,
+            reminder: reminder,
+            reminderMinutes: remiderMinutes,
           ),
         )
         .then((_) {
@@ -124,6 +134,9 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
             userId: ref.read(userServiceProvider)?.$id ?? '',
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
+            reminder: reminder,
+            reminderMinutes: remiderMinutes,
+            notificationId: Habit.generateNotificationId(),
           ),
         )
         .then((_) {
@@ -500,6 +513,137 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
                   ),
                 ),
               ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+              child: Material(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: .8,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Reminder',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: AppTheme.poppinsFont,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  'Remind me before it starts',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: AppTheme.poppinsFont,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Switch(
+                            value: reminder,
+                            onChanged: (value) {
+                              setState(() {
+                                reminder = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      if (reminder) const SizedBox(height: 16),
+                      if (reminder)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '$remiderMinutes mins',
+                                style: const TextStyle(
+                                  fontFamily: AppTheme.poppinsFont,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                showCupertinoModalPopup<int>(
+                                  context: context,
+                                  builder: (context) {
+                                    return Container(
+                                      height: 216,
+                                      margin: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom,
+                                      ),
+                                      color: CupertinoColors.systemBackground
+                                          .resolveFrom(context),
+                                      child: SafeArea(
+                                        top: false,
+                                        child: CupertinoPicker(
+                                          magnification: 1.22,
+                                          squeeze: 1.2,
+                                          useMagnifier: true,
+                                          itemExtent: 32,
+                                          onSelectedItemChanged: (index) {
+                                            setState(() {
+                                              remiderMinutes = index + 1;
+                                            });
+                                          },
+                                          children: [
+                                            for (int i = 1; i <= 60; i++)
+                                              Text(
+                                                '$i mins',
+                                                style: const TextStyle(
+                                                  fontFamily:
+                                                      AppTheme.poppinsFont,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ).then((value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      remiderMinutes = value;
+                                    });
+                                  }
+                                });
+                              },
+                              child: const Row(
+                                children: [
+                                  Text(
+                                    'CHANGE',
+                                    style: TextStyle(
+                                      fontFamily: AppTheme.poppinsFont,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Icon(
+                                    Icons.timer_outlined,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),

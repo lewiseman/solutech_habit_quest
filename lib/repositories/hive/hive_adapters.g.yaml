@@ -5,7 +5,7 @@ nextTypeId: 7
 types:
   Habit:
     typeId: 0
-    nextIndex: 12
+    nextIndex: 15
     fields:
       id:
         index: 0
@@ -31,6 +31,12 @@ types:
         index: 10
       updatedAt:
         index: 11
+      reminder:
+        index: 12
+      reminderMinutes:
+        index: 13
+      notificationId:
+        index: 14
   HabitFrequency:
     typeId: 1
     nextIndex: 3

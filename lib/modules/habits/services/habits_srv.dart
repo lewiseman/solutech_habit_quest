@@ -41,7 +41,9 @@ class HabitsNotifier extends StateNotifier<HabitsState> {
   }
 
   Future<void> updateHabit(Habit habit) async {
-    final habits = await AppRepository.updateHabit(habit);
+    final habits = await AppRepository.updateHabit(
+      habit.copyWith(notificationId: Habit.generateNotificationId()),
+    );
     state = HabitsState.data(habits);
   }
 }

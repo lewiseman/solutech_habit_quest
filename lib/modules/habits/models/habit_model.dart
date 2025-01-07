@@ -29,6 +29,9 @@ class Habit {
     required this.createdAt,
     required this.updatedAt,
     required this.userId,
+    required this.reminder,
+    required this.reminderMinutes,
+    required this.notificationId,
     this.description,
     this.days,
   });
@@ -49,6 +52,9 @@ class Habit {
       userId: data['user_id'] as String,
       createdAt: DateTime.parse(data[r'$createdAt'] as String),
       updatedAt: DateTime.parse(data[r'$updatedAt'] as String),
+      reminder: data['reminder'] as bool,
+      reminderMinutes: data['reminder_minutes'] as int,
+      notificationId: data['notification_id'] as int,
     );
   }
 
@@ -64,6 +70,9 @@ class Habit {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       userId: '',
+      reminder: false,
+      reminderMinutes: 0,
+      notificationId: 0,
     );
   }
 
@@ -79,6 +88,9 @@ class Habit {
   final String userId;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final bool reminder;
+  final int reminderMinutes;
+  final int notificationId;
 
   Map<String, dynamic> toJson() {
     return {
@@ -92,6 +104,9 @@ class Habit {
       'frequency': frequency.displayName,
       'paused': paused,
       'user_id': userId,
+      'reminder': reminder,
+      'reminder_minutes': reminderMinutes,
+      'notification_id': notificationId,
     };
   }
 
@@ -110,6 +125,10 @@ class Habit {
     );
   }
 
+  String remainderTime() {
+    return timeValue().removeMinutes(reminderMinutes);
+  }
+
   Habit copyWith({
     String? title,
     String? emoji,
@@ -122,6 +141,9 @@ class Habit {
     String? userId,
     DateTime? createdAt,
     DateTime? updatedAt,
+    bool? reminder,
+    int? reminderMinutes,
+    int? notificationId,
   }) {
     return Habit(
       id: id,
@@ -136,6 +158,13 @@ class Habit {
       userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      reminder: reminder ?? this.reminder,
+      reminderMinutes: reminderMinutes ?? this.reminderMinutes,
+      notificationId: notificationId ?? this.notificationId,
     );
+  }
+
+  static int generateNotificationId() {
+    return DateTime.now().millisecondsSinceEpoch.remainder(100000);
   }
 }

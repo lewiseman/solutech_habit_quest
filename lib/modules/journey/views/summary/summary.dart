@@ -329,13 +329,15 @@ class StatsCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Text(
-                value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontFamily: AppTheme.poppinsFont,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28,
+              Flexible(
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: AppTheme.poppinsFont,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 28,
+                  ),
                 ),
               ),
             ],

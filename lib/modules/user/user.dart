@@ -1,9 +1,12 @@
+export 'models/habit_notification.dart';
 export 'models/user_model.dart';
+export 'services/notifications_srv.dart';
 export 'services/user_srv.dart';
 export 'views/avatar.dart';
 export 'views/badges.dart';
 export 'views/forgot_password.dart';
 export 'views/login.dart';
+export 'views/notifications_settings.dart';
 export 'views/onboarding.dart';
 export 'views/profile.dart';
 export 'views/register.dart';

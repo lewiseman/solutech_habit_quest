@@ -134,6 +134,9 @@ class PopularHabits extends ConsumerWidget {
             userId: ref.read(userServiceProvider)?.$id ?? '',
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
+            reminder: true,
+            reminderMinutes: 10,
+            notificationId: Habit.generateNotificationId(),
           ),
         )
         .then((_) {

@@ -166,7 +166,9 @@ class UserPage extends ConsumerWidget {
               (
                 name: 'Notifications',
                 subtitle: null,
-                action: () {},
+                action: () {
+                  context.push('/user/notifications');
+                },
                 leading: const Icon(CustomIcons.bell),
               ),
               (

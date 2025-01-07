@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:habit_quest/common.dart';
-import 'package:habit_quest/repositories/services/sync_srv.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:habit_quest/router.dart';
 
 void main() async {
@@ -18,6 +18,7 @@ void main() async {
   if (kIsWeb) {
     usePathUrlStrategy();
   }
+  tz.initializeTimeZones();
   runApp(
     const ProviderScope(child: HabitQuest()),
   );
@@ -31,6 +32,7 @@ class HabitQuest extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     final settings = ref.watch(settingsServiceProvider);
     ref.read(syncServiceProvider);
+    ref.read(notificationsServiceProvider);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: router,

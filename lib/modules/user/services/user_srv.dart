@@ -147,13 +147,13 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     state = user;
   }
 
-
   Future<void> logout() async {
     if (CacheStorage.instance.userCredentials?.provider != 'google') {
       await appwriteAccount.deleteSession(sessionId: 'current');
     }
     await AppRepository.instance.clear();
     await CacheStorage.instance.delete();
+    await NotificationHelper.deleteAll();
     ref.read(appRouteService).refreshUser();
     state = null;
   }

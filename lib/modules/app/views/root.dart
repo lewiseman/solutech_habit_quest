@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:habit_quest/common.dart';
 
@@ -10,6 +11,12 @@ class RootApp extends StatefulWidget {
 }
 
 class _RootAppState extends State<RootApp> {
+  @override
+  void initState() {
+    super.initState();
+    if (!kIsWeb) NotificationHelper.init();
+  }
+
   @override
   Widget build(BuildContext context) {
     final currPath = GoRouterState.of(context).uri.path;

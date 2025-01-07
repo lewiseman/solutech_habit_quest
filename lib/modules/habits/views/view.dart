@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:habit_quest/common.dart';
-import 'package:habit_quest/modules/habits/services/habits_action_srv.dart';
 import 'package:intl/intl.dart';
 
 class HabitsPage extends ConsumerStatefulWidget {
@@ -30,7 +29,9 @@ class HabitsPage extends ConsumerStatefulWidget {
         IconButton.outlined(
           padding: const EdgeInsets.all(6),
           constraints: const BoxConstraints(),
-          onPressed: () {},
+          onPressed: () {
+            NotificationHelper.showPlanned();
+          },
           icon: const Icon(CustomIcons.calendar, size: 20),
         ),
       ],
