@@ -17,6 +17,29 @@ class NotificationPage extends StatelessWidget {
           ),
         ),
       ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/banana/mail.png',
+            width: 120,
+            height: 120,
+          ),
+          const SizedBox(
+            height: 8,
+            width: double.maxFinite,
+          ),
+          const Text(
+            'Notifications\nComing Soon',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              fontFamily: AppTheme.poppinsFont,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
