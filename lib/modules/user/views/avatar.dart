@@ -205,7 +205,7 @@ class PickAvatarPage extends ConsumerWidget {
         await ref
             .read(userServiceProvider.notifier)
             .update(avatar: confirmedurl);
-        await ref.read(userServiceProvider.notifier).spendCoins(2);
+        // await ref.read(userServiceProvider.notifier).spendCoins(2);
         Navigator.of(context)
           ..pop()
           ..pop();

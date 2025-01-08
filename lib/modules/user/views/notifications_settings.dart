@@ -10,6 +10,9 @@ class NotificationSettingsPage extends ConsumerWidget {
     final inactive =
         notifications.where((element) => !element.habit.reminder).toList();
     final theme = Theme.of(context);
+    final notificationsEnabled =
+        ref.watch(userServiceProvider)?.prefs.data['notifications'] as bool? ??
+            true;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
@@ -57,8 +60,21 @@ class NotificationSettingsPage extends ConsumerWidget {
                         color: theme.textTheme.bodyMedium!.color,
                       ),
                     ),
-                    value: false,
-                    onChanged: (value) async {},
+                    value: notificationsEnabled,
+                    onChanged: (value) async {
+                      context.showInfoLoad('Updating...');
+                      ref
+                          .read(userServiceProvider.notifier)
+                          .update(notifications: value)
+                          .then((_) {
+                        ref.invalidate(notificationsServiceProvider);
+                        context.pop();
+                      }).onError((error, stackTrace) {
+                        context
+                          ..pop()
+                          ..showErrorToast('Failed to update');
+                      });
+                    },
                   ),
                 ),
               ),

@@ -52,6 +52,7 @@ class LocalUserPrefs {
     required this.collectedCoins,
     required this.spentCoins,
     required this.updatedAt,
+    required this.notifications,
   });
 
   factory LocalUserPrefs.fromUser(models.User user) {
@@ -61,6 +62,7 @@ class LocalUserPrefs {
       themeMode: prefs['theme_mode'] as String? ?? 'light',
       collectedCoins: prefs['collected_coins'] as int? ?? 0,
       spentCoins: prefs['spent_coins'] as int? ?? 0,
+      notifications: prefs['notifications'] as bool? ?? true,
       updatedAt: DateTime.tryParse(user.$updatedAt) ?? DateTime.now(),
     );
   }
@@ -71,6 +73,7 @@ class LocalUserPrefs {
       themeMode: json['theme_mode'] as String,
       collectedCoins: json['collected_coins'] as int,
       spentCoins: json['spent_coins'] as int,
+      notifications: json['notifications'] as bool? ?? true,
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }
@@ -85,6 +88,7 @@ class LocalUserPrefs {
   final int collectedCoins;
   final int spentCoins;
   final DateTime updatedAt;
+  final bool notifications;
 
   Map<String, dynamic> toJson() => {
         'avatar': avatar,
@@ -92,6 +96,7 @@ class LocalUserPrefs {
         'collected_coins': collectedCoins,
         'spent_coins': spentCoins,
         'updated_at': updatedAt.toIso8601String(),
+        'notifications': notifications,
       };
 
   LocalUserPrefs copyWith({
@@ -100,6 +105,7 @@ class LocalUserPrefs {
     int? collectedCoins,
     int? spentCoins,
     DateTime? updatedAt,
+    bool? notifications,
   }) {
     return LocalUserPrefs(
       avatar: avatar ?? this.avatar,
@@ -107,6 +113,7 @@ class LocalUserPrefs {
       collectedCoins: collectedCoins ?? this.collectedCoins,
       spentCoins: spentCoins ?? this.spentCoins,
       updatedAt: updatedAt ?? this.updatedAt,
+      notifications: notifications ?? this.notifications,
     );
   }
 
@@ -137,6 +144,8 @@ class LocalUserPrefs {
           'theme_mode': themeMode,
           'collected_coins': collectedCoins,
           'spent_coins': spentCoins,
+          'notifications': notifications,
+          'updated_at': updatedAt.toIso8601String(),
         },
       ),
       targets: user?.targets ?? [],

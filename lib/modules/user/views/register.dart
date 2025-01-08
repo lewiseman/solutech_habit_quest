@@ -221,12 +221,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                   ),
-                                  icon: false
-                                      ? null
-                                      : Image.asset(
-                                          'assets/images/google_logo.png',
-                                          height: 20,
-                                        ),
+                                  icon: Image.asset(
+                                    'assets/images/google_logo.png',
+                                    height: 20,
+                                  ),
                                   label: const Text(
                                     'Sign in with Google',
                                     style: TextStyle(

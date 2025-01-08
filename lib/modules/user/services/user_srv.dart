@@ -171,6 +171,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     String? themeMode,
     int? collectedCoins,
     int? spentCoins,
+    bool? notifications,
   }) async {
     var user = state;
     try {
@@ -181,7 +182,8 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
       if (avatar != null ||
           themeMode != null ||
           collectedCoins != null ||
-          spentCoins != null) {
+          spentCoins != null ||
+          notifications != null) {
         final updateduser = await appwriteAccount.updatePrefs(
           prefs: {
             'avatar': avatar ?? user!.prefs.data['avatar'] as String? ?? '',
@@ -193,6 +195,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
                 0,
             'spent_coins':
                 spentCoins ?? user?.prefs.data['spent_coins'] as int? ?? 0,
+            'notifications': notifications ??
+                user?.prefs.data['notifications'] as bool? ??
+                true,
           },
         );
         user = updateduser;

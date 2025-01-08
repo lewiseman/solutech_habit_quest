@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:habit_quest/common.dart';
-import 'package:habit_quest/modules/app/views/rewards.dart';
 
 class RewardsHelper {
   static void activityCompleted(BuildContext context, int coins) {
@@ -20,12 +19,6 @@ class RewardsHelper {
         );
       },
     );
-  }
-
-  Future<void> removeCoins(int coins) async {
-    // final newCoins = state.coins - coins;
-    // await CacheStorage.instance.updateCoins(newCoins);
-    // state = state.copyWith(coins: newCoins);
   }
 
   static void showSinglePoint(BuildContext context) {

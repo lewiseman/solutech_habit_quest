@@ -24,9 +24,10 @@ class _RootAppState extends State<RootApp> {
     final isDesktop = context.isDesktop();
     final theme = Theme.of(context);
     return AnnotatedRegion(
-      value: const SystemUiOverlayStyle(
+      value:  SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: theme.scaffoldBackgroundColor
       ),
       child: Scaffold(
         extendBody: true,

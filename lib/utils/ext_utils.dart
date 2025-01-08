@@ -69,3 +69,12 @@ extension MyUser on models.User? {
     return balance;
   }
 }
+
+extension MyNims on num {
+  num get maxPercentage {
+    if (this > 100) {
+      return 100;
+    }
+    return this;
+  }
+}

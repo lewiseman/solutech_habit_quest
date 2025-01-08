@@ -19,7 +19,8 @@ class JourneySummaryData {
         .where((action) => action.action == HabitActionType.done)
         .length;
 
-    final completionRate = calculateOverallCompletionRate(habits, habitActions);
+    final completionRate =
+        calculateOverallCompletionRate(habits, habitActions).maxPercentage;
     final perfectDays = calculatePerfectDays(habits, habitActions);
     return (
       overallStreak: '$overallStreak',
@@ -74,7 +75,9 @@ class JourneySummaryData {
     }
 
     // Find the day with the highest count
-    return dayCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+    final res = dayCounts.entries.reduce((a, b) => a.value > b.value ? a : b);
+    if (res.value == 0) return 'N/A';
+    return res.key;
   }
 
   int calculateTotalHabitsCompletedThisWeek(

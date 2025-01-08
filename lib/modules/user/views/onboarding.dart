@@ -108,13 +108,22 @@ class OnboardingQuestionPage extends StatefulWidget {
 }
 
 class _OnboardingQuestionPageState extends State<OnboardingQuestionPage> {
-  late final _pageController = PageController()
-    ..addListener(() {
-      setState(() {});
+  late final _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(() {
+      setState(() {
+        currPage = _pageController.page?.round() ?? 0;
+      });
     });
+  }
+
   DateTime wakeUpTime = DateTime.now();
   DateTime sleepTime = DateTime.now();
   List<({String image, String name})> selectedAchievements = [];
+  int currPage = 0;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -160,7 +169,7 @@ class _OnboardingQuestionPageState extends State<OnboardingQuestionPage> {
                           child: CircularProgressIndicator(
                             color: Colors.blue.shade900,
                             backgroundColor: Colors.blue,
-                            value: 0.2,
+                            value: (currPage + 1) / 3,
                             strokeWidth: 6,
                             strokeCap: StrokeCap.round,
                           ),

@@ -89,107 +89,105 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
           ref.invalidate(habitsServiceProvider);
         });
       },
-      child: SingleChildScrollView(
+      child: ListView(
         padding: const EdgeInsets.only(bottom: 200),
         physics: const ClampingScrollPhysics(),
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            HorizontalWeekCalendar(
-              weekStartFrom: WeekStartFrom.sunday,
-              key: ValueKey(selectedDate),
-              minDate: DateTime(2024),
-              maxDate: DateTime(
-                2028,
-              ),
-              selectedDate: selectedDate,
-              onDateChange: (date) {
-                ref.read(selectedHabitDate.notifier).update((state) => date);
-              },
-              showTopNavbar: isdesktop,
+        children: [
+          const SizedBox(height: 16),
+          HorizontalWeekCalendar(
+            weekStartFrom: WeekStartFrom.sunday,
+            key: ValueKey(selectedDate),
+            minDate: DateTime(2024),
+            maxDate: DateTime(
+              2028,
             ),
-            const SizedBox(height: 24),
-            ...() {
-              if (habitsState is LoadingHabitsState) {
+            selectedDate: selectedDate,
+            onDateChange: (date) {
+              ref.read(selectedHabitDate.notifier).update((state) => date);
+            },
+            showTopNavbar: isdesktop,
+          ),
+          const SizedBox(height: 24),
+          ...() {
+            if (habitsState is LoadingHabitsState) {
+              return [
+                SizedBox(
+                  height: 320,
+                  child: bananaSearch(message: 'Loading habits ...'),
+                ),
+              ];
+            }
+
+            if (habitsState is DataHabitsState) {
+              final habits = habitsState.habits.where((habit) {
+                return habit.relevant(selectedDate);
+              }).toList();
+              if (habits.isEmpty) {
                 return [
                   SizedBox(
-                    height: 320,
-                    child: bananaSearch(message: 'Loading habits ...'),
+                    height: 300,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: emptyBanana(
+                        message:
+                            '''Nothing for today\nCreate a habit from the  bottom right button''',
+                      ),
+                    ),
                   ),
                 ];
               }
 
-              if (habitsState is DataHabitsState) {
-                final habits = habitsState.habits.where((habit) {
-                  return habit.relevant(selectedDate);
-                }).toList();
-                if (habits.isEmpty) {
-                  return [
-                    SizedBox(
-                      height: 300,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: emptyBanana(
-                          message:
-                              '''Nothing for today\nCreate a habit from the  bottom right button''',
-                        ),
-                      ),
-                    ),
-                  ];
-                }
+              final calcdata = HabitsCalcData(
+                habits: habits,
+                selectedDate: selectedDate,
+                habitActions: habitActions,
+              );
 
-                final calcdata = HabitsCalcData(
-                  habits: habits,
-                  selectedDate: selectedDate,
-                  habitActions: habitActions,
-                );
+              return [
+                if (calcdata.nextHabit != null)
+                  NextHabitCard(
+                    habit: calcdata.nextHabit!,
+                    openedHabitId: openedHabitId,
+                    ref: ref,
+                    updateOpened: (id) => setState(() {
+                      openedHabitId = id;
+                    }),
+                  ),
+                if (calcdata.upcomingHabits.isNotEmpty)
+                  UpcomingHabitCard(
+                    habits: calcdata.upcomingHabits,
+                    ref: ref,
+                    selectedDate: selectedDate,
+                    title: 'UPCOMING',
+                  ),
+                if (calcdata.futureHabits.isNotEmpty)
+                  UpcomingHabitCard(
+                    habits: calcdata.futureHabits,
+                    ref: ref,
+                    selectedDate: selectedDate,
+                  ),
+                if (calcdata.missedHabits.isNotEmpty)
+                  MissedHabitCards(
+                    habits: calcdata.missedHabits,
+                    ref: ref,
+                  ),
+                if (calcdata.skippedHabits.isNotEmpty)
+                  SkippedHabitCards(
+                    actionHabits: calcdata.skippedHabits,
+                    ref: ref,
+                    selectedDate: selectedDate,
+                  ),
+                if (calcdata.completedHabits.isNotEmpty)
+                  CompletedHabitCards(
+                    actionHabits: calcdata.completedHabits,
+                    ref: ref,
+                  ),
+              ];
+            }
 
-                return [
-                  if (calcdata.nextHabit != null)
-                    NextHabitCard(
-                      habit: calcdata.nextHabit!,
-                      openedHabitId: openedHabitId,
-                      ref: ref,
-                      updateOpened: (id) => setState(() {
-                        openedHabitId = id;
-                      }),
-                    ),
-                  if (calcdata.upcomingHabits.isNotEmpty)
-                    UpcomingHabitCard(
-                      habits: calcdata.upcomingHabits,
-                      ref: ref,
-                      selectedDate: selectedDate,
-                      title: 'UPCOMING',
-                    ),
-                  if (calcdata.futureHabits.isNotEmpty)
-                    UpcomingHabitCard(
-                      habits: calcdata.futureHabits,
-                      ref: ref,
-                      selectedDate: selectedDate,
-                    ),
-                  if (calcdata.missedHabits.isNotEmpty)
-                    MissedHabitCards(
-                      habits: calcdata.missedHabits,
-                      ref: ref,
-                    ),
-                  if (calcdata.skippedHabits.isNotEmpty)
-                    SkippedHabitCards(
-                      actionHabits: calcdata.skippedHabits,
-                      ref: ref,
-                      selectedDate: selectedDate,
-                    ),
-                  if (calcdata.completedHabits.isNotEmpty)
-                    CompletedHabitCards(
-                      actionHabits: calcdata.completedHabits,
-                      ref: ref,
-                    ),
-                ];
-              }
-
-              return [const SizedBox.shrink()];
-            }(),
-          ],
-        ),
+            return [const SizedBox.shrink()];
+          }(),
+        ],
       ),
     );
   }

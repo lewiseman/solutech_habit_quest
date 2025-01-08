@@ -54,195 +54,211 @@ class UserPage extends ConsumerWidget {
     final user = ref.watch(userServiceProvider);
     final theme = Theme.of(context);
     final avatar = (user?.prefs.data['avatar'] as String?) ?? '';
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: 16),
-          SvgPicture.network(
-            avatar.isNotEmpty ? avatar : generalAvatar,
-            height: 160,
-            placeholderBuilder: (context) {
-              return const Center(
-                child: CupertinoActivityIndicator(),
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          Container(
-            margin: const EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 24,
-              bottom: 20,
+    return RefreshIndicator(
+      onRefresh: () {
+        if (syncState is! LoadingSyncState) {
+          ref.invalidate(syncServiceProvider);
+        }
+        return Future.delayed(const Duration(seconds: 1));
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            SvgPictureNetwork(
+              height: 160,
+              key: ValueKey(avatar),
+              url: avatar.isNotEmpty ? avatar : generalAvatar,
+              placeholderBuilder: (context) {
+                return const Center(
+                  child: CupertinoActivityIndicator(),
+                );
+              },
+              errorBuilder: (p0) {
+                return SizedBox(
+                  height: 160,
+                  child: Image.asset('assets/images/banana/cry.png'),
+                );
+              },
             ),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      Image.asset(
-                        'assets/images/banana/trophy.png',
-                        height: 50,
-                      ),
-                      const Text(
-                        'LEVEL',
-                        style: TextStyle(
-                          fontFamily: AppTheme.poppinsFont,
-                          fontWeight: FontWeight.bold,
+            const SizedBox(height: 20),
+            Container(
+              margin: const EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 24,
+                bottom: 20,
+              ),
+              child: IntrinsicHeight(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Image.asset(
+                          'assets/images/banana/trophy.png',
+                          height: 50,
                         ),
-                      ),
-                      Text(
-                        '${NextLevelPop.calcLevel(user?.collectedCoins())}',
-                        style: const TextStyle(
-                          fontFamily: AppTheme.poppinsFont,
+                        const Text(
+                          'LEVEL',
+                          style: TextStyle(
+                            fontFamily: AppTheme.poppinsFont,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const VerticalDivider(
-                    thickness: .2,
-                    indent: 10,
-                    endIndent: 6,
-                  ),
-                  Column(
-                    children: [
-                      Image.asset(
-                        'assets/images/banana/diamond.png',
-                        height: 50,
-                      ),
-                      const Text(
-                        'COINS',
-                        style: TextStyle(
-                          fontFamily: AppTheme.poppinsFont,
-                          fontWeight: FontWeight.bold,
+                        Text(
+                          '${NextLevelPop.calcLevel(user?.collectedCoins())}',
+                          style: const TextStyle(
+                            fontFamily: AppTheme.poppinsFont,
+                          ),
                         ),
-                      ),
-                      Text(
-                        '${user?.getCoinBalance() ?? 0}',
-                        style: const TextStyle(
-                          fontFamily: AppTheme.poppinsFont,
+                      ],
+                    ),
+                    const VerticalDivider(
+                      thickness: .2,
+                      indent: 10,
+                      endIndent: 6,
+                    ),
+                    Column(
+                      children: [
+                        Image.asset(
+                          'assets/images/banana/diamond.png',
+                          height: 50,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        const Text(
+                          'COINS',
+                          style: TextStyle(
+                            fontFamily: AppTheme.poppinsFont,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '${user?.getCoinBalance() ?? 0}',
+                          style: const TextStyle(
+                            fontFamily: AppTheme.poppinsFont,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          syncCard(
-            syncState: syncState,
-          ),
-          settingsGroup(
-            theme: theme,
-            actions: [
-              (
-                name: 'Avatars',
-                subtitle: 'Buy or change your avatar',
-                action: () {
-                  context.push('/user/avatars');
-                },
-                leading: CustomIcons.group,
-              ),
-              (
-                name: 'My Badges',
-                subtitle: null,
-                action: () {
-                  context.push('/user/badges');
-                },
-                leading: CustomIcons.achieve
-              ),
-              (
-                name: 'My Profile',
-                subtitle: null,
-                action: () {
-                  context.push('/user/profile');
-                },
-                leading: CustomIcons.user_edit
-              ),
-            ],
-          ),
-          settingsGroup(
-            theme: theme,
-            title: 'Settings',
-            actions: [
-              (
-                name: 'Notifications',
-                subtitle: null,
-                action: () {
-                  context.push('/user/notifications');
-                },
-                leading: CustomIcons.bell,
-              ),
-              (
-                name: 'Theme',
-                subtitle: null,
-                action: () {
-                  context.push('/theme');
-                },
-                leading: CustomIcons.theme,
-              ),
-            ],
-          ),
-          settingsGroup(
-            theme: theme,
-            title: 'Other',
-            actions: [
-              (
-                name: 'Privacy Policy',
-                subtitle: null,
-                action: () {
-                  openLink(
-                    'https://www.solutech.co.ke/policies-2/#privacy-policy',
-                  );
-                },
-                leading: CustomIcons.file,
-              ),
-              (
-                name: 'Share with friends',
-                subtitle: null,
-                action: () {
-                  Share.share(
-                    '''Check out the amaizing Habit Quest app by Solutech\n\nhttps://play.google.com/store/apps/details?id=com.solutech.sat.solutech_sat&hl=en&pli=1''',
-                    subject: 'Habit Quest',
-                  );
-                },
-                leading: CustomIcons.share,
-              ),
-              (
-                name: 'Rate us',
-                subtitle: null,
-                action: () {
-                  openLink(
-                    'https://play.google.com/store/apps/details?id=com.solutech.sat.solutech_sat&hl=en&pli=1',
-                  );
-                },
-                leading: CustomIcons.rate,
-              ),
-              (
-                name: 'Feedback',
-                subtitle: null,
-                action: () {
-                  openLink('https://www.solutech.co.ke/contact-us/');
-                },
-                leading: CustomIcons.copy_writing,
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'Version 1.0.0',
-            style: TextStyle(
-              fontFamily: AppTheme.poppinsFont,
+            syncCard(
+              syncState: syncState,
+              ref: ref,
             ),
-          ),
-          const SizedBox(height: 200),
-        ],
+            settingsGroup(
+              theme: theme,
+              actions: [
+                (
+                  name: 'Avatars',
+                  subtitle: 'Buy or change your avatar',
+                  action: () {
+                    context.push('/user/avatars');
+                  },
+                  leading: CustomIcons.group,
+                ),
+                (
+                  name: 'My Badges',
+                  subtitle: null,
+                  action: () {
+                    context.push('/user/badges');
+                  },
+                  leading: CustomIcons.achieve
+                ),
+                (
+                  name: 'My Profile',
+                  subtitle: null,
+                  action: () {
+                    context.push('/user/profile');
+                  },
+                  leading: CustomIcons.user_edit
+                ),
+              ],
+            ),
+            settingsGroup(
+              theme: theme,
+              title: 'Settings',
+              actions: [
+                (
+                  name: 'Notifications',
+                  subtitle: null,
+                  action: () {
+                    context.push('/user/notifications');
+                  },
+                  leading: CustomIcons.bell,
+                ),
+                (
+                  name: 'Theme',
+                  subtitle: null,
+                  action: () {
+                    context.push('/theme');
+                  },
+                  leading: CustomIcons.theme,
+                ),
+              ],
+            ),
+            settingsGroup(
+              theme: theme,
+              title: 'Other',
+              actions: [
+                (
+                  name: 'Privacy Policy',
+                  subtitle: null,
+                  action: () {
+                    openLink(
+                      'https://www.solutech.co.ke/policies-2/#privacy-policy',
+                    );
+                  },
+                  leading: CustomIcons.file,
+                ),
+                (
+                  name: 'Share with friends',
+                  subtitle: null,
+                  action: () {
+                    Share.share(
+                      '''Check out the amaizing Habit Quest app by Solutech\n\nhttps://play.google.com/store/apps/details?id=com.solutech.sat.solutech_sat&hl=en&pli=1''',
+                      subject: 'Habit Quest',
+                    );
+                  },
+                  leading: CustomIcons.share,
+                ),
+                (
+                  name: 'Rate us',
+                  subtitle: null,
+                  action: () {
+                    openLink(
+                      'https://play.google.com/store/apps/details?id=com.solutech.sat.solutech_sat&hl=en&pli=1',
+                    );
+                  },
+                  leading: CustomIcons.rate,
+                ),
+                (
+                  name: 'Feedback',
+                  subtitle: null,
+                  action: () {
+                    openLink('https://www.solutech.co.ke/contact-us/');
+                  },
+                  leading: CustomIcons.copy_writing,
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Version 1.0.0',
+              style: TextStyle(
+                fontFamily: AppTheme.poppinsFont,
+              ),
+            ),
+            const SizedBox(height: 200),
+          ],
+        ),
       ),
     );
   }
 
-  Widget syncCard({required SyncState syncState}) {
+  Widget syncCard({required SyncState syncState, required WidgetRef ref}) {
     return Container(
       margin: const EdgeInsets.only(
         left: 16,
@@ -251,9 +267,13 @@ class UserPage extends ConsumerWidget {
       ),
       padding: const EdgeInsets.all(12),
       clipBehavior: Clip.antiAlias,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: AppTheme.primaryBlue,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        color: syncState is SyncedSyncState
+            ? AppTheme.primaryBlue
+            : syncState is ErrorSyncState
+                ? Colors.red
+                : Colors.blue.withOpacity(.8),
       ),
       child: Row(
         children: [
@@ -283,24 +303,42 @@ class UserPage extends ConsumerWidget {
                     color: Colors.white,
                   ),
                 ),
-                Text(
-                  'Last synced ${() {
-                    if (syncState is SyncedSyncState) {
+                if (syncState is SyncedSyncState)
+                  Text(
+                    'Last synced ${() {
                       return DateFormat.yMEd().add_jm().format(syncState.time);
-                    }
-                    return '';
-                  }()}',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(.6),
+                    }()}',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(.6),
+                    ),
                   ),
-                ),
+                if (syncState is ErrorSyncState)
+                  Text(
+                    'You may be in offline mode',
+                    style: TextStyle(color: Colors.white.withOpacity(.6)),
+                  ),
               ],
             ),
           ),
-          const Icon(
-            CupertinoIcons.check_mark,
-            color: Colors.white,
-          ),
+          if (syncState is ErrorSyncState)
+            IconButton(
+              onPressed: () {
+                ref.invalidate(syncServiceProvider);
+              },
+              icon: const Icon(
+                CupertinoIcons.arrow_clockwise,
+                color: Colors.white,
+              ),
+            )
+          else
+            Icon(
+              syncState is SyncedSyncState
+                  ? CupertinoIcons.check_mark
+                  : syncState is ErrorSyncState
+                      ? CupertinoIcons.xmark
+                      : CupertinoIcons.flowchart,
+              color: Colors.white,
+            ),
         ],
       ),
     );

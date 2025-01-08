@@ -216,13 +216,29 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
                     minLines: 1,
                     maxLines: 4,
                     maxLength: 100,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'eg. Drink water',
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       alignLabelWithHint: true,
                       hintText: '',
                       labelStyle: TextStyle(
                         fontFamily: AppTheme.poppinsFont,
+                        color: theme.textTheme.bodyMedium!.color,
+                      ),
+                      border: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppTheme.primaryBlue,
+                        ),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppTheme.primaryBlue,
+                        ),
+                      ),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppTheme.primaryBlue,
+                        ),
                       ),
                     ),
                   ),
@@ -602,6 +618,10 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
                                               squeeze: 1.2,
                                               useMagnifier: true,
                                               itemExtent: 32,
+                                              scrollController:
+                                                  FixedExtentScrollController(
+                                                initialItem: remiderMinutes - 1,
+                                              ),
                                               onSelectedItemChanged: (index) {
                                                 setState(() {
                                                   remiderMinutes = index + 1;

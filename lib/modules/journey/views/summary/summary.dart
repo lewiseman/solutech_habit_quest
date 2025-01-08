@@ -104,7 +104,7 @@ class SummaryMonthTable extends StatelessWidget {
                 final today = DateTime.now();
                 final dayColor =
                     dates[DateTime(day.year, day.month, day.day)] ??
-                        Colors.transparent;
+                        Colors.green.shade100;
                 return Center(
                   child: Container(
                     alignment: Alignment.center,
