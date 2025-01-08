@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:appwrite/models.dart' as models;
-import 'package:habit_quest/repositories/cache.dart';
+import 'package:habit_quest/common.dart';
 
 class UserCredentials {
   const UserCredentials({
@@ -57,8 +57,7 @@ class LocalUserPrefs {
   factory LocalUserPrefs.fromUser(models.User user) {
     final prefs = user.prefs.data;
     return LocalUserPrefs(
-      avatar: prefs['avatar'] as String? ??
-          'https://api.dicebear.com/9.x/adventurer-neutral/svg?radius=50',
+      avatar: prefs['avatar'] as String? ?? generalAvatar,
       themeMode: prefs['theme_mode'] as String? ?? 'light',
       collectedCoins: prefs['collected_coins'] as int? ?? 0,
       spentCoins: prefs['spent_coins'] as int? ?? 0,

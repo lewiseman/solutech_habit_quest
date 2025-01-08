@@ -1,4 +1,3 @@
-export 'models/rewards_state.dart';
 export 'services/rewards_srv.dart';
 export 'views/notifications.dart';
 export 'views/rewards.dart';

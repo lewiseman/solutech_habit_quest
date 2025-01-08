@@ -13,3 +13,6 @@ const appwriteHabitsCID = '67795856000c5482c68f';
 const appwriteHabitActionsCID = '677ae82b001da713b983';
 
 const maxPageWidth = 600.0;
+
+const generalAvatar =
+    'https://api.dicebear.com/9.x/adventurer-neutral/svg?radius=50';

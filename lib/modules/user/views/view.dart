@@ -53,13 +53,13 @@ class UserPage extends ConsumerWidget {
     final syncState = ref.watch(syncServiceProvider);
     final user = ref.watch(userServiceProvider);
     final theme = Theme.of(context);
+    final avatar = (user?.prefs.data['avatar'] as String?) ?? '';
     return SingleChildScrollView(
       child: Column(
         children: [
           const SizedBox(height: 16),
           SvgPicture.network(
-            (user?.prefs.data['avatar'] as String?) ??
-                'https://api.dicebear.com/9.x/adventurer-neutral/svg?radius=50',
+            avatar.isNotEmpty ? avatar : generalAvatar,
             height: 160,
             placeholderBuilder: (context) {
               return const Center(

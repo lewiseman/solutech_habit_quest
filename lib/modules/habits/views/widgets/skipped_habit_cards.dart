@@ -14,6 +14,7 @@ class SkippedHabitCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isdarkmode = context.isDarkMode;
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24),
       child: Column(
@@ -34,9 +35,15 @@ class SkippedHabitCards extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: isdarkmode
+                      ? Colors.grey.shade900.withOpacity(.5)
+                      : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(
+                    color: isdarkmode
+                        ? Colors.grey.shade300.withOpacity(.3)
+                        : Colors.grey.shade300,
+                  ),
                 ),
                 child: Row(
                   children: [

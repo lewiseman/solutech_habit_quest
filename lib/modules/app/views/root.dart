@@ -128,6 +128,7 @@ class _RootAppState extends State<RootApp> {
                   BottomNavigationBar(
                     elevation: 0,
                     type: BottomNavigationBarType.fixed,
+                    selectedItemColor: AppTheme.primaryBlue,
                     currentIndex:
                         _pages.indexWhere((page) => page.page == currPath),
                     onTap: (index) {

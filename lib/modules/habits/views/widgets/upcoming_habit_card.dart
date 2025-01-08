@@ -16,6 +16,7 @@ class UpcomingHabitCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24),
       child: Column(
@@ -36,9 +37,9 @@ class UpcomingHabitCard extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(color: theme.dividerColor.withOpacity(.3)),
                 ),
                 child: Row(
                   children: [
@@ -176,7 +177,10 @@ class UpcomingHabitCard extends StatelessWidget {
                           },
                         );
                       },
-                      icon: const Icon(CustomIcons.upcoming),
+                      icon: Icon(
+                        CustomIcons.upcoming,
+                        color: theme.textTheme.bodyMedium!.color,
+                      ),
                     ),
                   ],
                 ),
