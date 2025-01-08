@@ -4,13 +4,14 @@ import 'package:habit_quest/config/config.dart';
 import 'package:intl/intl.dart';
 
 class SummaryWeekGraph extends StatefulWidget {
-  const SummaryWeekGraph({required this.data, super.key});
+  const SummaryWeekGraph({required this.data, required this.theme, super.key});
   final ({
     Map<String, double> bar,
     DateTime start,
     DateTime end,
     double avg
   }) data;
+  final ThemeData theme;
 
   @override
   State<SummaryWeekGraph> createState() => _SummaryWeekGraphState();
@@ -23,11 +24,11 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: widget.theme.cardColor,
         borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade200,
+            color: widget.theme.shadowColor.withOpacity(.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -56,7 +57,8 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
                       Text(
                         '''${DateFormat.yMMMd().format(widget.data.start).toUpperCase()} - ${DateFormat.yMMMd().format(widget.data.end).toUpperCase()}''',
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: widget.theme.textTheme.bodyMedium!.color!
+                              .withOpacity(.7),
                           fontFamily: AppTheme.poppinsFont,
                           fontSize: 12,
                         ),
@@ -70,7 +72,8 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
                     Text(
                       'AVG',
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: widget.theme.textTheme.bodyMedium!.color!
+                            .withOpacity(.7),
                         fontFamily: AppTheme.poppinsFont,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

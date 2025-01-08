@@ -17,6 +17,8 @@ class PopularHabits extends ConsumerWidget {
     if (habits.isEmpty) {
       return const SizedBox();
     }
+
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
@@ -46,13 +48,20 @@ class PopularHabits extends ConsumerWidget {
               final habit = habits[index];
               final days = habit['days'] as List?;
               return Card(
+                color: theme.cardColor,
                 clipBehavior: Clip.hardEdge,
                 child: Theme(
                   data: Theme.of(context).copyWith(
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    title: Text(habit['name'] as String),
+                    collapsedIconColor: theme.textTheme.bodyMedium!.color,
+                    title: Text(
+                      habit['name'] as String,
+                      style: TextStyle(
+                        color: theme.textTheme.bodyMedium!.color,
+                      ),
+                    ),
                     childrenPadding: const EdgeInsets.only(
                       bottom: 16,
                       top: 16,
@@ -63,16 +72,34 @@ class PopularHabits extends ConsumerWidget {
                       Row(
                         children: [
                           const Expanded(child: Text('Frequency')),
-                          Text(habit['frequency'] as String),
+                          Text(
+                            habit['frequency'] as String,
+                            style: TextStyle(
+                              color: theme.textTheme.bodyMedium!.color,
+                            ),
+                          ),
                         ],
                       ),
-                      const Divider(
+                      Divider(
                         thickness: .2,
+                        color: theme.dividerColor,
                       ),
                       Row(
                         children: [
-                          const Expanded(child: Text('Time')),
-                          Text(habit['time'] as String),
+                          Expanded(
+                            child: Text(
+                              'Time',
+                              style: TextStyle(
+                                color: theme.textTheme.bodyMedium!.color,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            habit['time'] as String,
+                            style: TextStyle(
+                              color: theme.textTheme.bodyMedium!.color,
+                            ),
+                          ),
                         ],
                       ),
                       if (days != null) ...[
@@ -81,7 +108,14 @@ class PopularHabits extends ConsumerWidget {
                         ),
                         Row(
                           children: [
-                            const Expanded(child: Text('Days')),
+                            Expanded(
+                              child: Text(
+                                'Days',
+                                style: TextStyle(
+                                  color: theme.textTheme.bodyMedium!.color,
+                                ),
+                              ),
+                            ),
                             Text(days.join(', ')),
                           ],
                         ),

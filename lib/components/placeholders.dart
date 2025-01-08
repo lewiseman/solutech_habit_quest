@@ -132,25 +132,28 @@ extension PlaceholderExt on BuildContext {
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Material(
-                borderRadius: BorderRadius.circular(4),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const CircularProgressIndicator(),
-                      if (message != null) const SizedBox(width: 20),
-                      if (message != null)
-                        Expanded(
-                          child: Text(
-                            message,
-                            style: const TextStyle(
-                              fontFamily: AppTheme.poppinsFont,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Material(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const CircularProgressIndicator(),
+                        if (message != null) const SizedBox(width: 20),
+                        if (message != null)
+                          Expanded(
+                            child: Text(
+                              message,
+                              style: const TextStyle(
+                                fontFamily: AppTheme.poppinsFont,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

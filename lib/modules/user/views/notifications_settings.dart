@@ -9,9 +9,10 @@ class NotificationSettingsPage extends ConsumerWidget {
     final active = notifications.where((element) => element.habit.reminder);
     final inactive =
         notifications.where((element) => !element.habit.reminder).toList();
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         title: const Text(
           'NOTIFICATIONS\nSETTINGS',
           style: TextStyle(
@@ -30,82 +31,110 @@ class NotificationSettingsPage extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Card(
-              clipBehavior: Clip.hardEdge,
-              child: SwitchListTile(
-                title: const Text(
-                  'Notifications Enabled',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: AppTheme.poppinsFont,
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: maxPageWidth,
+                ),
+                child: Card(
+                  color: theme.cardColor,
+                  clipBehavior: Clip.hardEdge,
+                  child: SwitchListTile(
+                    title: Text(
+                      'Notifications Enabled',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: theme.textTheme.bodyMedium!.color,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppTheme.poppinsFont,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '''If you're experiencing problems try and enable them manually in the settings.''',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: AppTheme.poppinsFont,
+                        color: theme.textTheme.bodyMedium!.color,
+                      ),
+                    ),
+                    value: false,
+                    onChanged: (value) async {},
                   ),
                 ),
-                subtitle: const Text(
-                  '''If you're experiencing problems try and enable them manually in the settings.''',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: AppTheme.poppinsFont,
-                  ),
-                ),
-                value: false,
-                onChanged: (value) async {},
               ),
             ),
-            if (active.isNotEmpty) sectionCard(active, 'ACTIVE', context),
+            if (active.isNotEmpty)
+              sectionCard(active, 'ACTIVE', context, theme),
             if (inactive.isNotEmpty)
-              sectionCard(inactive, 'IN-ACTIVE', context),
+              sectionCard(inactive, 'IN-ACTIVE', context, theme),
           ],
         ),
       ),
     );
   }
 
-  Padding sectionCard(
+  Widget sectionCard(
     Iterable<HabitNotification> active,
     String title,
     BuildContext context,
+    ThemeData theme,
   ) {
-    // TimeOfDay.now().
-    return Padding(
-      padding: const EdgeInsets.only(top: 30),
-      child: Card(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: AppTheme.poppinsFont,
-                ),
-              ),
-            ),
-            for (final notification in active) ...[
-              ListTile(
-                title: Text(notification.habit.title),
-                onTap: () {
-                  context.push('/edit_habit/${notification.habit.id}');
-                },
-                subtitle: Text(
-                  notification.habit.remainderTime(),
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontFamily: AppTheme.poppinsFont,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: maxPageWidth,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30),
+          child: Card(
+            color: theme.cardColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppTheme.poppinsFont,
+                    ),
                   ),
                 ),
-              ),
-              if (notification.habit.id != active.last.habit.id)
-                const Divider(
-                  thickness: .1,
-                  endIndent: 16,
-                  indent: 16,
-                ),
-            ],
-            const SizedBox(height: 16),
-          ],
+                for (final notification in active) ...[
+                  ListTile(
+                    title: Text(
+                      notification.habit.title,
+                      style: TextStyle(
+                        color: theme.textTheme.bodyMedium!.color,
+                        fontFamily: AppTheme.poppinsFont,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onTap: () {
+                      context.push('/edit_habit/${notification.habit.id}');
+                    },
+                    subtitle: Text(
+                      notification.habit.remainderTime(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.textTheme.bodyMedium!.color,
+                        fontFamily: AppTheme.poppinsFont,
+                      ),
+                    ),
+                  ),
+                  if (notification.habit.id != active.last.habit.id)
+                    Divider(
+                      thickness: .1,
+                      endIndent: 16,
+                      indent: 16,
+                      color: theme.dividerColor,
+                    ),
+                ],
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
         ),
       ),
     );

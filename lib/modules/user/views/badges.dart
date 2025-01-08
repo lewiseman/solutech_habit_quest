@@ -28,47 +28,55 @@ class BadgesPage extends ConsumerWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Wrap(
-            runSpacing: 16,
-            spacing: 16,
-            children: [
-              for (final badge in badges)
-                SizedBox(
-                  width: 100,
-                  child: Column(
-                    children: [
-                      if (!badge.achieved)
-                        ColorFiltered(
-                          colorFilter: ColorFilter.mode(
-                            Colors.grey.withOpacity(0.5),
-                            BlendMode.srcIn,
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: maxPageWidth,
+          ),
+          child: SingleChildScrollView(
+            child: Center(
+              child: Wrap(
+                runSpacing: 16,
+                spacing: 16,
+                children: [
+                  for (final badge in badges)
+                    SizedBox(
+                      width: 100,
+                      child: Column(
+                        children: [
+                          if (!badge.achieved)
+                            ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                Colors.grey.withOpacity(0.5),
+                                BlendMode.srcIn,
+                              ),
+                              child: Image.asset(
+                                badge.image,
+                                height: 100,
+                                width: 100,
+                              ),
+                            )
+                          else
+                            Image.asset(
+                              badge.image,
+                              height: 100,
+                              width: 100,
+                            ),
+                          Text(
+                            badge.title.toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontFamily: AppTheme.poppinsFont,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          child: Image.asset(
-                            badge.image,
-                            height: 100,
-                            width: 100,
-                          ),
-                        )
-                      else
-                        Image.asset(
-                          badge.image,
-                          height: 100,
-                          width: 100,
-                        ),
-                      Text(
-                        badge.title.toUpperCase(),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontFamily: AppTheme.poppinsFont,
-                        ),
-                        textAlign: TextAlign.center,
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-            ],
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

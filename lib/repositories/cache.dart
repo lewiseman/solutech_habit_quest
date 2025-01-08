@@ -58,7 +58,8 @@ final class CacheStorage {
   }
 
   Future<void> updateUserPrefs(LocalUserPrefs userPrefs) async {
-    await _prefs.setString(_userprefsKey, userPrefs.toString());
+    final res = await _prefs.setString(_userprefsKey, userPrefs.toString());
+    print(res);
   }
 
   Future<void> updateThemeName(String themename) async {

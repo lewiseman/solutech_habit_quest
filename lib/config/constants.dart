@@ -11,3 +11,5 @@ const appwriteDatabaseId = '677957e2003e1ba5f1dc';
 const appwriteHabitsCID = '67795856000c5482c68f';
 
 const appwriteHabitActionsCID = '677ae82b001da713b983';
+
+const maxPageWidth = 600.0;
