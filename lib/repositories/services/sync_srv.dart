@@ -1,8 +1,7 @@
+import 'package:appwrite/models.dart' as models;
 import 'package:habit_quest/common.dart';
-import 'package:habit_quest/modules/habits/services/habits_action_srv.dart';
 import 'package:habit_quest/repositories/models/sync_entry.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:appwrite/models.dart' as models;
 
 final syncServiceProvider =
     StateNotifierProvider<SyncNotifier, SyncState>((ref) {
@@ -301,7 +300,9 @@ class SyncNotifier extends StateNotifier<SyncState> {
     final latestdata = await AppRepository.instance.localRepository.getHabits(
       user!.$id,
     );
-    ref.read(habitsServiceProvider.notifier).updateFromSync(latestdata);
+    try {
+      ref.read(habitsServiceProvider.notifier).updateFromSync(latestdata);
+    } catch (e) {}
 
     try {
       await doHabitRemoteActions(remoteActions);

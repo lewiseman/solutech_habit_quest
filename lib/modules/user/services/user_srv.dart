@@ -1,6 +1,7 @@
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart' as models;
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/user/services/rewards_helper.dart';
 import 'package:habit_quest/router.dart';
 
 final userServiceProvider =
@@ -67,6 +68,25 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
       );
       return;
     }
+  }
+
+  void addCoin(BuildContext context) {
+    final collectedCoins = state?.collectedCoins();
+    if (collectedCoins == null) {
+      return;
+    }
+    final coins = collectedCoins + 1;
+    update(collectedCoins: coins);
+    RewardsHelper.activityCompleted(context, coins);
+  }
+
+  Future<void> spendCoins(int coins) async {
+    final spentCoins = state?.spentCoins();
+    if (spentCoins == null) {
+      return;
+    }
+    final newCoins = spentCoins + coins;
+    await update(spentCoins: newCoins);
   }
 
   Future<void> register({
@@ -164,10 +184,15 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
           spentCoins != null) {
         final updateduser = await appwriteAccount.updatePrefs(
           prefs: {
-            if (avatar != null) 'avatar': avatar,
-            if (themeMode != null) 'theme_mode': themeMode,
-            if (collectedCoins != null) 'collected_coins': collectedCoins,
-            if (spentCoins != null) 'spent_coins': spentCoins,
+            'avatar': avatar ?? user!.prefs.data['avatar'] as String? ?? '',
+            'theme_mode': themeMode ??
+                user?.prefs.data['theme_mode'] as String? ??
+                'light',
+            'collected_coins': collectedCoins ??
+                user?.prefs.data['collected_coins'] as int? ??
+                0,
+            'spent_coins':
+                spentCoins ?? user?.prefs.data['spent_coins'] as int? ?? 0,
           },
         );
         user = updateduser;

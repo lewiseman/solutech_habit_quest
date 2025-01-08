@@ -69,15 +69,7 @@ final class CacheStorage {
     );
   }
 
-  String get themeName {
-    try {
-      final theme = _prefs.getString(_themeNameKey);
-      return theme ?? 'light';
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      return 'light';
-    }
-  }
+
 
   Future<void> updateCoins(int coin) async {
     final res = await _prefs.setInt(

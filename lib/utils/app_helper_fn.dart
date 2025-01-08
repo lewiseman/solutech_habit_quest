@@ -17,3 +17,16 @@ Future<void> openLink(String url, [BuildContext? context]) async {
   }
   unawaited(launchUrl(uri));
 }
+
+   ThemeMode getThemeMode(String name) {
+    switch (name) {
+      case 'system':
+        return ThemeMode.system;
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      default:
+        return ThemeMode.light;
+    }
+  }

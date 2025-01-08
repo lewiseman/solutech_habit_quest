@@ -92,9 +92,9 @@ class UserPage extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Text(
-                        '5',
-                        style: TextStyle(
+                      Text(
+                        '${NextLevelPop.calcLevel(user?.collectedCoins())}',
+                        style: const TextStyle(
                           fontFamily: AppTheme.poppinsFont,
                         ),
                       ),
@@ -118,9 +118,9 @@ class UserPage extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Text(
-                        '48',
-                        style: TextStyle(
+                      Text(
+                        '${user?.getCoinBalance() ?? 0}',
+                        style: const TextStyle(
                           fontFamily: AppTheme.poppinsFont,
                         ),
                       ),
