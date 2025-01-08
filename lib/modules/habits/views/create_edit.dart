@@ -164,496 +164,506 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 100),
-        child: Column(
-          children: [
-            Material(
-              color: Colors.white,
-              elevation: .8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  EmojiPicker.pick(context).then((res) {
-                    if (res != null && res.isNotEmpty) {
-                      setState(() {
-                        emoji = res;
-                      });
-                    }
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 14,
-                  ),
-                  child: Text(
-                    emoji,
-                    style: const TextStyle(
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 50, right: 50, top: 20),
-              child: TextField(
-                controller: titleController,
-                onChanged: (value) => setState(() {
-                  titleValue = value;
-                }),
-                textInputAction: TextInputAction.done,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontFamily: AppTheme.poppinsFont,
-                  fontSize: 20,
-                ),
-                minLines: 1,
-                maxLines: 4,
-                maxLength: 100,
-                decoration: const InputDecoration(
-                  labelText: 'eg. Drink water',
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  alignLabelWithHint: true,
-                  hintText: '',
-                  labelStyle: TextStyle(
-                    fontFamily: AppTheme.poppinsFont,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Material(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: .8,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Frequency',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontFamily: AppTheme.poppinsFont,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          for (int i = 0; i < HabitFrequency.values.length; i++)
-                            ...() {
-                              final selected =
-                                  selectedFrequency == HabitFrequency.values[i];
-                              return [
-                                Expanded(
-                                  child: OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        selectedFrequency =
-                                            HabitFrequency.values[i];
-                                      });
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: selected
-                                          ? AppTheme.primaryBlue
-                                          : Colors.white,
-                                      foregroundColor: selected
-                                          ? Colors.white
-                                          : AppTheme.primaryBlue,
-                                      side: BorderSide(
-                                        color: AppTheme.primaryBlue,
-                                        width: selected ? 0 : 1,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      HabitFrequency.values[i].displayName,
-                                      style: const TextStyle(
-                                        fontFamily: AppTheme.poppinsFont,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ),
-                                if (i != HabitFrequency.values.length - 1)
-                                  const SizedBox(width: 10),
-                              ];
-                            }(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-              child: Material(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: .8,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Time',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontFamily: AppTheme.poppinsFont,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              selectedTime.format(context),
-                              style: const TextStyle(
-                                fontFamily: AppTheme.poppinsFont,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              showTimePicker(
-                                context: context,
-                                initialTime: selectedTime,
-                              ).then((time) {
-                                if (time != null) {
-                                  setState(() {
-                                    selectedTime = time;
-                                  });
-                                }
-                              });
-                            },
-                            child: const Row(
-                              children: [
-                                Text(
-                                  'CHANGE',
-                                  style: TextStyle(
-                                    fontFamily: AppTheme.poppinsFont,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Icon(
-                                  Icons.timer_outlined,
-                                  size: 20,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Divider(
-                        thickness: .2,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        (selectedFrequency == HabitFrequency.once
-                            ? 'Date'
-                            : 'Start Date'),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontFamily: AppTheme.poppinsFont,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              DateFormat.MMMEd().format(startDate),
-                              style: const TextStyle(
-                                fontFamily: AppTheme.poppinsFont,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              showDatePicker(
-                                context: context,
-                                initialDate: startDate,
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime(2100),
-                              ).then((date) {
-                                if (date != null) {
-                                  setState(() {
-                                    startDate = date;
-                                  });
-                                }
-                              });
-                            },
-                            child: const Row(
-                              children: [
-                                Text(
-                                  'CHANGE',
-                                  style: TextStyle(
-                                    fontFamily: AppTheme.poppinsFont,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Icon(
-                                  Icons.calendar_month_rounded,
-                                  size: 20,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            if (selectedFrequency == HabitFrequency.weekly)
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-                child: Material(
-                  color: Colors.white,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: maxPageWidth),
+            child: Column(
+              children: [
+                Material(
+                  color: theme.cardColor,
+                  elevation: .8,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  elevation: .8,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Days',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontFamily: AppTheme.poppinsFont,
-                            fontSize: 16,
-                          ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      EmojiPicker.pick(context).then((res) {
+                        if (res != null && res.isNotEmpty) {
+                          setState(() {
+                            emoji = res;
+                          });
+                        }
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 14,
+                      ),
+                      child: Text(
+                        emoji,
+                        style: const TextStyle(
+                          fontSize: 30,
                         ),
-                        const SizedBox(
-                          height: 4,
-                          width: double.maxFinite,
-                        ),
-                        Text(
-                          selectedDays.isNotEmpty
-                              ? selectedDays.join(', ')
-                              : 'Select at least one day',
-                          style: const TextStyle(
-                            fontFamily: AppTheme.poppinsFont,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            for (int i = 0; i < days.length; i++)
-                              ...() {
-                                final day = days[i];
-                                final selected = selectedDays.contains(day);
-                                return [
-                                  IconButton.outlined(
-                                    onPressed: () {
-                                      if (selected) {
-                                        setState(() {
-                                          selectedDays.remove(day);
-                                        });
-                                      } else {
-                                        setState(() {
-                                          selectedDays.add(day);
-                                        });
-                                      }
-                                    },
-                                    style: IconButton.styleFrom(
-                                      backgroundColor: selected
-                                          ? AppTheme.primaryBlue
-                                          : Colors.white,
-                                      foregroundColor: selected
-                                          ? Colors.white
-                                          : AppTheme.primaryBlue,
-                                      side: BorderSide(
-                                        color: AppTheme.primaryBlue,
-                                        width: selected ? 0 : 1,
-                                      ),
-                                    ),
-                                    icon: Text(
-                                      day.substring(0, 2),
-                                      style: TextStyle(
-                                        fontFamily: AppTheme.poppinsFont,
-                                        color: selected
-                                            ? Colors.white
-                                            : AppTheme.primaryBlue,
-                                      ),
-                                    ),
-                                  ),
-                                ];
-                              }(),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-              child: Material(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                Padding(
+                  padding: const EdgeInsets.only(left: 50, right: 50, top: 20),
+                  child: TextField(
+                    controller: titleController,
+                    onChanged: (value) => setState(() {
+                      titleValue = value;
+                    }),
+                    textInputAction: TextInputAction.done,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: AppTheme.poppinsFont,
+                      fontSize: 20,
+                    ),
+                    minLines: 1,
+                    maxLines: 4,
+                    maxLength: 100,
+                    decoration: const InputDecoration(
+                      labelText: 'eg. Drink water',
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      alignLabelWithHint: true,
+                      hintText: '',
+                      labelStyle: TextStyle(
+                        fontFamily: AppTheme.poppinsFont,
+                      ),
+                    ),
+                  ),
                 ),
-                elevation: .8,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                const SizedBox(
+                  height: 50,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Material(
+                    color: theme.cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: .8,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Reminder',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
+                          const Text(
+                            'Frequency',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontFamily: AppTheme.poppinsFont,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              for (int i = 0;
+                                  i < HabitFrequency.values.length;
+                                  i++)
+                                ...() {
+                                  final selected = selectedFrequency ==
+                                      HabitFrequency.values[i];
+                                  return [
+                                    Expanded(
+                                      child: OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            selectedFrequency =
+                                                HabitFrequency.values[i];
+                                          });
+                                        },
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: selected
+                                              ? AppTheme.primaryBlue
+                                              : Colors.white,
+                                          foregroundColor: selected
+                                              ? Colors.white
+                                              : AppTheme.primaryBlue,
+                                          side: BorderSide(
+                                            color: AppTheme.primaryBlue,
+                                            width: selected ? 0 : 1,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          HabitFrequency.values[i].displayName,
+                                          style: const TextStyle(
+                                            fontFamily: AppTheme.poppinsFont,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    if (i != HabitFrequency.values.length - 1)
+                                      const SizedBox(width: 10),
+                                  ];
+                                }(),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+                  child: Material(
+                    color: theme.cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: .8,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Time',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontFamily: AppTheme.poppinsFont,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  selectedTime.format(context),
+                                  style: const TextStyle(
                                     fontFamily: AppTheme.poppinsFont,
-                                    fontSize: 16,
+                                    fontSize: 20,
                                   ),
                                 ),
-                                Text(
-                                  'Remind me before it starts',
-                                  style: TextStyle(
-                                    fontSize: 12,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  showTimePicker(
+                                    context: context,
+                                    initialTime: selectedTime,
+                                  ).then((time) {
+                                    if (time != null) {
+                                      setState(() {
+                                        selectedTime = time;
+                                      });
+                                    }
+                                  });
+                                },
+                                child: const Row(
+                                  children: [
+                                    Text(
+                                      'CHANGE',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Icon(
+                                      Icons.timer_outlined,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Divider(
+                            thickness: .2,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            (selectedFrequency == HabitFrequency.once
+                                ? 'Date'
+                                : 'Start Date'),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontFamily: AppTheme.poppinsFont,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  DateFormat.MMMEd().format(startDate),
+                                  style: const TextStyle(
                                     fontFamily: AppTheme.poppinsFont,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: startDate,
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime(2100),
+                                  ).then((date) {
+                                    if (date != null) {
+                                      setState(() {
+                                        startDate = date;
+                                      });
+                                    }
+                                  });
+                                },
+                                child: const Row(
+                                  children: [
+                                    Text(
+                                      'CHANGE',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Icon(
+                                      Icons.calendar_month_rounded,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                if (selectedFrequency == HabitFrequency.weekly)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, top: 30),
+                    child: Material(
+                      color: theme.cardColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: .8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Days',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontFamily: AppTheme.poppinsFont,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 4,
+                              width: double.maxFinite,
+                            ),
+                            Text(
+                              selectedDays.isNotEmpty
+                                  ? selectedDays.join(', ')
+                                  : 'Select at least one day',
+                              style: const TextStyle(
+                                fontFamily: AppTheme.poppinsFont,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                for (int i = 0; i < days.length; i++)
+                                  ...() {
+                                    final day = days[i];
+                                    final selected = selectedDays.contains(day);
+                                    return [
+                                      IconButton.outlined(
+                                        onPressed: () {
+                                          if (selected) {
+                                            setState(() {
+                                              selectedDays.remove(day);
+                                            });
+                                          } else {
+                                            setState(() {
+                                              selectedDays.add(day);
+                                            });
+                                          }
+                                        },
+                                        style: IconButton.styleFrom(
+                                          backgroundColor: selected
+                                              ? AppTheme.primaryBlue
+                                              : Colors.white,
+                                          foregroundColor: selected
+                                              ? Colors.white
+                                              : AppTheme.primaryBlue,
+                                          side: BorderSide(
+                                            color: AppTheme.primaryBlue,
+                                            width: selected ? 0 : 1,
+                                          ),
+                                        ),
+                                        icon: Text(
+                                          day.substring(0, 2),
+                                          style: TextStyle(
+                                            fontFamily: AppTheme.poppinsFont,
+                                            color: selected
+                                                ? Colors.white
+                                                : AppTheme.primaryBlue,
+                                          ),
+                                        ),
+                                      ),
+                                    ];
+                                  }(),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+                  child: Material(
+                    color: theme.cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: .8,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Reminder',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: AppTheme.poppinsFont,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Remind me before it starts',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Switch(
+                                value: reminder,
+                                onChanged: (value) {
+                                  setState(() {
+                                    reminder = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          if (reminder) const SizedBox(height: 16),
+                          if (reminder)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '$remiderMinutes mins',
+                                    style: const TextStyle(
+                                      fontFamily: AppTheme.poppinsFont,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    showCupertinoModalPopup<int>(
+                                      context: context,
+                                      builder: (context) {
+                                        return Container(
+                                          height: 216,
+                                          margin: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom,
+                                          ),
+                                          color: CupertinoColors
+                                              .systemBackground
+                                              .resolveFrom(context),
+                                          child: SafeArea(
+                                            top: false,
+                                            child: CupertinoPicker(
+                                              magnification: 1.22,
+                                              squeeze: 1.2,
+                                              useMagnifier: true,
+                                              itemExtent: 32,
+                                              onSelectedItemChanged: (index) {
+                                                setState(() {
+                                                  remiderMinutes = index + 1;
+                                                });
+                                              },
+                                              children: [
+                                                for (int i = 1; i <= 60; i++)
+                                                  Text(
+                                                    '$i mins',
+                                                    style: const TextStyle(
+                                                      fontFamily:
+                                                          AppTheme.poppinsFont,
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ).then((value) {
+                                      if (value != null) {
+                                        setState(() {
+                                          remiderMinutes = value;
+                                        });
+                                      }
+                                    });
+                                  },
+                                  child: const Row(
+                                    children: [
+                                      Text(
+                                        'CHANGE',
+                                        style: TextStyle(
+                                          fontFamily: AppTheme.poppinsFont,
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Icon(
+                                        Icons.timer_outlined,
+                                        size: 20,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          Switch(
-                            value: reminder,
-                            onChanged: (value) {
-                              setState(() {
-                                reminder = value;
-                              });
-                            },
-                          ),
                         ],
                       ),
-                      if (reminder) const SizedBox(height: 16),
-                      if (reminder)
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '$remiderMinutes mins',
-                                style: const TextStyle(
-                                  fontFamily: AppTheme.poppinsFont,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                showCupertinoModalPopup<int>(
-                                  context: context,
-                                  builder: (context) {
-                                    return Container(
-                                      height: 216,
-                                      margin: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom,
-                                      ),
-                                      color: CupertinoColors.systemBackground
-                                          .resolveFrom(context),
-                                      child: SafeArea(
-                                        top: false,
-                                        child: CupertinoPicker(
-                                          magnification: 1.22,
-                                          squeeze: 1.2,
-                                          useMagnifier: true,
-                                          itemExtent: 32,
-                                          onSelectedItemChanged: (index) {
-                                            setState(() {
-                                              remiderMinutes = index + 1;
-                                            });
-                                          },
-                                          children: [
-                                            for (int i = 1; i <= 60; i++)
-                                              Text(
-                                                '$i mins',
-                                                style: const TextStyle(
-                                                  fontFamily:
-                                                      AppTheme.poppinsFont,
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ).then((value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      remiderMinutes = value;
-                                    });
-                                  }
-                                });
-                              },
-                              child: const Row(
-                                children: [
-                                  Text(
-                                    'CHANGE',
-                                    style: TextStyle(
-                                      fontFamily: AppTheme.poppinsFont,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Icon(
-                                    Icons.timer_outlined,
-                                    size: 20,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: FilledButton(
+                    onPressed: titleValue.length < 3 ? null : onAction,
+                    style: fullBtnStyle(),
+                    child: Text(widget.isEdit ? 'Update' : 'Done'),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: FilledButton(
-                onPressed: titleValue.length < 3 ? null : onAction,
-                style: fullBtnStyle(),
-                child: Text(widget.isEdit ? 'Update' : 'Done'),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

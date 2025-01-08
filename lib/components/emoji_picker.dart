@@ -10,6 +10,7 @@ class EmojiPicker extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (context) {
         return DraggableScrollableSheet(
           initialChildSize: 0.4,

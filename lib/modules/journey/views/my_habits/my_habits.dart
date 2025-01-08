@@ -17,6 +17,7 @@ class MyHabitsSection extends ConsumerWidget {
             : 'You have no habits yet',
       );
     }
+    final theme = Theme.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 200),
       child: Column(
@@ -24,6 +25,7 @@ class MyHabitsSection extends ConsumerWidget {
           const SizedBox(height: 30),
           HeaderSummary(
             habits: habits,
+            theme: theme,
           ),
           ListView.separated(
             shrinkWrap: true,
@@ -37,7 +39,13 @@ class MyHabitsSection extends ConsumerWidget {
                   backgroundColor: Colors.grey.shade200,
                   child: Text(habit.emoji),
                 ),
-                title: Text(habit.title),
+                title: Text(
+                  habit.title,
+                  style: TextStyle(
+                    fontFamily: AppTheme.poppinsFont,
+                    color: theme.textTheme.bodyMedium!.color,
+                  ),
+                ),
                 trailing: habit.paused
                     ? Container(
                         padding: const EdgeInsetsDirectional.symmetric(
@@ -61,6 +69,9 @@ class MyHabitsSection extends ConsumerWidget {
                     : null,
                 subtitle: Text(
                   '''${habit.frequency.displayName} • ${habit.timeValue().format(context)}''',
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium!.color,
+                  ),
                 ),
                 onTap: () => onHabitTap(context, habit, ref),
               );
@@ -79,54 +90,57 @@ class MyHabitsSection extends ConsumerWidget {
     final res = await showCupertinoModalPopup<String>(
       context: context,
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: CupertinoActionSheet(
-            title: Text(habit.title),
-            actions: [
-              CupertinoActionSheetAction(
-                onPressed: () {
-                  Navigator.pop(context, 'pause');
-                },
-                child: Text(
-                  habit.paused ? 'Un-pause' : 'Pause',
-                  style: const TextStyle(
-                    fontFamily: AppTheme.poppinsFont,
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: maxPageWidth),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: CupertinoActionSheet(
+              title: Text(habit.title),
+              actions: [
+                CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.pop(context, 'pause');
+                  },
+                  child: Text(
+                    habit.paused ? 'Un-pause' : 'Pause',
+                    style: const TextStyle(
+                      fontFamily: AppTheme.poppinsFont,
+                    ),
                   ),
                 ),
-              ),
-              CupertinoActionSheetAction(
+                CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.pop(context, 'edit');
+                  },
+                  child: const Text(
+                    'Edit',
+                    style: TextStyle(
+                      fontFamily: AppTheme.poppinsFont,
+                    ),
+                  ),
+                ),
+                CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.pop(context, 'delete');
+                  },
+                  isDestructiveAction: true,
+                  child: const Text(
+                    'Delete',
+                    style: TextStyle(
+                      fontFamily: AppTheme.poppinsFont,
+                    ),
+                  ),
+                ),
+              ],
+              cancelButton: CupertinoActionSheetAction(
                 onPressed: () {
-                  Navigator.pop(context, 'edit');
+                  Navigator.pop(context);
                 },
                 child: const Text(
-                  'Edit',
+                  'Cancel',
                   style: TextStyle(
                     fontFamily: AppTheme.poppinsFont,
                   ),
-                ),
-              ),
-              CupertinoActionSheetAction(
-                onPressed: () {
-                  Navigator.pop(context, 'delete');
-                },
-                isDestructiveAction: true,
-                child: const Text(
-                  'Delete',
-                  style: TextStyle(
-                    fontFamily: AppTheme.poppinsFont,
-                  ),
-                ),
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  fontFamily: AppTheme.poppinsFont,
                 ),
               ),
             ),
@@ -167,9 +181,11 @@ class MyHabitsSection extends ConsumerWidget {
 class HeaderSummary extends StatelessWidget {
   const HeaderSummary({
     required this.habits,
+    required this.theme,
     super.key,
   });
   final List<Habit> habits;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
@@ -177,11 +193,11 @@ class HeaderSummary extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade200,
+            color: theme.shadowColor.withOpacity(.06),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),

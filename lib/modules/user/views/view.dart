@@ -52,6 +52,7 @@ class UserPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncServiceProvider);
     final user = ref.watch(userServiceProvider);
+    final theme = Theme.of(context);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -133,6 +134,7 @@ class UserPage extends ConsumerWidget {
             syncState: syncState,
           ),
           settingsGroup(
+            theme: theme,
             actions: [
               (
                 name: 'Avatars',
@@ -140,7 +142,7 @@ class UserPage extends ConsumerWidget {
                 action: () {
                   context.push('/user/avatars');
                 },
-                leading: const Icon(CustomIcons.group),
+                leading: CustomIcons.group,
               ),
               (
                 name: 'My Badges',
@@ -148,7 +150,7 @@ class UserPage extends ConsumerWidget {
                 action: () {
                   context.push('/user/badges');
                 },
-                leading: const Icon(CustomIcons.achieve),
+                leading: CustomIcons.achieve
               ),
               (
                 name: 'My Profile',
@@ -156,11 +158,12 @@ class UserPage extends ConsumerWidget {
                 action: () {
                   context.push('/user/profile');
                 },
-                leading: const Icon(CustomIcons.user_edit),
+                leading: CustomIcons.user_edit
               ),
             ],
           ),
           settingsGroup(
+            theme: theme,
             title: 'Settings',
             actions: [
               (
@@ -169,7 +172,7 @@ class UserPage extends ConsumerWidget {
                 action: () {
                   context.push('/user/notifications');
                 },
-                leading: const Icon(CustomIcons.bell),
+                leading: CustomIcons.bell,
               ),
               (
                 name: 'Theme',
@@ -177,11 +180,12 @@ class UserPage extends ConsumerWidget {
                 action: () {
                   context.push('/theme');
                 },
-                leading: const Icon(CustomIcons.theme),
+                leading: CustomIcons.theme,
               ),
             ],
           ),
           settingsGroup(
+            theme: theme,
             title: 'Other',
             actions: [
               (
@@ -192,7 +196,7 @@ class UserPage extends ConsumerWidget {
                     'https://www.solutech.co.ke/policies-2/#privacy-policy',
                   );
                 },
-                leading: const Icon(CustomIcons.file),
+                leading: CustomIcons.file,
               ),
               (
                 name: 'Share with friends',
@@ -203,7 +207,7 @@ class UserPage extends ConsumerWidget {
                     subject: 'Habit Quest',
                   );
                 },
-                leading: const Icon(CustomIcons.share),
+                leading: CustomIcons.share,
               ),
               (
                 name: 'Rate us',
@@ -213,7 +217,7 @@ class UserPage extends ConsumerWidget {
                     'https://play.google.com/store/apps/details?id=com.solutech.sat.solutech_sat&hl=en&pli=1',
                   );
                 },
-                leading: const Icon(CustomIcons.rate),
+                leading: CustomIcons.rate,
               ),
               (
                 name: 'Feedback',
@@ -221,7 +225,7 @@ class UserPage extends ConsumerWidget {
                 action: () {
                   openLink('https://www.solutech.co.ke/contact-us/');
                 },
-                leading: const Icon(CustomIcons.copy_writing),
+                leading: CustomIcons.copy_writing,
               ),
             ],
           ),
@@ -308,9 +312,10 @@ class UserPage extends ConsumerWidget {
               String name,
               VoidCallback action,
               String? subtitle,
-              Widget? leading
+              IconData? leading
             })>
         actions,
+    required ThemeData theme,
     String? title,
   }) {
     return Padding(
@@ -345,7 +350,7 @@ class UserPage extends ConsumerWidget {
               ],
             ),
             child: Material(
-              color: Colors.white,
+              color: theme.cardColor,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
               child: Column(
                 children: [
@@ -354,21 +359,38 @@ class UserPage extends ConsumerWidget {
                       final action = actions[x];
                       return [
                         ListTile(
-                          leading: action.leading,
-                          title: Text(action.name),
+                          leading: Icon(
+                            action.leading,
+                            color: theme.textTheme.bodyMedium!.color,
+                          ),
+                          title: Text(
+                            action.name,
+                            style: TextStyle(
+                              color: theme.textTheme.bodyMedium!.color,
+                              fontFamily: AppTheme.poppinsFont,
+                            ),
+                          ),
                           onTap: action.action,
                           subtitle: action.subtitle != null
-                              ? Text(action.subtitle!)
+                              ? Text(
+                                  action.subtitle!,
+                                  style: TextStyle(
+                                    color: theme.textTheme.bodyMedium!.color,
+                                    fontFamily: AppTheme.poppinsFont,
+                                  ),
+                                )
                               : null,
-                          trailing: const Icon(
+                          trailing: Icon(
                             CupertinoIcons.chevron_right,
                             size: 20,
+                            color: theme.textTheme.bodyMedium!.color,
                           ),
                         ),
                         if (x != actions.length - 1)
-                          const Divider(
+                          Divider(
                             height: .1,
                             thickness: .1,
+                            color: theme.dividerColor,
                           ),
                       ];
                     }(),

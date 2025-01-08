@@ -80,6 +80,7 @@ class LocalUserPrefs {
     final jsonMap = jsonDecode(jsonString);
     return LocalUserPrefs.fromJson(jsonMap as Map<String, dynamic>);
   }
+
   final String avatar;
   final String themeMode;
   final int collectedCoins;
@@ -108,6 +109,11 @@ class LocalUserPrefs {
       spentCoins: spentCoins ?? this.spentCoins,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(toJson());
   }
 
   models.User toUser(models.User? user) {

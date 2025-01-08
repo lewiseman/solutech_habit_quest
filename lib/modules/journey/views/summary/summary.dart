@@ -17,6 +17,7 @@ class SummarySection extends ConsumerWidget {
     }();
     final habitActions = ref.watch(habitsActionServiceProvider);
     final data = JourneySummaryData(habits: habits, habitActions: habitActions);
+    final theme = Theme.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 200),
       child: Column(
@@ -28,14 +29,17 @@ class SummarySection extends ConsumerWidget {
           const SizedBox(height: 40),
           SummaryWeekGraph(
             data: data.weekData(),
+            theme: theme,
           ),
           const SizedBox(height: 40),
           SummaryMonthTable(
             dates: data.calculateColorGrid(),
+            theme: theme,
           ),
           const SizedBox(height: 40),
           TextSummary(
             data: data.textSummaryData(),
+            theme: theme,
           ),
         ],
       ),
@@ -46,20 +50,22 @@ class SummarySection extends ConsumerWidget {
 class SummaryMonthTable extends StatelessWidget {
   const SummaryMonthTable({
     required this.dates,
+    required this.theme,
     super.key,
   });
   final Map<DateTime, Color> dates;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade200,
+            color: theme.shadowColor.withOpacity(.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -135,6 +141,7 @@ class SummaryMonthTable extends StatelessWidget {
 class TextSummary extends StatelessWidget {
   const TextSummary({
     required this.data,
+    required this.theme,
     super.key,
   });
 
@@ -144,16 +151,18 @@ class TextSummary extends StatelessWidget {
     int habitsCompletedThisWeek
   }) data;
 
+  final ThemeData theme;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade200,
+            color: theme.shadowColor.withOpacity(.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),

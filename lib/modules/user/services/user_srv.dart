@@ -5,10 +5,12 @@ import 'package:habit_quest/router.dart';
 
 final userServiceProvider =
     StateNotifierProvider<UserServiceNotifier, models.User?>(
-  (ref) => UserServiceNotifier(
-    ref: ref,
-    userCredentials: CacheStorage.instance.userCredentials,
-  ),
+  (ref) {
+    return UserServiceNotifier(
+      ref: ref,
+      userCredentials: CacheStorage.instance.userCredentials,
+    );
+  },
 );
 
 class UserServiceNotifier extends StateNotifier<models.User?> {
@@ -24,6 +26,10 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
   final UserCredentials? userCredentials;
 
   Future<void> init() async {
+    try {
+      final initialuser = CacheStorage.instance.userPrefs?.toUser(state);
+      state = initialuser;
+    } catch (e) {}
     try {
       final user = await login(
         email: userCredentials!.email,

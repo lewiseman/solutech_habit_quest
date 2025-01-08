@@ -24,7 +24,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(ref.read(userServiceProvider));
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -48,48 +48,56 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 50,
-        ),
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              HabitTextInput(
-                controller: nameController,
-                validator: emptyValidation,
-                fillColor: Colors.white,
-                label: 'Name',
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: maxPageWidth,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: 50,
+            ),
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  HabitTextInput(
+                    controller: nameController,
+                    validator: emptyValidation,
+                    fillColor: theme.cardColor,
+                    label: 'Name',
+                  ),
+                  const SizedBox(height: 40),
+                  FilledButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        context.showInfoLoad('Updating...');
+                        ref
+                            .read(userServiceProvider.notifier)
+                            .update(name: nameController.text.trim())
+                            .then((_) {
+                          context
+                            ..pop()
+                            ..showSuccessToast('Updated');
+                        }).onError((error, stack) {
+                          context
+                            ..pop()
+                            ..showErrorToast(error.toString());
+                        });
+                      }
+                    },
+                    style: FilledButton.styleFrom(
+                      fixedSize: const Size.fromWidth(double.maxFinite),
+                    ),
+                    child: const Text('UPDATE'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 40),
-              FilledButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    context.showInfoLoad('Updating...');
-                    ref
-                        .read(userServiceProvider.notifier)
-                        .update(name: nameController.text.trim())
-                        .then((_) {
-                      context
-                        ..pop()
-                        ..showSuccessToast('Updated');
-                    }).onError((error, stack) {
-                      context
-                        ..pop()
-                        ..showErrorToast(error.toString());
-                    });
-                  }
-                },
-                style: FilledButton.styleFrom(
-                  fixedSize: const Size.fromWidth(double.maxFinite),
-                ),
-                child: const Text('UPDATE'),
-              ),
-            ],
+            ),
           ),
         ),
       ),

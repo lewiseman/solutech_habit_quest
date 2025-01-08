@@ -18,16 +18,43 @@ class AppTheme {
     platform: TargetPlatform.iOS,
     primaryColor: primaryBlue,
     colorScheme: const ColorScheme.light(primary: primaryBlue),
+    cardColor: Colors.black,
+    appBarTheme: const AppBarTheme(
+      iconTheme: IconThemeData(color: Colors.white),
+      titleTextStyle: TextStyle(
+        color: Colors.white,
+      ),
+    ),
+    dividerColor: Colors.white,
+    textTheme: ThemeData.dark()
+        .textTheme
+        .apply(
+          fontFamily: poppinsFont,
+        )
+        .copyWith(
+          bodyMedium: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+    brightness: Brightness.dark,
+    tabBarTheme: const TabBarTheme(
+      unselectedLabelColor: Colors.white,
+    ),
   );
 
   static final ThemeData lightTheme = ThemeData.light().copyWith(
     platform: TargetPlatform.iOS,
     primaryColor: primaryBlue,
     colorScheme: const ColorScheme.light(primary: primaryBlue),
+    brightness: Brightness.light,
+    cardColor: Colors.white,
   );
 }
 
 extension AppThemeExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
   bool get isDarkMode => theme.brightness == Brightness.dark;
+  bool isDesktop() {
+    return MediaQuery.sizeOf(this).width > 600;
+  }
 }

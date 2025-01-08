@@ -6,7 +6,7 @@ class SelectThemePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final settings = ref.watch(settingsServiceProvider);
+    final theme = Theme.of(context);
     final user = ref.watch(userServiceProvider);
     final themename = user?.prefs.data['theme_mode'] as String? ?? 'light';
     final themes = [
@@ -31,7 +31,7 @@ class SelectThemePage extends ConsumerWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         title: const Text(
           'SELECT THEME',
           style: TextStyle(
@@ -41,69 +41,89 @@ class SelectThemePage extends ConsumerWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 24,
-            ),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12.withOpacity(.04),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Material(
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              child: Column(
-                children: [
-                  for (int x = 0; x < themes.length; x++)
-                    ...() {
-                      final theme = themes[x];
-                      final selected = theme.value == themename;
-                      return [
-                        ListTile(
-                          leading: Icon(theme.icon),
-                          title: Text(theme.name),
-                          trailing: selected
-                              ? const Icon(CupertinoIcons.checkmark)
-                              : null,
-                          onTap: () {
-                            context.showInfoLoad('Updating theme...');
-                            ref
-                                .read(userServiceProvider.notifier)
-                                .update(
-                                  themeMode: theme.value,
-                                )
-                                .then((_) {
-                              context.pop();
-                            }).onError((error, stack) {
-                              context
-                                ..pop()
-                                ..showErrorToast(error.toString());
-                            });
-                          },
-                        ),
-                        if (x != themes.length - 1)
-                          const Divider(
-                            height: .1,
-                            thickness: .1,
-                          ),
-                      ];
-                    }(),
-                ],
-              ),
-            ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: maxPageWidth,
           ),
-        ],
+          child: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 24,
+                ),
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withOpacity(.04),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: theme.cardColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  child: Column(
+                    children: [
+                      for (int x = 0; x < themes.length; x++)
+                        ...() {
+                          final themedata = themes[x];
+                          final selected = themedata.value == themename;
+                          return [
+                            ListTile(
+                              leading: Icon(
+                                themedata.icon,
+                                color: theme.textTheme.bodyMedium!.color,
+                              ),
+                              title: Text(
+                                themedata.name,
+                                style: TextStyle(
+                                  color: theme.textTheme.bodyMedium!.color,
+                                  fontFamily: AppTheme.poppinsFont,
+                                ),
+                              ),
+                              trailing: selected
+                                  ? Icon(
+                                      CupertinoIcons.checkmark,
+                                      color: theme.textTheme.bodyMedium!.color,
+                                    )
+                                  : null,
+                              onTap: () {
+                                context.showInfoLoad('Updating theme...');
+                                ref
+                                    .read(userServiceProvider.notifier)
+                                    .update(
+                                      themeMode: themedata.value,
+                                    )
+                                    .then((_) {
+                                  context.pop();
+                                }).onError((error, stack) {
+                                  context
+                                    ..pop()
+                                    ..showErrorToast(error.toString());
+                                });
+                              },
+                            ),
+                            if (x != themes.length - 1)
+                               Divider(
+                                height: .1,
+                                thickness: .1,
+                                color: theme.dividerColor,
+                              ),
+                          ];
+                        }(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -6,12 +6,15 @@ class PickAvatarPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isdarkmode = context.isDarkMode;
-    final size = MediaQuery.sizeOf(context);
+    final user = ref.read(userServiceProvider);
+
+    final theme = Theme.of(context);
+    final isdarkmode = user?.prefs.data['theme_mode'] == 'dark';
+
     final coins = ref.watch(rewardsServiceProvider).coins;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         scrolledUnderElevation: 1,
         shadowColor: Colors.black,
         centerTitle: true,
@@ -47,52 +50,72 @@ class PickAvatarPage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
         children: [
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Avatar Styles',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: maxPageWidth,
               ),
-              Text('Pick a style to generate a unique avatar'),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Wrap(
-            spacing: 18,
-            runSpacing: 18,
-            children: dicebearStyles.map((dicebear) {
-              return SizedBox(
-                width: size.width / 2 - 26,
-                child: Material(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      pickedIcon(context, dicebear, ref, coins);
-                    },
-                    borderRadius: BorderRadius.circular(10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          SvgPicture.network(
-                            'https://api.dicebear.com/9.x/${dicebear.url}/svg',
-                            height: 100,
-                          ),
-                          const SizedBox(height: 10),
-                          Text(dicebear.name),
-                        ],
-                      ),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Avatar Styles',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              );
-            }).toList(),
+                  SizedBox(width: double.maxFinite),
+                  Text('Pick a style to generate a unique avatar'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: maxPageWidth,
+              ),
+              child: LayoutBuilder(
+                builder: (context, cs) {
+                  final size = cs.biggest;
+                  return Wrap(
+                    spacing: 18,
+                    runSpacing: 18,
+                    children: dicebearStyles.map((dicebear) {
+                      return SizedBox(
+                        width: size.width / 2 - 26,
+                        child: Material(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              pickedIcon(context, dicebear, ref, coins);
+                            },
+                            borderRadius: BorderRadius.circular(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                children: [
+                                  SvgPicture.network(
+                                    'https://api.dicebear.com/9.x/${dicebear.url}/svg',
+                                    height: 100,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(dicebear.name),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ),
           ),
           const SizedBox(height: 20),
         ],
@@ -112,58 +135,63 @@ class PickAvatarPage extends ConsumerWidget {
       builder: (theme, size) {
         return StatefulBuilder(
           builder: (context, void Function(void Function()) setState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: size.height * .4,
-                  ),
-                  child: SvgPicture.network(
-                    'https://api.dicebear.com/9.x/${style.url}/svg?seed=$count',
-                    key: ValueKey('avatar-$count'),
-                    width: size.width * .5,
-                    height: size.height * .4,
-                    placeholderBuilder: (context) => const Center(
-                      child: CircularProgressIndicator(),
+            return ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: maxPageWidth - 100,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: size.height * .4,
+                    ),
+                    child: SvgPicture.network(
+                      'https://api.dicebear.com/9.x/${style.url}/svg?seed=$count',
+                      key: ValueKey('avatar-$count'),
+                      width: size.width * .5,
+                      height: size.height * .4,
+                      placeholderBuilder: (context) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      count++;
-                    });
-                  },
-                  style: FilledButton.styleFrom(
-                    fixedSize: const Size.fromWidth(double.maxFinite),
+                  const SizedBox(height: 20),
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        count++;
+                      });
+                    },
+                    style: FilledButton.styleFrom(
+                      fixedSize: const Size.fromWidth(double.maxFinite),
+                    ),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: const Text('RANDOMIZE'),
                   ),
-                  icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('RANDOMIZE'),
-                ),
-                const SizedBox(height: 8),
-                FilledButton(
-                  onPressed: (coins >= 2)
-                      ? () {
-                          Navigator.pop(
-                            context,
-                            'https://api.dicebear.com/9.x/${style.url}/svg?seed=$count',
-                          );
-                        }
-                      : null,
-                  style: FilledButton.styleFrom(
-                    fixedSize: const Size.fromWidth(double.maxFinite),
+                  const SizedBox(height: 8),
+                  FilledButton(
+                    onPressed: (coins >= 2)
+                        ? () {
+                            Navigator.pop(
+                              context,
+                              'https://api.dicebear.com/9.x/${style.url}/svg?seed=$count',
+                            );
+                          }
+                        : null,
+                    style: FilledButton.styleFrom(
+                      fixedSize: const Size.fromWidth(double.maxFinite),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('CONFIRM'),
+                        Text('💰 2'),
+                      ],
+                    ),
                   ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('CONFIRM'),
-                      Text('💰 2'),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         );

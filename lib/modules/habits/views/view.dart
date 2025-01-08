@@ -30,7 +30,8 @@ class HabitsPage extends ConsumerStatefulWidget {
           padding: const EdgeInsets.all(6),
           constraints: const BoxConstraints(),
           onPressed: () {
-            NotificationHelper.showPlannedTest();
+            // NotificationHelper.showPlannedTest();
+            context.showInfoLoad('Loading ...');
           },
           icon: const Icon(CustomIcons.calendar, size: 20),
         ),
