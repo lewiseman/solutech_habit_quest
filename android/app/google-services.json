@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "1095689162092",
+    "project_id": "habit-quest-app",
+    "storage_bucket": "habit-quest-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095689162092:android:5641b59864734d6add7749",
+        "android_client_info": {
+          "package_name": "com.solutech.habit_quest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095689162092-6ehs4211rc0luked9or38m9it4acq8ao.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.solutech.habit_quest",
+            "certificate_hash": "64568c183dc6065c304ad4c46e56b08a15201408"
+          }
+        },
+        {
+          "client_id": "1095689162092-rd12qjn681fitn0mjp3upca5pe4g4jnd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.solutech.habit_quest",
+            "certificate_hash": "6d93cbbf8bc8f169b829d34bf481b82542b6c272"
+          }
+        },
+        {
+          "client_id": "1095689162092-kqa7klpmgnfgeqi97phgel5e46sdoc4u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8aWCZQOHi6oeBsV_2XaU8xGk-88PxJrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095689162092-kqa7klpmgnfgeqi97phgel5e46sdoc4u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1095689162092-9vo7vq7e6hp2qmkq8i2cdaango30t4dm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.solutech.habitquest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

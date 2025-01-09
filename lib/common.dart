@@ -1,4 +1,5 @@
 export 'package:appwrite/appwrite.dart' hide Locale;
+export 'package:firebase_analytics/firebase_analytics.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter_animate/flutter_animate.dart';
 export 'package:flutter_riverpod/flutter_riverpod.dart';

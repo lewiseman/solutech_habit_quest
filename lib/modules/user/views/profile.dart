@@ -39,7 +39,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
                 if (res ?? false) {
                   // ignore: use_build_context_synchronously
                   context.showInfoLoad('Logging out...');
-                  ref.read(userServiceProvider.notifier).logout();
+                  ref.read(authServiceProvider.notifier).logout();
                 }
               });
             },

@@ -121,8 +121,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 if (fromKey.currentState!.validate()) {
                                   context.showInfoLoad('Creating account');
                                   ref
-                                      .read(userServiceProvider.notifier)
-                                      .register(
+                                      .read(authServiceProvider.notifier)
+                                      .createAccount(
                                         name: nameController.text.trim(),
                                         email: emailController.text.trim(),
                                         password:
@@ -141,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               },
                               child: const Text('Sign up'),
                             ),
-                            if (!kIsWeb) ...[
+                        ...[
                               Padding(
                                 padding: const EdgeInsets.only(
                                   left: 40,
@@ -165,10 +165,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ),
                                       Align(
                                         child: Container(
-                                          color:
-                                              theme.scaffoldBackgroundColor,
-                                          padding:
-                                              const EdgeInsets.symmetric(
+                                          color: theme.scaffoldBackgroundColor,
+                                          padding: const EdgeInsets.symmetric(
                                             horizontal: 5,
                                           ),
                                           child: const Text('or'),
@@ -181,8 +179,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               TextButton.icon(
                                 onPressed: () {
                                   ref
-                                      .read(userServiceProvider.notifier)
-                                      .googleSignIn(context)
+                                      .read(authServiceProvider.notifier)
+                                      .googleSignIn()
                                       .then((_) {
                                     context.showSuccessToast(
                                       'Signed in successfully',
@@ -190,8 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   }).onError((error, stack) {
                                     var msg = error.toString();
                                     if (error is AppwriteException) {
-                                      msg =
-                                          error.message ?? error.toString();
+                                      msg = error.message ?? error.toString();
                                     }
                                     context
                                       ..pop()
@@ -204,8 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   side: BorderSide(
                                     color: Colors.black.withOpacity(.3),
                                   ),
-                                  fixedSize:
-                                      const Size(double.maxFinite, 20),
+                                  fixedSize: const Size(double.maxFinite, 20),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
