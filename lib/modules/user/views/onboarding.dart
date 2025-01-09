@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:habit_quest/common.dart';
+import 'package:intl/intl.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
@@ -120,8 +121,8 @@ class _OnboardingQuestionPageState extends State<OnboardingQuestionPage> {
     });
   }
 
-  DateTime wakeUpTime = DateTime.now();
-  DateTime sleepTime = DateTime.now();
+  DateTime wakeUpTime = DateTime.now().copyWith(hour: 6, minute: 0);
+  DateTime sleepTime = DateTime.now().copyWith(hour: 22, minute: 0);
   List<({String image, String name})> selectedAchievements = [];
   int currPage = 0;
   @override
@@ -363,7 +364,7 @@ class _OnboardingQuestionPageState extends State<OnboardingQuestionPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    '${wakeUpTime.hour}:${wakeUpTime.minute}',
+                    DateFormat('hh:mm a').format(wakeUpTime),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 40,
@@ -400,7 +401,7 @@ class _OnboardingQuestionPageState extends State<OnboardingQuestionPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    '${sleepTime.hour}:${sleepTime.minute}',
+                    DateFormat('hh:mm a').format(sleepTime),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 40,

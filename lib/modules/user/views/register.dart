@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:habit_quest/common.dart';
 import 'package:lottie/lottie.dart';
 
@@ -154,84 +155,87 @@ class _RegisterPageState extends State<RegisterPage> {
                                   },
                                   child: const Text('Sign in'),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 40,
-                                    right: 40,
-                                    top: 20,
-                                    bottom: 20,
-                                  ),
-                                  child: SizedBox(
-                                    height: 20,
-                                    width: double.maxFinite,
-                                    child: Stack(
-                                      children: [
-                                        const Positioned(
-                                          left: 0,
-                                          right: 0,
-                                          top: 10,
-                                          child: Divider(
-                                            thickness: .3,
-                                            height: 1,
-                                          ),
-                                        ),
-                                        Align(
-                                          child: Container(
-                                            color:
-                                                theme.scaffoldBackgroundColor,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 5,
+                                if (!kIsWeb) ...[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 40,
+                                      right: 40,
+                                      top: 20,
+                                      bottom: 20,
+                                    ),
+                                    child: SizedBox(
+                                      height: 20,
+                                      width: double.maxFinite,
+                                      child: Stack(
+                                        children: [
+                                          const Positioned(
+                                            left: 0,
+                                            right: 0,
+                                            top: 10,
+                                            child: Divider(
+                                              thickness: .3,
+                                              height: 1,
                                             ),
-                                            child: const Text('or'),
                                           ),
-                                        ),
-                                      ],
+                                          Align(
+                                            child: Container(
+                                              color:
+                                                  theme.scaffoldBackgroundColor,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 5,
+                                              ),
+                                              child: const Text('or'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                TextButton.icon(
-                                  onPressed: () {
-                                    ref
-                                        .read(userServiceProvider.notifier)
-                                        .googleSignIn()
-                                        .then((_) {
-                                      context
-                                        ..pop()
-                                        ..showSuccessToast(
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      ref
+                                          .read(userServiceProvider.notifier)
+                                          .googleSignIn(context)
+                                          .then((_) {
+                                        context.showSuccessToast(
                                           'Signed in successfully',
                                         );
-                                    }).onError((error, stack) {
-                                      var msg = error.toString();
-                                      if (error is AppwriteException) {
-                                        msg = error.message ?? error.toString();
-                                      }
-                                      context
-                                        ..pop()
-                                        ..showErrorToast(msg);
-                                    });
-                                  },
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    foregroundColor: Colors.black,
-                                    side: BorderSide(
-                                      color: Colors.black.withOpacity(.3),
+                                      }).onError((error, stack) {
+                                        var msg = error.toString();
+                                        if (error is AppwriteException) {
+                                          msg =
+                                              error.message ?? error.toString();
+                                        }
+                                        context
+                                          ..pop()
+                                          ..showErrorToast(msg);
+                                      });
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      side: BorderSide(
+                                        color: Colors.black.withOpacity(.3),
+                                      ),
+                                      fixedSize:
+                                          const Size(double.maxFinite, 20),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
                                     ),
-                                    fixedSize: const Size(double.maxFinite, 20),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                                    icon: Image.asset(
+                                      'assets/images/google_logo.png',
+                                      height: 20,
+                                    ),
+                                    label: const Text(
+                                      'Sign in with Google',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
                                     ),
                                   ),
-                                  icon: Image.asset(
-                                    'assets/images/google_logo.png',
-                                    height: 20,
-                                  ),
-                                  label: const Text(
-                                    'Sign in with Google',
-                                    style: TextStyle(
-                                      fontFamily: AppTheme.poppinsFont,
-                                    ),
-                                  ),
-                                ),
+                                ],
                               ],
                             ),
                           ),

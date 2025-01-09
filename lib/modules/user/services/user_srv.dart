@@ -39,31 +39,34 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
         provider: userCredentials!.provider,
       );
       state = user;
-      updateLocalPrefs(user);
+      await updateLocalPrefs(user);
+      return;
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       try {
         final localPrefs = CacheStorage.instance.userPrefs;
+        // final
         if (localPrefs != null) {
           state = localPrefs.toUser(null);
         }
       } catch (e) {
-        await logout();
+        return logout();
       }
       debugPrint(e.toString());
+      return logout();
     }
   }
 
-  void updateLocalPrefs(models.User user) {
+  Future<void> updateLocalPrefs(models.User user) async {
     final userPrefs = CacheStorage.instance.userPrefs;
     if (userPrefs == null) {
-      CacheStorage.instance.updateUserPrefs(
+      await CacheStorage.instance.updateUserPrefs(
         LocalUserPrefs.fromUser(user),
       );
       return;
     }
     if (userPrefs.updatedAt.isAfter(DateTime.parse(user.$updatedAt))) {
-      update(
+      await update(
         avatar: userPrefs.avatar,
         themeMode: userPrefs.themeMode,
         collectedCoins: userPrefs.collectedCoins,
@@ -240,10 +243,17 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     state = user;
   }
 
-  Future<void> googleSignIn() async {
+  Future<void> googleSignIn(BuildContext context) async {
+    final confirm = await AppDialog.confirm(
+      context,
+      title: 'Quick Note',
+      message: 'After Sign In the first time, close the web page manually',
+    );
+    if (confirm != true) {
+      return;
+    }
     await appwriteAccount.createOAuth2Session(
       provider: OAuthProvider.google,
-      success: 'https://www.papps.io/auth_redirect.html',
     );
     await Future<void>.delayed(const Duration(milliseconds: 500));
     final user = await appwriteAccount.get();
@@ -255,6 +265,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
         name: user.name,
         provider: 'google',
       ),
+    );
+    await CacheStorage.instance.updateUserPrefs(
+      LocalUserPrefs.fromUser(user),
     );
     ref.read(appRouteService).refreshUser();
     state = user;
