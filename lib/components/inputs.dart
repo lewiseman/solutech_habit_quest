@@ -130,9 +130,7 @@ class HabitTextInput extends StatelessWidget {
           if (type == HabitTextInputType.email) {
             return emailValidation(value);
           }
-          if (type == HabitTextInputType.password) {
-            return passwordValidation(value);
-          }
+
           return validator?.call(value);
         },
         onChanged: (value) {

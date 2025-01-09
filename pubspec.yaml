@@ -19,7 +19,6 @@ dependencies:
   flutter_riverpod: ^2.6.1
   intl: ^0.19.0
   go_router: ^14.6.2
-  lottie: ^3.2.0
   flutter_svg: ^2.0.16
   url_launcher: ^6.3.1
   share_plus: ^10.1.3
@@ -36,6 +35,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_ce_generator: ^1.8.1
+  integration_test:
+    sdk: flutter
   very_good_analysis: ^7.0.0
 
 flutter:
@@ -45,7 +46,6 @@ flutter:
     - assets/images/
     - assets/images/banana/
     - assets/images/achievements/
-    - assets/lottie/
 
   fonts:
     - family: CustomIcons

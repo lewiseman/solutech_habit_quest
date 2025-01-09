@@ -6,7 +6,7 @@ final exploreServiceDataProvider = FutureProvider((ref) async {
   final res =
       await AppRepository.instance.remoteRepository.databases.listDocuments(
     databaseId: appwriteDatabaseId,
-    collectionId: '677c023a002ed642a3d1',
+    collectionId: appwriteExploreBlogCID,
     queries: [
       Query.limit(1),
     ],

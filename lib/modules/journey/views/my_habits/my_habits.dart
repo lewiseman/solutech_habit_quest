@@ -109,7 +109,7 @@ class MyHabitsSection extends ConsumerWidget {
                     Navigator.pop(context, 'pause');
                   },
                   child: Text(
-                    habit.paused ? 'Un-pause' : 'Pause',
+                    habit.paused ? 'Resume' : 'Pause',
                     style: const TextStyle(
                       fontFamily: AppTheme.poppinsFont,
                     ),
