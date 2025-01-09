@@ -1,4 +1,3 @@
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:habit_quest/common.dart';
 import 'package:habit_quest/modules/journey/views/summary/calc_data.dart';
 import 'package:habit_quest/modules/journey/views/summary/week_graph.dart';
