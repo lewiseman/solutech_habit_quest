@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:habit_quest/common.dart';
 import 'package:lottie/lottie.dart';
@@ -154,7 +155,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                         ),
                       ),
-                      if (!shrink) ...[
+                      if (!shrink && !kIsWeb) ...[
                         Padding(
                           padding: const EdgeInsets.only(
                             left: 40,
@@ -193,13 +194,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           onPressed: () {
                             ref
                                 .read(userServiceProvider.notifier)
-                                .googleSignIn()
+                                .googleSignIn(context)
                                 .then((_) {
-                              context
-                                ..pop()
-                                ..showSuccessToast(
-                                  'Signed in successfully',
-                                );
+                              context.showSuccessToast(
+                                'Signed in successfully',
+                              );
                             }).onError((error, stack) {
                               var msg = error.toString();
                               if (error is AppwriteException) {

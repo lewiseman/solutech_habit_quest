@@ -297,6 +297,9 @@ class UserPage extends ConsumerWidget {
                     if (syncState is SyncedSyncState) {
                       return 'DATA SYNCED';
                     }
+                    if (syncState is InactiveSyncState) {
+                      return 'SYNC INACTIVE';
+                    }
                     return '';
                   }(),
                   style: const TextStyle(
