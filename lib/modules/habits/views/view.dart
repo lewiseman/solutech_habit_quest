@@ -120,7 +120,7 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
 
             if (habitsState is DataHabitsState) {
               final habits = habitsState.habits.where((habit) {
-                return habit.relevant(selectedDate);
+                return habit.relevant(selectedDate) && !habit.paused;
               }).toList();
               if (habits.isEmpty) {
                 return [

@@ -47,7 +47,9 @@ class HiveRepository extends StorageRepository {
 
   @override
   Future<List<Habit>> getHabits(String userId) {
-    final habits = habitsBox.values.toList();
+    final habits = habitsBox.values.toList().where((element) {
+      return element.userId == userId;
+    }).toList();
     return Future.value(habits);
   }
 

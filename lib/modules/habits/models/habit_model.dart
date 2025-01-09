@@ -114,6 +114,27 @@ class Habit {
     final startDayReached = date.year >= startDate.year &&
         date.month >= startDate.month &&
         date.day >= startDate.day;
+    if (frequency == HabitFrequency.daily) {
+      return startDayReached;
+    }
+    if (frequency == HabitFrequency.weekly) {
+      final weekday = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ][date.weekday - 1];
+      return startDayReached && (days ?? []).contains(weekday);
+    }
+    if (frequency == HabitFrequency.once) {
+      return startDayReached &&
+          date.year == startDate.year &&
+          date.month == startDate.month &&
+          date.day == startDate.day;
+    }
 
     return startDayReached;
   }
