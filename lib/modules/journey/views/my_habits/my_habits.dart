@@ -36,7 +36,9 @@ class MyHabitsSection extends ConsumerWidget {
               final habit = habits[index];
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: context.isDarkMode
+                      ? Colors.grey.shade800
+                      : Colors.grey.shade200,
                   child: Text(
                     habit.emoji,
                     style: TextStyle(

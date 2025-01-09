@@ -52,7 +52,7 @@ class AppDialog {
               ? Text(
                   title,
                   style: TextStyle(
-                    color: theme.colorScheme.onSurface,
+                    color: theme.textTheme.bodyMedium!.color,
                     fontFamily: AppTheme.poppinsFont,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -63,7 +63,7 @@ class AppDialog {
               ? Text(
                   message,
                   style: TextStyle(
-                    color: theme.colorScheme.onSurface,
+                    color: theme.textTheme.bodyMedium!.color,
                     fontFamily: AppTheme.poppinsFont,
                   ),
                 )
@@ -82,10 +82,11 @@ class AppDialog {
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text(
+              child: Text(
                 'CONFIRM',
                 style: TextStyle(
                   fontFamily: AppTheme.poppinsFont,
+                  color: theme.textTheme.bodyMedium!.color,
                 ),
               ),
             ),
