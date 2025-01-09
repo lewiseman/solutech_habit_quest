@@ -37,7 +37,7 @@ class HabitQuest extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: router,
-      themeMode: AppUserSettings.getThemeMode(
+      themeMode: getThemeMode(
         userprefs?['theme_mode'] as String? ?? 'light',
       ),
       darkTheme: AppTheme.darkTheme,

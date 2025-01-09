@@ -24,9 +24,10 @@ class _RootAppState extends State<RootApp> {
     final isDesktop = context.isDesktop();
     final theme = Theme.of(context);
     return AnnotatedRegion(
-      value: const SystemUiOverlayStyle(
+      value:  SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: theme.scaffoldBackgroundColor
       ),
       child: Scaffold(
         extendBody: true,
@@ -121,13 +122,15 @@ class _RootAppState extends State<RootApp> {
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Divider(
+                   Divider(
                     height: .9,
                     thickness: .1,
+                    color: theme.dividerColor,
                   ),
                   BottomNavigationBar(
                     elevation: 0,
                     type: BottomNavigationBarType.fixed,
+                    selectedItemColor: AppTheme.primaryBlue,
                     currentIndex:
                         _pages.indexWhere((page) => page.page == currPath),
                     onTap: (index) {

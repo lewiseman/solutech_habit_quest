@@ -114,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   controller: password2Controller,
                                   autofillHints: const [AutofillHints.password],
                                   textInputAction: TextInputAction.done,
-                                  obscureText: true,
+                                  obscureText: obscure2Text,
                                   validator: (value) {
                                     if (value != passwordController.text) {
                                       return 'Passwords do not match';
@@ -221,12 +221,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                   ),
-                                  icon: false
-                                      ? null
-                                      : Image.asset(
-                                          'assets/images/google_logo.png',
-                                          height: 20,
-                                        ),
+                                  icon: Image.asset(
+                                    'assets/images/google_logo.png',
+                                    height: 20,
+                                  ),
                                   label: const Text(
                                     'Sign in with Google',
                                     style: TextStyle(

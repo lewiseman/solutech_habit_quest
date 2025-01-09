@@ -1,6 +1,7 @@
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart' as models;
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/user/services/rewards_helper.dart';
 import 'package:habit_quest/router.dart';
 
 final userServiceProvider =
@@ -45,7 +46,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
         if (localPrefs != null) {
           state = localPrefs.toUser(null);
         }
-      } catch (e) {}
+      } catch (e) {
+        await logout();
+      }
       debugPrint(e.toString());
     }
   }
@@ -67,6 +70,25 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
       );
       return;
     }
+  }
+
+  void addCoin(BuildContext context) {
+    final collectedCoins = state?.collectedCoins();
+    if (collectedCoins == null) {
+      return;
+    }
+    final coins = collectedCoins + 1;
+    update(collectedCoins: coins);
+    RewardsHelper.activityCompleted(context, coins);
+  }
+
+  Future<void> spendCoins(int coins) async {
+    final spentCoins = state?.spentCoins();
+    if (spentCoins == null) {
+      return;
+    }
+    final newCoins = spentCoins + coins;
+    await update(spentCoins: newCoins);
   }
 
   Future<void> register({
@@ -107,6 +129,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
           provider: 'email',
         ),
       );
+      await CacheStorage.instance.updateUserPrefs(
+        LocalUserPrefs.fromUser(user),
+      );
       return user;
     } on AppwriteException catch (e) {
       if (e.type == 'user_session_already_exists') {
@@ -120,6 +145,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
               name: name ?? user.name,
               provider: provider ?? 'email',
             ),
+          );
+          await CacheStorage.instance.updateUserPrefs(
+            LocalUserPrefs.fromUser(user),
           );
           return user;
         } catch (e) {
@@ -151,6 +179,7 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     String? themeMode,
     int? collectedCoins,
     int? spentCoins,
+    bool? notifications,
   }) async {
     var user = state;
     try {
@@ -161,13 +190,22 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
       if (avatar != null ||
           themeMode != null ||
           collectedCoins != null ||
-          spentCoins != null) {
+          spentCoins != null ||
+          notifications != null) {
         final updateduser = await appwriteAccount.updatePrefs(
           prefs: {
-            if (avatar != null) 'avatar': avatar,
-            if (themeMode != null) 'theme_mode': themeMode,
-            if (collectedCoins != null) 'collected_coins': collectedCoins,
-            if (spentCoins != null) 'spent_coins': spentCoins,
+            'avatar': avatar ?? user!.prefs.data['avatar'] as String? ?? '',
+            'theme_mode': themeMode ??
+                user?.prefs.data['theme_mode'] as String? ??
+                'light',
+            'collected_coins': collectedCoins ??
+                user?.prefs.data['collected_coins'] as int? ??
+                0,
+            'spent_coins':
+                spentCoins ?? user?.prefs.data['spent_coins'] as int? ?? 0,
+            'notifications': notifications ??
+                user?.prefs.data['notifications'] as bool? ??
+                true,
           },
         );
         user = updateduser;
@@ -222,7 +260,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
 
   Future<void> logout() async {
     if (CacheStorage.instance.userCredentials?.provider != 'google') {
-      await appwriteAccount.deleteSession(sessionId: 'current');
+      try {
+        await appwriteAccount.deleteSession(sessionId: 'current');
+      } catch (e) {}
     }
     await AppRepository.instance.clear();
     await CacheStorage.instance.delete();

@@ -16,15 +16,25 @@ class AppwriteRepository extends StorageRepository {
   @override
   Future<Habit> createHabit(Habit habit) async {
     final data = habit.toJson()..remove('id');
-    final res = await databases.createDocument(
-      databaseId: appwriteDatabaseId,
-      collectionId: appwriteHabitsCID,
-      documentId: habit.id,
-      data: data,
-    );
-    final newHabit = Habit.fromJson(res.data);
-
-    return newHabit;
+    try {
+      final res = await databases.createDocument(
+        databaseId: appwriteDatabaseId,
+        collectionId: appwriteHabitsCID,
+        documentId: habit.id,
+        data: data,
+      );
+      final newHabit = Habit.fromJson(res.data);
+      return newHabit;
+    } catch (e) {
+      if (e is AppwriteException) {
+        // This is a conflict error, meaning the habit already exists
+        if (e.code == 409) {
+          return habit;
+        }
+      }
+      debugPrint('Error creating habit: $e');
+      return habit;
+    }
   }
 
   @override
@@ -101,15 +111,27 @@ class AppwriteRepository extends StorageRepository {
   @override
   Future<HabitAction> createHabitAction(HabitAction action) async {
     final data = action.toJson()..remove('id');
-    final res = await databases.createDocument(
-      databaseId: appwriteDatabaseId,
-      collectionId: appwriteHabitActionsCID,
-      documentId: action.id,
-      data: data,
-    );
-    final newHabit = HabitAction.fromJson(res.data);
+    try {
+      final res = await databases.createDocument(
+        databaseId: appwriteDatabaseId,
+        collectionId: appwriteHabitActionsCID,
+        documentId: action.id,
+        data: data,
+      );
+      final newHabit = HabitAction.fromJson(res.data);
 
-    return newHabit;
+      return newHabit;
+    } catch (e) {
+      if (e is AppwriteException) {
+        // This is a conflict error, meaning the habit already exists
+        if (e.code == 409) {
+          return action;
+        } else {
+          rethrow;
+        }
+      }
+    }
+    return action;
   }
 
   @override
@@ -121,11 +143,22 @@ class AppwriteRepository extends StorageRepository {
 
   @override
   Future<void> deleteHabitAction(String actionId) async {
-    await databases.deleteDocument(
-      databaseId: appwriteDatabaseId,
-      collectionId: appwriteHabitActionsCID,
-      documentId: actionId,
-    );
+    try {
+      await databases.deleteDocument(
+        databaseId: appwriteDatabaseId,
+        collectionId: appwriteHabitActionsCID,
+        documentId: actionId,
+      );
+    } catch (e) {
+      if (e is AppwriteException) {
+        // This is a conflict error, meaning the habit already exists
+        if (e.code == 409) {
+          return;
+        } else {
+          rethrow;
+        }
+      }
+    }
   }
 
   @override

@@ -1,6 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:habit_quest/common.dart';
 import 'package:habit_quest/config/config.dart';
+import 'package:habit_quest/modules/user/views/view.dart';
 import 'package:intl/intl.dart';
 
 class SummaryWeekGraph extends StatefulWidget {
@@ -138,9 +140,9 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: (rod.toY - 1).toString(),
+                  text: '${(rod.toY - 2).toStringAsFixed(0)}%',
                   style: const TextStyle(
-                    color: Colors.white, //widget.touchedBarColor,
+                    color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -161,6 +163,8 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
           });
         },
       ),
+      minY: 0,
+      maxY: 100,
       titlesData: FlTitlesData(
         rightTitles: const AxisTitles(),
         topTitles: const AxisTitles(),
@@ -273,11 +277,12 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
     List<int> showTooltips = const [],
   }) {
     final barColor = isTouched ? Colors.pink : AppTheme.primaryBlue;
+    final yValue = (y * 100).maxPercentage.toDouble();
     return BarChartGroupData(
       x: x,
       barRods: [
         BarChartRodData(
-          toY: isTouched ? y + 1 : y,
+          toY: isTouched ? yValue + 2 : yValue,
           color: barColor,
           width: width,
           borderSide: isTouched
@@ -285,7 +290,7 @@ class _SummaryWeekGraphState extends State<SummaryWeekGraph> {
               : const BorderSide(color: Colors.white, width: 0),
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            toY: 20,
+            toY: 100,
             color: AppTheme.primaryBlue.withOpacity(0.2),
           ),
         ),

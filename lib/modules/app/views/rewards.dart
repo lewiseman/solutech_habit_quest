@@ -51,7 +51,13 @@ class _SingleCoinAnimationState extends State<SingleCoinAnimation> {
 }
 
 class NextLevelPop extends StatefulWidget {
-  const NextLevelPop({super.key});
+  const NextLevelPop({required this.coins, super.key});
+  final int coins;
+
+  static int calcLevel(int? coins) {
+    if (coins == null) return 1;
+    return (coins ~/ 5) + 1;
+  }
 
   @override
   State<NextLevelPop> createState() => _NextLevelPopState();
@@ -95,9 +101,9 @@ class _NextLevelPopState extends State<NextLevelPop> {
                         hz: 3,
                       ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'LEVEL 2',
-                    style: TextStyle(
+                  Text(
+                    'LEVEL ${NextLevelPop.calcLevel(widget.coins)}',
+                    style: const TextStyle(
                       fontFamily: AppTheme.poppinsFont,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,

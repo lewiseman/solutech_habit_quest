@@ -1,3 +1,4 @@
+import 'package:appwrite/models.dart' as models;
 import 'package:flutter/material.dart';
 
 extension TimeOfDayExtension on TimeOfDay {
@@ -43,5 +44,37 @@ extension TimeOfDayExtension on TimeOfDay {
 
   String toTimeString() {
     return '''${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}''';
+  }
+}
+
+extension MyUser on models.User? {
+  int collectedCoins() {
+    if (this == null) return 0;
+    return this!.prefs.data['collected_coins'] as int? ?? 0;
+  }
+
+  int spentCoins() {
+    if (this == null) return 0;
+    return this!.prefs.data['spent_coins'] as int? ?? 0;
+  }
+
+  int getCoinBalance() {
+    if (this == null) return 0;
+    final totalCoins = this!.prefs.data['collected_coins'] as int? ?? 0;
+    final spentCoins = this!.prefs.data['spent_coins'] as int? ?? 0;
+    final balance = totalCoins - spentCoins;
+    if (balance < 0) {
+      return 0;
+    }
+    return balance;
+  }
+}
+
+extension MyNims on num {
+  num get maxPercentage {
+    if (this > 100) {
+      return 100;
+    }
+    return this;
   }
 }

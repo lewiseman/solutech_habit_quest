@@ -1,8 +1,7 @@
+import 'package:appwrite/models.dart' as models;
 import 'package:habit_quest/common.dart';
-import 'package:habit_quest/modules/habits/services/habits_action_srv.dart';
 import 'package:habit_quest/repositories/models/sync_entry.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:appwrite/models.dart' as models;
 
 final syncServiceProvider =
     StateNotifierProvider<SyncNotifier, SyncState>((ref) {
@@ -301,7 +300,9 @@ class SyncNotifier extends StateNotifier<SyncState> {
     final latestdata = await AppRepository.instance.localRepository.getHabits(
       user!.$id,
     );
-    ref.read(habitsServiceProvider.notifier).updateFromSync(latestdata);
+    try {
+      ref.read(habitsServiceProvider.notifier).updateFromSync(latestdata);
+    } catch (e) {}
 
     try {
       await doHabitRemoteActions(remoteActions);
@@ -321,24 +322,36 @@ class SyncNotifier extends StateNotifier<SyncState> {
     final createActions = actions.where((a) => a.action == SyncAction.create);
 
     if (createActions.isNotEmpty) {
-      final nonEmptyHabits = createActions.where((a) => a.data != null);
-      await AppRepository.instance.remoteRepository.createHabits(
-        nonEmptyHabits.map((a) => a.data!).toList(),
-      );
+      try {
+        final nonEmptyHabits = createActions.where((a) => a.data != null);
+        await AppRepository.instance.remoteRepository.createHabits(
+          nonEmptyHabits.map((a) => a.data!).toList(),
+        );
+      } catch (e) {
+        setSyncFailed('Unable to sync remote data');
+      }
     }
 
     if (updateActions.isNotEmpty) {
-      final nonEmptyHabits = createActions.where((a) => a.data != null);
-      await AppRepository.instance.remoteRepository.updateHabits(
-        nonEmptyHabits.map((a) => a.data!).toList(),
-      );
+      try {
+        final nonEmptyHabits = updateActions.where((a) => a.data != null);
+        await AppRepository.instance.remoteRepository.updateHabits(
+          nonEmptyHabits.map((a) => a.data!).toList(),
+        );
+      } catch (e) {
+        setSyncFailed('Unable to sync remote data');
+      }
     }
 
     if (deleteActions.isNotEmpty) {
-      final nonEmptyHabits = updateActions.where((a) => a.data != null);
-      await AppRepository.instance.remoteRepository.deleteHabits(
-        nonEmptyHabits.map((a) => a.data!.id).toList(),
-      );
+      try {
+        final nonEmptyHabits = deleteActions.where((a) => a.data != null);
+        await AppRepository.instance.remoteRepository.deleteHabits(
+          nonEmptyHabits.map((a) => a.data!.id).toList(),
+        );
+      } catch (e) {
+        setSyncFailed('Unable to sync remote data');
+      }
     }
   }
 
@@ -411,20 +424,34 @@ class SyncNotifier extends StateNotifier<SyncState> {
     for (final habit in remoteHabits) {
       final habitId = habit.id;
       if (!localMap.containsKey(habitId)) {
+        final notFordelete = syncActions
+            .where(
+              (a) => a.action == SyncAction.delete && a.data!.id == habitId,
+            )
+            .isEmpty;
         // Missing locally, fetch from remote
-        syncActions.add(
-          (action: SyncAction.create, data: habit, forLocal: true),
-        );
+        if (notFordelete) {
+          syncActions.add(
+            (action: SyncAction.create, data: habit, forLocal: true),
+          );
+        }
       }
     }
 
     for (final habit in localHabits) {
       final habitId = habit.id;
       if (!remoteMap.containsKey(habitId)) {
+        final notFordelete = syncActions
+            .where(
+              (a) => a.action == SyncAction.delete && a.data!.id == habitId,
+            )
+            .isEmpty;
         // Missing remotely, push to remote
-        syncActions.add(
-          (action: SyncAction.create, data: habit, forLocal: false),
-        );
+        if (notFordelete) {
+          syncActions.add(
+            (action: SyncAction.create, data: habit, forLocal: false),
+          );
+        }
       }
     }
 
@@ -465,11 +492,16 @@ class SyncNotifier extends StateNotifier<SyncState> {
 
   Future<void> handleHabitActionSync(SyncEntry syncEntry) async {
     if (syncEntry.action == SyncAction.delete) {
-      await AppRepository.instance.remoteRepository.deleteHabitAction(
-        syncEntry.itemId,
-      );
+      try {
+        await AppRepository.instance.remoteRepository.deleteHabitAction(
+          syncEntry.itemId,
+        );
 
-      return deleteSyncEntry(syncEntry);
+        return deleteSyncEntry(syncEntry);
+      } catch (e) {
+        print('Failed sync entry: ${syncEntry.id}\n$e');
+        setSyncFailed('Unable to sync  data');
+      }
     }
     final habitAction =
         await AppRepository.instance.localRepository.getHabitAction(
@@ -477,40 +509,60 @@ class SyncNotifier extends StateNotifier<SyncState> {
     );
     if (habitAction == null) return;
     if (syncEntry.action == SyncAction.create) {
-      await AppRepository.instance.remoteRepository.createHabitAction(
-        habitAction,
-      );
-      return deleteSyncEntry(syncEntry);
+      try {
+        await AppRepository.instance.remoteRepository.createHabitAction(
+          habitAction,
+        );
+        return deleteSyncEntry(syncEntry);
+      } catch (e) {
+        setSyncFailed('Unable to sync  data');
+      }
     } else if (syncEntry.action == SyncAction.update) {
-      await AppRepository.instance.remoteRepository.updateHabitAction(
-        habitAction,
-      );
-      return deleteSyncEntry(syncEntry);
+      try {
+        await AppRepository.instance.remoteRepository.updateHabitAction(
+          habitAction,
+        );
+        return deleteSyncEntry(syncEntry);
+      } catch (e) {
+        setSyncFailed('Unable to sync  data');
+      }
     }
   }
 
   Future<void> handleHabitItemSync(SyncEntry syncEntry) async {
     if (syncEntry.action == SyncAction.delete) {
-      await AppRepository.instance.remoteRepository.deleteHabit(
-        syncEntry.itemId,
-      );
+      try {
+        await AppRepository.instance.remoteRepository.deleteHabit(
+          syncEntry.itemId,
+        );
 
-      return deleteSyncEntry(syncEntry);
+        return deleteSyncEntry(syncEntry);
+      } catch (e) {
+        setSyncFailed('Unable to sync  data');
+      }
     }
     final habit = await AppRepository.instance.localRepository.getHabit(
       syncEntry.itemId,
     );
     if (habit == null) return;
     if (syncEntry.action == SyncAction.create) {
-      await AppRepository.instance.remoteRepository.createHabit(
-        habit,
-      );
-      return deleteSyncEntry(syncEntry);
+      try {
+        await AppRepository.instance.remoteRepository.createHabit(
+          habit,
+        );
+        return deleteSyncEntry(syncEntry);
+      } catch (e) {
+        setSyncFailed('Unable to sync  data');
+      }
     } else if (syncEntry.action == SyncAction.update) {
-      await AppRepository.instance.remoteRepository.updateHabit(
-        habit,
-      );
-      return deleteSyncEntry(syncEntry);
+      try {
+        await AppRepository.instance.remoteRepository.updateHabit(
+          habit,
+        );
+        return deleteSyncEntry(syncEntry);
+      } catch (e) {
+        setSyncFailed('Unable to sync  data');
+      }
     }
   }
 

@@ -11,7 +11,7 @@ class PickAvatarPage extends ConsumerWidget {
     final theme = Theme.of(context);
     final isdarkmode = user?.prefs.data['theme_mode'] == 'dark';
 
-    final coins = ref.watch(rewardsServiceProvider).coins;
+    final coins = user.getCoinBalance();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
@@ -205,7 +205,7 @@ class PickAvatarPage extends ConsumerWidget {
         await ref
             .read(userServiceProvider.notifier)
             .update(avatar: confirmedurl);
-        await ref.read(rewardsServiceProvider.notifier).removeCoins(2);
+        // await ref.read(userServiceProvider.notifier).spendCoins(2);
         Navigator.of(context)
           ..pop()
           ..pop();

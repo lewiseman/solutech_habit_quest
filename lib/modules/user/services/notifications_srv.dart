@@ -17,13 +17,21 @@ class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
   final Ref ref;
 
   Future<void> _init() async {
-    final habits = ref.read(habitsServiceProvider).data();
-    final processedNotifications = await processNotifications(habits ?? []);
-    if (mounted) state = processedNotifications.good;
-    await deleteNotifications(processedNotifications.toRemove);
-    await createNotifications(processedNotifications.toAdd).then((value) {
-      if (mounted) state = [...state, ...value];
-    });
+    final notificationsEnabled =
+        ref.watch(userServiceProvider)?.prefs.data['notifications'] as bool? ??
+            true;
+    if (notificationsEnabled) {
+      final habits = ref.read(habitsServiceProvider).data();
+      final processedNotifications = await processNotifications(habits ?? []);
+      if (mounted) state = processedNotifications.good;
+      await deleteNotifications(processedNotifications.toRemove);
+      await createNotifications(processedNotifications.toAdd).then((value) {
+        if (mounted) state = [...state, ...value];
+      });
+    } else {
+      await NotificationHelper.instance.cancelAll();
+      reset();
+    }
   }
 
   void reset() {

@@ -48,6 +48,7 @@ class AppTheme {
     colorScheme: const ColorScheme.light(primary: primaryBlue),
     brightness: Brightness.light,
     cardColor: Colors.white,
+    dividerColor: Colors.black,
   );
 }
 

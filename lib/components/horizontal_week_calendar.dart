@@ -9,25 +9,17 @@ enum WeekStartFrom {
 }
 
 class HorizontalWeekCalendar extends StatefulWidget {
-  HorizontalWeekCalendar({
+  const HorizontalWeekCalendar({
     required this.minDate,
     required this.maxDate,
     required this.selectedDate,
     super.key,
     this.onDateChange,
-    this.onWeekChange,
-    this.activeNavigatorColor,
-    this.inactiveNavigatorColor,
-    this.monthColor,
     this.weekStartFrom = WeekStartFrom.monday,
-    this.showNavigationButtons = true,
-    this.monthFormat,
     this.showTopNavbar = true,
-  })  : assert(minDate.isBefore(maxDate)),
-        super();
+  }) : super();
   final WeekStartFrom? weekStartFrom;
   final void Function(DateTime)? onDateChange;
-  final void Function(List<DateTime>)? onWeekChange;
 
   /// Active Navigator color
   ///
@@ -35,15 +27,10 @@ class HorizontalWeekCalendar extends StatefulWidget {
   /// ```dart
   /// Theme.of(context).primaryColor
   /// ```
-  final Color? activeNavigatorColor;
-  final Color? inactiveNavigatorColor;
-  final Color? monthColor;
-
 
   /// showNavigationButtons
   ///
   /// Default value is `true`
-  final bool? showNavigationButtons;
 
   /// monthFormat
   ///
@@ -52,7 +39,7 @@ class HorizontalWeekCalendar extends StatefulWidget {
   ///
   /// Otherwise
   /// Default value will be `MMMM yyyy`
-  final String? monthFormat;
+  final String monthFormat = 'MMMM yyyy';
 
   final DateTime minDate;
 
@@ -195,9 +182,6 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
       _getMoreNextWeeks();
       carouselController.nextPage();
     }
-
-    widget.onWeekChange?.call(currentWeek);
-    setState(() {});
   }
 
   // =================
@@ -263,39 +247,34 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (widget.showNavigationButtons == true)
-                      GestureDetector(
-                        onTap: isBackDisabled() ? null : _onBackClick,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.arrow_back_ios_new,
-                              size: 17,
+                    GestureDetector(
+                      onTap: isBackDisabled() ? null : _onBackClick,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back_ios_new,
+                            size: 17,
+                            color: isBackDisabled()
+                                ? Colors.grey
+                                : theme.primaryColor,
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            'Back',
+                            style: theme.textTheme.bodyLarge!.copyWith(
                               color: isBackDisabled()
-                                  ? (widget.inactiveNavigatorColor ??
-                                      Colors.grey)
+                                  ? Colors.grey
                                   : theme.primaryColor,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            Text(
-                              'Back',
-                              style: theme.textTheme.bodyLarge!.copyWith(
-                                color: isBackDisabled()
-                                    ? (widget.inactiveNavigatorColor ??
-                                        Colors.grey)
-                                    : theme.primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    else
-                      const SizedBox(),
+                          ),
+                        ],
+                      ),
+                    ),
                     Text(
-                      widget.monthFormat?.isEmpty ?? true
+                      widget.monthFormat.isEmpty
                           ? (isCurrentYear()
                               ? DateFormat('MMMM').format(
                                   currentWeek.first,
@@ -308,40 +287,34 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
                             ),
                       style: theme.textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: widget.monthColor ?? theme.primaryColor,
                       ),
                     ),
-                    if (widget.showNavigationButtons == true)
-                      GestureDetector(
-                        onTap: _isNextDisabled() ? null : _onNextClick,
-                        child: Row(
-                          children: [
-                            Text(
-                              'Next',
-                              style: theme.textTheme.bodyLarge!.copyWith(
-                                color: _isNextDisabled()
-                                    ? (widget.inactiveNavigatorColor ??
-                                        Colors.grey)
-                                    : theme.primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              size: 17,
+                    GestureDetector(
+                      onTap: _isNextDisabled() ? null : _onNextClick,
+                      child: Row(
+                        children: [
+                          Text(
+                            'Next',
+                            style: theme.textTheme.bodyLarge!.copyWith(
                               color: _isNextDisabled()
-                                  ? (widget.inactiveNavigatorColor ??
-                                      Colors.grey)
+                                  ? Colors.grey
                                   : theme.primaryColor,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
-                        ),
-                      )
-                    else
-                      const SizedBox(),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 17,
+                            color: _isNextDisabled()
+                                ? Colors.grey
+                                : theme.primaryColor,
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               if (widget.showTopNavbar) const SizedBox(height: 12),
@@ -378,6 +351,11 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
                                         DateFormat('dd-MM-yyyy')
                                             .format(selectedDate);
 
+                                    final isToday =
+                                        currentDate.day == today.day &&
+                                            currentDate.month == today.month &&
+                                            currentDate.year == today.year;
+
                                     return Expanded(
                                       child: GestureDetector(
                                         onTap: () {
@@ -393,11 +371,17 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
                                                 BorderRadius.circular(14),
                                             color: boxSelected
                                                 ? AppTheme.primaryBlue
-                                                : Colors.transparent,
+                                                : (isToday
+                                                    ? AppTheme.primaryBlue
+                                                        .withOpacity(.2)
+                                                    : Colors.transparent),
                                             border: boxSelected
                                                 ? null
                                                 : Border.all(
                                                     width: .2,
+                                                    color: isToday
+                                                        ? AppTheme.primaryBlue
+                                                        : theme.dividerColor,
                                                   ),
                                           ),
                                           child: Column(
@@ -421,7 +405,8 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
                                                   fontSize: 12,
                                                   color: boxSelected
                                                       ? Colors.white
-                                                      : Colors.black54,
+                                                      : theme.textTheme
+                                                          .bodyMedium!.color,
                                                 ),
                                               ),
                                               const SizedBox(
@@ -435,7 +420,7 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
                                                   ),
                                                   alignment: Alignment.center,
                                                   width: double.maxFinite,
-                                                  height: 35,
+                                                  height: 34,
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius:
@@ -451,6 +436,7 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
                                                       fontWeight:
                                                           FontWeight.w600,
                                                       fontSize: 16,
+                                                      color: Colors.black,
                                                     ),
                                                   ),
                                                 )
@@ -458,11 +444,13 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
                                                 Text(
                                                   '${currentDate.day}',
                                                   textAlign: TextAlign.center,
-                                                  style: const TextStyle(
+                                                  style: TextStyle(
                                                     fontFamily:
                                                         AppTheme.poppinsFont,
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 16,
+                                                    color: theme.textTheme
+                                                        .bodyMedium!.color,
                                                   ),
                                                 ),
                                             ],
