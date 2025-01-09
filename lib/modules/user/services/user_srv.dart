@@ -244,7 +244,6 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     await appwriteAccount.createOAuth2Session(
       provider: OAuthProvider.google,
       success: 'https://www.papps.io/auth_redirect.html',
-      failure: '',
     );
     await Future<void>.delayed(const Duration(seconds: 1));
     final user = await appwriteAccount.get();
