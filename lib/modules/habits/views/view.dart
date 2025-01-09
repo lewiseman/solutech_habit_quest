@@ -50,19 +50,18 @@ class HabitsPage extends ConsumerStatefulWidget {
               padding: const EdgeInsets.all(6),
               constraints: const BoxConstraints(),
               onPressed: () {
-                NotificationHelper.showInstantTest();
-                // showDatePicker(
-                //   context: context,
-                //   firstDate: DateTime(2024),
-                //   currentDate: ref.read(selectedHabitDate),
-                //   lastDate: DateTime(2028),
-                // ).then((value) {
-                //   if (value != null) {
-                //     ref.read(selectedHabitDate.notifier).update(
-                //           (state) => value,
-                //         );
-                //   }
-                // });
+                showDatePicker(
+                  context: context,
+                  firstDate: DateTime(2024),
+                  currentDate: ref.read(selectedHabitDate),
+                  lastDate: DateTime(2028),
+                ).then((value) {
+                  if (value != null) {
+                    ref.read(selectedHabitDate.notifier).update(
+                          (state) => value,
+                        );
+                  }
+                });
               },
               icon: const Icon(CustomIcons.calendar, size: 20),
             );

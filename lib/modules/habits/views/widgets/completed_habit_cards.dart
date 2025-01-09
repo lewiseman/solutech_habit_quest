@@ -114,6 +114,21 @@ class CompletedHabitCards extends StatelessWidget {
                                   ),
                                   CupertinoActionSheetAction(
                                     onPressed: () {
+                                      context
+                                        ..pop()
+                                        ..push(
+                                          '/edit_habit/${actionHabit.habit.id}',
+                                        );
+                                    },
+                                    child: const Text(
+                                      'Edit',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
                                       Navigator.pop(context);
                                       ref
                                           .read(

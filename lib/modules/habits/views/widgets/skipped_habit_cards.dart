@@ -122,6 +122,21 @@ class SkippedHabitCards extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      context
+                                        ..pop()
+                                        ..push(
+                                          '/edit_habit/${actionHabit.habit.id}',
+                                        );
+                                    },
+                                    child: const Text(
+                                      'Edit',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
                                   if (showComplete)
                                     CupertinoActionSheetAction(
                                       onPressed: () {

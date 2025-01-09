@@ -175,6 +175,22 @@ class NextHabitCard extends StatelessWidget {
                                         actions: [
                                           CupertinoActionSheetAction(
                                             onPressed: () {
+                                              context
+                                                ..pop()
+                                                ..push(
+                                                  '/edit_habit/${habit.id}',
+                                                );
+                                            },
+                                            child: const Text(
+                                              'Edit',
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    AppTheme.poppinsFont,
+                                              ),
+                                            ),
+                                          ),
+                                          CupertinoActionSheetAction(
+                                            onPressed: () {
                                               Navigator.pop(context);
                                               ref
                                                   .read(

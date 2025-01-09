@@ -169,6 +169,15 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
             constraints: const BoxConstraints(maxWidth: maxPageWidth),
             child: Column(
               children: [
+                Text(
+                  'Tap to change emoji',
+                  style: TextStyle(
+                    fontFamily: AppTheme.poppinsFont,
+                    fontSize: 12,
+                    color: theme.textTheme.bodyMedium!.color,
+                  ),
+                ),
+                const SizedBox(height: 6),
                 Material(
                   color: theme.cardColor,
                   elevation: .8,

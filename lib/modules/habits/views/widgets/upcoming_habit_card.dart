@@ -129,6 +129,21 @@ class UpcomingHabitCard extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      context
+                                        ..pop()
+                                        ..push(
+                                          '/edit_habit/${habit.id}',
+                                        );
+                                    },
+                                    child: const Text(
+                                      'Edit',
+                                      style: TextStyle(
+                                        fontFamily: AppTheme.poppinsFont,
+                                      ),
+                                    ),
+                                  ),
                                   if (title == 'UPCOMING')
                                     CupertinoActionSheetAction(
                                       onPressed: () {
