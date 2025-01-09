@@ -1,5 +1,6 @@
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart' as models;
+import 'package:flutter/foundation.dart';
 import 'package:habit_quest/common.dart';
 import 'package:habit_quest/modules/user/services/rewards_helper.dart';
 import 'package:habit_quest/router.dart';
@@ -266,7 +267,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
     }
     await AppRepository.instance.clear();
     await CacheStorage.instance.delete();
-    await NotificationHelper.deleteAll();
+    if (!kIsWeb) {
+      await NotificationHelper.deleteAll();
+    }
     ref.read(appRouteService).refreshUser();
     state = null;
   }
