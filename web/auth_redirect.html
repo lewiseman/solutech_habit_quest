@@ -2,8 +2,23 @@
 <title>Authentication complete</title>
 <p>Authentication is complete. If this does not happen automatically, please close the window.</p>
 <script>
-    window.opener.postMessage({
-        'flutter-web-auth-2': window.location.href
-    }, window.location.origin);
-    window.close();
+    const waitForOpener = () => {
+        const startTime = Date.now();
+        const timeout = 5000; // 5 seconds timeout
+        const interval = setInterval(() => {
+            if (window.opener) {
+                window.opener.postMessage({
+                    'flutter-web-auth-2': window.location.href
+                }, window.location.origin);
+
+                clearInterval(interval); // Stop polling
+                window.close();
+            } else if (Date.now() - startTime > timeout) {
+                clearInterval(interval); // Stop polling after timeout
+                console.error("Timeout: Unable to find window.opener");
+            }
+        }, 100);
+    };
+
+    waitForOpener();
 </script>
