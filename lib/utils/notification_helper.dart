@@ -131,6 +131,7 @@ class NotificationHelper {
         channelDescription: 'your channel description',
         importance: Importance.max,
         priority: Priority.high,
+        largeIcon: DrawableResourceAndroidBitmap('app_icon'),
       ),
       iOS: DarwinNotificationDetails(),
     );
@@ -160,6 +161,7 @@ class NotificationHelper {
         colorized: true,
         importance: Importance.max,
         priority: Priority.high,
+        largeIcon: DrawableResourceAndroidBitmap('app_icon'),
       ),
       iOS: DarwinNotificationDetails(
         threadIdentifier: 'habit_actions',

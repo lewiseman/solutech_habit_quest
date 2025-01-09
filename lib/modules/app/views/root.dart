@@ -122,9 +122,10 @@ class _RootAppState extends State<RootApp> {
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Divider(
+                   Divider(
                     height: .9,
                     thickness: .1,
+                    color: theme.dividerColor,
                   ),
                   BottomNavigationBar(
                     elevation: 0,

@@ -114,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   controller: password2Controller,
                                   autofillHints: const [AutofillHints.password],
                                   textInputAction: TextInputAction.done,
-                                  obscureText: true,
+                                  obscureText: obscure2Text,
                                   validator: (value) {
                                     if (value != passwordController.text) {
                                       return 'Passwords do not match';

@@ -46,7 +46,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
         if (localPrefs != null) {
           state = localPrefs.toUser(null);
         }
-      } catch (e) {}
+      } catch (e) {
+        await logout();
+      }
       debugPrint(e.toString());
     }
   }
@@ -127,6 +129,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
           provider: 'email',
         ),
       );
+      await CacheStorage.instance.updateUserPrefs(
+        LocalUserPrefs.fromUser(user),
+      );
       return user;
     } on AppwriteException catch (e) {
       if (e.type == 'user_session_already_exists') {
@@ -140,6 +145,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
               name: name ?? user.name,
               provider: provider ?? 'email',
             ),
+          );
+          await CacheStorage.instance.updateUserPrefs(
+            LocalUserPrefs.fromUser(user),
           );
           return user;
         } catch (e) {
@@ -252,7 +260,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
 
   Future<void> logout() async {
     if (CacheStorage.instance.userCredentials?.provider != 'google') {
-      await appwriteAccount.deleteSession(sessionId: 'current');
+      try {
+        await appwriteAccount.deleteSession(sessionId: 'current');
+      } catch (e) {}
     }
     await AppRepository.instance.clear();
     await CacheStorage.instance.delete();

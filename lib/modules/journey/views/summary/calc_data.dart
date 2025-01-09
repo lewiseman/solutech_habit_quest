@@ -343,11 +343,12 @@ class JourneySummaryData {
 
         // Map completion rate to a shade of green
         final color = _getShadeOfGreen(completionRate);
+        // const color = Colors.yellow;
         colorGrid[date] = color;
       } else {
         completionRates[date] = 0.0;
         colorGrid[date] =
-            Colors.grey.shade200; // Default color for inactive days
+            Colors.green.shade100; // Default color for inactive days
       }
     }
 
