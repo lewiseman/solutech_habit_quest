@@ -243,9 +243,9 @@ class UserServiceNotifier extends StateNotifier<models.User?> {
   Future<void> googleSignIn() async {
     await appwriteAccount.createOAuth2Session(
       provider: OAuthProvider.google,
-      success: 'https://www.papps.io/auth_redirect.html',
+      success: 'https://www.papps.io',
     );
-    await Future<void>.delayed(const Duration(seconds: 1));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
     final user = await appwriteAccount.get();
     await CacheStorage.instance.updateUserCreds(
       UserCredentials(
