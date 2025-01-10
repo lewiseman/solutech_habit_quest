@@ -26,9 +26,10 @@ class UserPage extends ConsumerWidget {
           ),
           Consumer(
             builder: (context, ref, _) {
-              final user = ref.watch(userServiceProvider);
+              final user = ref.watch(authServiceProvider);
+              final name = user?.name ?? '';
               return Text(
-                user?.name ?? '',
+                name.isNotEmpty ? name : user?.email ?? '',
                 style: const TextStyle(fontSize: 12),
               );
             },
@@ -51,9 +52,9 @@ class UserPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncServiceProvider);
-    final user = ref.watch(userServiceProvider);
+    final user = ref.watch(authServiceProvider);
     final theme = Theme.of(context);
-    final avatar = (user?.prefs.data['avatar'] as String?) ?? '';
+    final avatar = user?.avatar ?? '';
     return RefreshIndicator(
       onRefresh: () {
         if (syncState is! LoadingSyncState) {
@@ -107,7 +108,7 @@ class UserPage extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          '${NextLevelPop.calcLevel(user?.collectedCoins())}',
+                          '''${NextLevelPop.calcLevel(user?.getCoinBalance() ?? 0)}''',
                           style: const TextStyle(
                             fontFamily: AppTheme.poppinsFont,
                           ),

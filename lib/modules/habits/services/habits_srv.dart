@@ -1,29 +1,29 @@
 // ignore_for_file: unused_result
 
-import 'package:appwrite/models.dart' as models;
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/user/models/quest_user.dart';
 
 final habitsServiceProvider =
     StateNotifierProvider<HabitsNotifier, HabitsState>((ref) {
   return HabitsNotifier(
-    user: ref.watch(userServiceProvider),
+    questUser: ref.watch(authServiceProvider),
     ref: ref,
   );
 });
 
 class HabitsNotifier extends StateNotifier<HabitsState> {
   HabitsNotifier({
-    required this.user,
     required this.ref,
+    required this.questUser,
   }) : super(HabitsState.loading()) {
-    if (user != null) init();
+    if (questUser != null) init();
   }
 
-  final models.User? user;
+  final QuestUser? questUser;
   final Ref ref;
 
   Future<void> init() async {
-    final habits = await AppRepository.getHabits(user!.$id);
+    final habits = await AppRepository.getHabits(questUser!.id);
     state = HabitsState.data(habits);
     ref.refresh(notificationsServiceProvider);
   }

@@ -219,7 +219,7 @@ Widget bananaSearch({String? message}) {
   );
 }
 
-Widget emptyBanana({String? message}) {
+Widget emptyBanana({String? message, VoidCallback? onRetry}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -237,6 +237,12 @@ Widget emptyBanana({String? message}) {
               fontFamily: AppTheme.poppinsFont,
             ),
             textAlign: TextAlign.center,
+          ),
+        if (onRetry != null) const SizedBox(height: 10),
+        if (onRetry != null)
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: onRetry,
           ),
       ],
     ),

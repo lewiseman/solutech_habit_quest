@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:habit_quest/router.dart';
 
@@ -13,6 +15,9 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await CacheStorage.instance.initialize();
   await AppRepository.initialize();
   if (kIsWeb) {
@@ -29,8 +34,7 @@ class HabitQuest extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
-    final userprefs = ref.watch(userServiceProvider)?.prefs.data;
+    final questUser = ref.watch(authServiceProvider);
     ref
       ..read(syncServiceProvider)
       ..read(notificationsServiceProvider);
@@ -38,7 +42,7 @@ class HabitQuest extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       themeMode: getThemeMode(
-        userprefs?['theme_mode'] as String? ?? 'light',
+        questUser?.themeMode ?? 'light',
       ),
       darkTheme: AppTheme.darkTheme,
       theme: AppTheme.lightTheme,

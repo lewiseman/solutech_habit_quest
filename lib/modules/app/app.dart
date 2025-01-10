@@ -1,4 +1,3 @@
-export 'services/rewards_srv.dart';
 export 'views/notifications.dart';
 export 'views/rewards.dart';
 export 'views/root.dart';

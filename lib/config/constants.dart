@@ -18,3 +18,6 @@ const maxPageWidth = 600.0;
 
 const generalAvatar =
     'https://api.dicebear.com/9.x/adventurer-neutral/svg?radius=50';
+
+const googleAuthClientId =
+    '1095689162092-kqa7klpmgnfgeqi97phgel5e46sdoc4u.apps.googleusercontent.com';

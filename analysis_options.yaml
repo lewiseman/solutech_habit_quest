@@ -4,3 +4,4 @@ linter:
     public_member_api_docs: false
     sort_pub_dependencies: false
     document_ignores: false
+    avoid_catches_without_on_clauses: false

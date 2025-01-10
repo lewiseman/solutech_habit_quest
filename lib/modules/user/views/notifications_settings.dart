@@ -10,9 +10,8 @@ class NotificationSettingsPage extends ConsumerWidget {
     final inactive =
         notifications.where((element) => !element.habit.reminder).toList();
     final theme = Theme.of(context);
-    final notificationsEnabled =
-        ref.watch(userServiceProvider)?.prefs.data['notifications'] as bool? ??
-            true;
+    final user = ref.watch(authServiceProvider);
+    final notificationsEnabled = user?.notifications ?? true;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
@@ -62,18 +61,20 @@ class NotificationSettingsPage extends ConsumerWidget {
                     ),
                     value: notificationsEnabled,
                     onChanged: (value) async {
-                      context.showInfoLoad('Updating...');
-                      ref
-                          .read(userServiceProvider.notifier)
-                          .update(notifications: value)
-                          .then((_) {
-                        ref.invalidate(notificationsServiceProvider);
-                        context.pop();
-                      }).onError((error, stackTrace) {
-                        context
-                          ..pop()
-                          ..showErrorToast('Failed to update');
-                      });
+                      if (user != null) {
+                        context.showInfoLoad('Updating...');
+                        ref
+                            .read(authServiceProvider.notifier)
+                            .update(user.copyWith(notifications: value))
+                            .then((_) {
+                          ref.invalidate(notificationsServiceProvider);
+                          context.pop();
+                        }).onError((error, stackTrace) {
+                          context
+                            ..pop()
+                            ..showErrorToast('Failed to update');
+                        });
+                      }
                     },
                   ),
                 ),

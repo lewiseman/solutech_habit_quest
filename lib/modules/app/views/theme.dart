@@ -7,8 +7,8 @@ class SelectThemePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final user = ref.watch(userServiceProvider);
-    final themename = user?.prefs.data['theme_mode'] as String? ?? 'light';
+    final questUser = ref.watch(authServiceProvider);
+    final themename = questUser?.themeMode ?? 'light';
     final themes = [
       (
         name: 'System',
@@ -93,24 +93,28 @@ class SelectThemePage extends ConsumerWidget {
                                       color: theme.textTheme.bodyMedium!.color,
                                     )
                                   : null,
-                              onTap: () {
-                                context.showInfoLoad('Updating theme...');
-                                ref
-                                    .read(userServiceProvider.notifier)
-                                    .update(
-                                      themeMode: themedata.value,
-                                    )
-                                    .then((_) {
-                                  context.pop();
-                                }).onError((error, stack) {
-                                  context
-                                    ..pop()
-                                    ..showErrorToast(error.toString());
-                                });
-                              },
+                              onTap: questUser != null
+                                  ? () {
+                                      context.showInfoLoad('Updating theme...');
+                                      ref
+                                          .read(authServiceProvider.notifier)
+                                          .update(
+                                            questUser.copyWith(
+                                              themeMode: themedata.value,
+                                            ),
+                                          )
+                                          .then((_) {
+                                        context.pop();
+                                      }).onError((error, stack) {
+                                        context
+                                          ..pop()
+                                          ..showErrorToast(error.toString());
+                                      });
+                                    }
+                                  : null,
                             ),
                             if (x != themes.length - 1)
-                               Divider(
+                              Divider(
                                 height: .1,
                                 thickness: .1,
                                 color: theme.dividerColor,

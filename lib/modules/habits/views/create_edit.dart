@@ -131,7 +131,7 @@ class _CreateHabitPageState extends ConsumerState<CreateHabitPage> {
             days: selectedDays,
             frequency: selectedFrequency,
             paused: false,
-            userId: ref.read(userServiceProvider)?.$id ?? '',
+            userId: ref.read(authServiceProvider)?.id ?? '',
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
             reminder: reminder,
