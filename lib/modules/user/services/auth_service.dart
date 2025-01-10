@@ -98,7 +98,6 @@ class AuthNotifier extends StateNotifier<QuestUser?> {
 
     final googleUser = await googleSignIn.signIn();
 
-
     final googleAuth = await googleUser?.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
@@ -169,9 +168,12 @@ class AuthNotifier extends StateNotifier<QuestUser?> {
         updatedAt: DateTime.now(),
       );
       try {
-        await usersCollection.doc(questuser.id).update(
+        await usersCollection
+            .doc(questuser.id)
+            .update(
               updateUser.toMap(),
-            );
+            )
+            .timeout(const Duration(seconds: 3));
       } catch (e) {
         unawaited(
           FirebaseAnalytics.instance.logEvent(
