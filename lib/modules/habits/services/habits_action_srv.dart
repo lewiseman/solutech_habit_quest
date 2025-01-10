@@ -1,10 +1,10 @@
-import 'package:appwrite/models.dart' as models;
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/user/models/quest_user.dart';
 
 final habitsActionServiceProvider =
     StateNotifierProvider<HabitsActionNotifier, List<HabitAction>>((ref) {
   return HabitsActionNotifier(
-    user: ref.watch(userServiceProvider),
+    user: ref.watch(authServiceProvider),
   );
 });
 
@@ -13,10 +13,10 @@ class HabitsActionNotifier extends StateNotifier<List<HabitAction>> {
     if (user != null) init();
   }
 
-  final models.User? user;
+  final QuestUser? user;
 
   Future<void> init() async {
-    final habitactions = await AppRepository.getHabitActions(user!.$id);
+    final habitactions = await AppRepository.getHabitActions(user!.id);
     state = habitactions;
   }
 
@@ -24,7 +24,7 @@ class HabitsActionNotifier extends StateNotifier<List<HabitAction>> {
     final action = HabitAction(
       id: AppRepository.getUniqueID(),
       habitId: habit.id,
-      userId: user!.$id,
+      userId: user!.id,
       action: HabitActionType.done,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
@@ -62,7 +62,7 @@ class HabitsActionNotifier extends StateNotifier<List<HabitAction>> {
     final action = HabitAction(
       id: AppRepository.getUniqueID(),
       habitId: habit.id,
-      userId: user!.$id,
+      userId: user!.id,
       action: HabitActionType.skipped,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
@@ -75,7 +75,7 @@ class HabitsActionNotifier extends StateNotifier<List<HabitAction>> {
     final action = HabitAction(
       id: AppRepository.getUniqueID(),
       habitId: habit.id,
-      userId: user!.$id,
+      userId: user!.id,
       action: HabitActionType.skipped,
       createdAt: date,
       updatedAt: DateTime.now(),

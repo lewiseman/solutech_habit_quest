@@ -1,5 +1,6 @@
-import 'package:appwrite/models.dart' as models;
+// import 'package:appwrite/models.dart' as models;
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/user/models/quest_user.dart';
 import 'package:habit_quest/repositories/models/sync_entry.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
@@ -7,7 +8,7 @@ final syncServiceProvider =
     StateNotifierProvider<SyncNotifier, SyncState>((ref) {
   return SyncNotifier(
     ref: ref,
-    user: ref.watch(userServiceProvider),
+    user: ref.watch(authServiceProvider),
   );
 });
 
@@ -18,7 +19,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
   }
 
   final Ref ref;
-  final models.User? user;
+  final QuestUser? user;
 
   Future<void> init() async {
     state = const LoadingSyncState();
@@ -73,7 +74,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
     try {
       remoteHabitsActions =
           await AppRepository.instance.remoteRepository.getHabitActions(
-        user!.$id,
+        user!.id,
       );
     } catch (e) {
       print(e);
@@ -83,7 +84,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
 
     final localHabitActions =
         await AppRepository.instance.localRepository.getHabitActions(
-      user!.$id,
+      user!.id,
     );
 
     if (localHabitActions.isEmpty && remoteHabitsActions.isEmpty) {
@@ -114,7 +115,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
 
     final latestdata =
         await AppRepository.instance.localRepository.getHabitActions(
-      user!.$id,
+      user!.id,
     );
     ref.read(habitsActionServiceProvider.notifier).updateFromSync(latestdata);
 
@@ -262,7 +263,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
 
     try {
       remoteHabits = await AppRepository.instance.remoteRepository.getHabits(
-        user!.$id,
+        user!.id,
       );
     } catch (e) {
       print(e);
@@ -271,7 +272,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
     }
 
     final localHabits = await AppRepository.instance.localRepository.getHabits(
-      user!.$id,
+      user!.id,
     );
 
     if (localHabits.isEmpty && remoteHabits.isEmpty) {
@@ -298,7 +299,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
     await doHabitLocalActions(localActions);
 
     final latestdata = await AppRepository.instance.localRepository.getHabits(
-      user!.$id,
+      user!.id,
     );
     try {
       ref.read(habitsServiceProvider.notifier).updateFromSync(latestdata);

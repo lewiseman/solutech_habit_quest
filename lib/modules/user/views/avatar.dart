@@ -1,17 +1,18 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/user/models/quest_user.dart';
 
 class PickAvatarPage extends ConsumerWidget {
   const PickAvatarPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.read(userServiceProvider);
+    final user = ref.read(authServiceProvider);
 
     final theme = Theme.of(context);
-    final isdarkmode = user?.prefs.data['theme_mode'] == 'dark';
+    final isdarkmode = user?.themeMode == 'dark';
 
-    final coins = user.getCoinBalance();
+    final coins = user?.getCoinBalance() ?? 0;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
@@ -91,9 +92,17 @@ class PickAvatarPage extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: InkWell(
-                            onTap: () {
-                              pickedIcon(context, dicebear, ref, coins);
-                            },
+                            onTap: user != null
+                                ? () {
+                                    pickedIcon(
+                                      context,
+                                      dicebear,
+                                      ref,
+                                      coins,
+                                      user,
+                                    );
+                                  }
+                                : null,
                             borderRadius: BorderRadius.circular(10),
                             child: Padding(
                               padding: const EdgeInsets.all(8),
@@ -128,6 +137,7 @@ class PickAvatarPage extends ConsumerWidget {
     ({String name, String url}) style,
     WidgetRef ref,
     int coins,
+    QuestUser user,
   ) async {
     var count = 1;
     final confirmedurl = await AppDialog.custom<String>(
@@ -203,10 +213,10 @@ class PickAvatarPage extends ConsumerWidget {
       context.showInfoLoad('Updating profile image ...');
       try {
         await ref
-            .read(userServiceProvider.notifier)
-            .update(avatar: confirmedurl);
-        // await ref.read(userServiceProvider.notifier).spendCoins(2);
-        Navigator.of(context)
+            .read(authServiceProvider.notifier)
+            .update(user.copyWith(avatar: confirmedurl));
+        await ref.read(authServiceProvider.notifier).spendCoins(2);
+        context
           ..pop()
           ..pop();
       } catch (e) {

@@ -129,7 +129,7 @@ class NextHabitCard extends StatelessWidget {
                                     updateOpened(null);
 
                                     ref
-                                        .read(userServiceProvider.notifier)
+                                        .read(authServiceProvider.notifier)
                                         .addCoin(context);
                                   }).onError((error, stack) {
                                     context.showErrorToast(

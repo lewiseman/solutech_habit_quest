@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:habit_quest/common.dart';
+import 'package:habit_quest/modules/user/models/quest_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final class CacheStorage {
@@ -22,6 +23,7 @@ final class CacheStorage {
 
   static final String _usercredentialKey = 'usercredentialkey-$_keySuffix';
   static final String _userprefsKey = 'userprefskey-$_keySuffix';
+  static final String _questuserKey = 'questuserkey-$_keySuffix';
 
   UserCredentials? get userCredentials {
     try {
@@ -57,6 +59,25 @@ final class CacheStorage {
 
   Future<void> updateUserPrefs(LocalUserPrefs userPrefs) async {
     final res = await _prefs.setString(_userprefsKey, userPrefs.toString());
+    print(res);
+  }
+
+  QuestUser? get questUser {
+    try {
+      final userStr = _prefs.getString(_questuserKey);
+      if (userStr != null && userStr.isNotEmpty) {
+        final user = QuestUser.fromString(userStr);
+        return user;
+      }
+      return null;
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> updateQuestUser(QuestUser userPrefs) async {
+    final res = await _prefs.setString(_questuserKey, userPrefs.toString());
     print(res);
   }
 

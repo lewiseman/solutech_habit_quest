@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:habit_quest/common.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -131,7 +130,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       .then((_) {
                                     context
                                       ..pop()
-                                      ..showSuccessToast('Account created');
+                                      ..showSuccessToast('Account created')
+                                      ..go('/');
                                   }).onError((error, stack) {
                                     context
                                       ..pop()
@@ -141,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               },
                               child: const Text('Sign up'),
                             ),
-                        ...[
+                            ...[
                               Padding(
                                 padding: const EdgeInsets.only(
                                   left: 40,
@@ -178,13 +178,17 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               TextButton.icon(
                                 onPressed: () {
+                                  context.showInfoLoad('Signing in');
                                   ref
                                       .read(authServiceProvider.notifier)
                                       .googleSignIn()
                                       .then((_) {
-                                    context.showSuccessToast(
-                                      'Signed in successfully',
-                                    );
+                                    context
+                                      ..pop()
+                                      ..showSuccessToast(
+                                        'Signed in successfully',
+                                      )
+                                      ..go('/');
                                   }).onError((error, stack) {
                                     var msg = error.toString();
                                     if (error is AppwriteException) {

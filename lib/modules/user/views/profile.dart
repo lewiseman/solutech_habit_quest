@@ -18,12 +18,13 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   }
 
   void prefill() {
-    final user = ref.read(userServiceProvider);
+    final user = ref.read(authServiceProvider);
     nameController.text = user?.name ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
+    final questUser = ref.watch(authServiceProvider);
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -73,23 +74,29 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
                   ),
                   const SizedBox(height: 40),
                   FilledButton(
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        context.showInfoLoad('Updating...');
-                        ref
-                            .read(userServiceProvider.notifier)
-                            .update(name: nameController.text.trim())
-                            .then((_) {
-                          context
-                            ..pop()
-                            ..showSuccessToast('Updated');
-                        }).onError((error, stack) {
-                          context
-                            ..pop()
-                            ..showErrorToast(error.toString());
-                        });
-                      }
-                    },
+                    onPressed: questUser != null
+                        ? () {
+                            if (formKey.currentState!.validate()) {
+                              context.showInfoLoad('Updating...');
+                              ref
+                                  .read(authServiceProvider.notifier)
+                                  .update(
+                                    questUser.copyWith(
+                                      name: nameController.text.trim(),
+                                    ),
+                                  )
+                                  .then((_) {
+                                context
+                                  ..pop()
+                                  ..showSuccessToast('Updated');
+                              }).onError((error, stack) {
+                                context
+                                  ..pop()
+                                  ..showErrorToast(error.toString());
+                              });
+                            }
+                          }
+                        : null,
                     style: FilledButton.styleFrom(
                       fixedSize: const Size.fromWidth(double.maxFinite),
                     ),

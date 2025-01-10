@@ -34,7 +34,7 @@ class HabitQuest extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userprefs = ref.watch(userServiceProvider)?.prefs.data;
+    final questUser = ref.watch(authServiceProvider);
     ref
       ..read(syncServiceProvider)
       ..read(notificationsServiceProvider);
@@ -42,7 +42,7 @@ class HabitQuest extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       themeMode: getThemeMode(
-        userprefs?['theme_mode'] as String? ?? 'light',
+        questUser?.themeMode ?? 'light',
       ),
       darkTheme: AppTheme.darkTheme,
       theme: AppTheme.lightTheme,

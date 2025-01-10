@@ -82,6 +82,7 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
     final habitsState = ref.watch(habitsServiceProvider);
     final habitActions = ref.watch(habitsActionServiceProvider);
     final selectedDate = ref.watch(selectedHabitDate);
+    final syncState = ref.watch(syncServiceProvider);
     final isdesktop = context.isDesktop();
     return RefreshIndicator(
       onRefresh: () {
@@ -131,8 +132,18 @@ class _HabitsPageState extends ConsumerState<HabitsPage> {
                       child: emptyBanana(
                         message:
                             '''Nothing for today\nCreate a habit from the  bottom right button''',
+                        onRetry: () => ref.invalidate(habitsServiceProvider),
                       ),
                     ),
+                  ),
+                ];
+              }
+
+              if (habits.isEmpty && syncState is LoadingSyncState) {
+                return [
+                  SizedBox(
+                    height: 320,
+                    child: bananaSearch(message: 'Loading habits ...'),
                   ),
                 ];
               }

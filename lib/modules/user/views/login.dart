@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:habit_quest/common.dart';
@@ -113,8 +114,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               if (fromKey.currentState!.validate()) {
                                 context.showInfoLoad('Signing in...');
                                 ref
-                                    .read(userServiceProvider.notifier)
-                                    .newLogin(
+                                    .read(authServiceProvider.notifier)
+                                    .login(
                                       email: emailController.text.trim(),
                                       password: passwordController.text.trim(),
                                     )
@@ -123,7 +124,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     ..pop()
                                     ..showSuccessToast(
                                       'Signed in successfully',
-                                    );
+                                    )
+                                    ..go('/');
                                 }).onError((error, stack) {
                                   var msg = error.toString();
                                   if (error is AppwriteException) {
@@ -141,7 +143,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                     ),
                   ),
-                  if (!shrink && !kIsWeb) ...[
+                  if (!shrink ) ...[
                     Padding(
                       padding: const EdgeInsets.only(
                         left: 40,
@@ -178,17 +180,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                     TextButton.icon(
                       onPressed: () {
+                        context.showInfoLoad('Signing in...');
                         ref
-                            .read(userServiceProvider.notifier)
-                            .googleSignIn(context)
+                            .read(authServiceProvider.notifier)
+                            .googleSignIn()
                             .then((_) {
-                          context.showSuccessToast(
-                            'Signed in successfully',
-                          );
+                          context
+                            ..pop()
+                            ..showSuccessToast(
+                              'Signed in successfully',
+                            )
+                            ..go('/');
                         }).onError((error, stack) {
                           var msg = error.toString();
-                          if (error is AppwriteException) {
+                          print(error);
+                          if (error is FirebaseAuthException) {
                             msg = error.message ?? error.toString();
+                            print(msg);
                           }
                           context
                             ..pop()

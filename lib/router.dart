@@ -5,6 +5,7 @@ final _rootNAvigatorKey = GlobalKey<NavigatorState>();
 final _routeService = AppRouteService();
 final router = GoRouter(
   initialLocation: '/',
+  refreshListenable: _routeService,
   navigatorKey: _rootNAvigatorKey,
   restorationScopeId: 'solutech_router',
   redirect: _routeService.handleRedirect,
@@ -249,6 +250,4 @@ class AppRouteService extends ChangeNotifier {
     }
     return null;
   }
-
-  void refreshUser() {}
 }

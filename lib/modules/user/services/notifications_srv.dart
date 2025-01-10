@@ -18,8 +18,7 @@ class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
 
   Future<void> _init() async {
     final notificationsEnabled =
-        ref.watch(userServiceProvider)?.prefs.data['notifications'] as bool? ??
-            true;
+        ref.watch(authServiceProvider)?.notifications ?? true;
     if (notificationsEnabled) {
       final habits = ref.read(habitsServiceProvider).data();
       final processedNotifications = await processNotifications(habits ?? []);
