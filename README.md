@@ -113,7 +113,7 @@ To streamline development and deployment, I’ve set up CI/CD processes:
 | **Action**          | **Description**                                                                                   |
 |---------------------|--------------------------------------------------------------------------------------------------|
 | **Web Deployment**   | Builds and deploys the web version to **Netlify**.                                               |
-| **Mobile Builds**    | Automatically generates signed APKs and app bundles, uploaded as artifacts via GitHub Actions.   |
+| **Mobile Builds**    | Automatically generates signed APKs and app bundles, uploaded as artifacts via GitHub Actions, the signing key is stored in the repo's secrets.   |
 
 ---
 
