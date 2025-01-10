@@ -81,7 +81,7 @@ class NextHabitCard extends StatelessWidget {
                             maxLines: 1,
                           ),
                           Text(
-                            'IN THE NEXT ${habit.timeValue().remainingStr().toUpperCase()}',
+                            '''IN THE NEXT ${habit.timeValue().remainingStr().toUpperCase()}''',
                             style: const TextStyle(
                               fontFamily: AppTheme.poppinsFont,
                               color: Colors.white,
@@ -160,7 +160,7 @@ class NextHabitCard extends StatelessWidget {
                             const SizedBox(width: 16),
                             FilledButton(
                               onPressed: () {
-                                showCupertinoModalPopup(
+                                showCupertinoModalPopup<void>(
                                   context: context,
                                   builder: (context) {
                                     return Padding(

@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:habit_quest/common.dart';
 
@@ -193,10 +192,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             ..go('/');
                         }).onError((error, stack) {
                           var msg = error.toString();
-                          print(error);
                           if (error is FirebaseAuthException) {
                             msg = error.message ?? error.toString();
-                            print(msg);
                           }
                           context
                             ..pop()

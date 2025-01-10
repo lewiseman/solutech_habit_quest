@@ -24,10 +24,10 @@ class _RootAppState extends State<RootApp> {
     final isDesktop = context.isDesktop();
     final theme = Theme.of(context);
     return AnnotatedRegion(
-      value:  SystemUiOverlayStyle(
+      value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: theme.scaffoldBackgroundColor
+        systemNavigationBarColor: theme.scaffoldBackgroundColor,
       ),
       child: Scaffold(
         extendBody: true,
@@ -122,7 +122,7 @@ class _RootAppState extends State<RootApp> {
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                   Divider(
+                  Divider(
                     height: .9,
                     thickness: .1,
                     color: theme.dividerColor,

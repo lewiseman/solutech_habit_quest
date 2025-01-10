@@ -1,3 +1,6 @@
+// ignore: lines_longer_than_80_chars
+// ignore_for_file: non_nullable_equals_parameter, avoid_dynamic_calls, avoid_equals_and_hash_code_on_mutable_classes, avoid_bool_literals_in_conditional_expressions, hash_and_equals
+
 import 'package:habit_quest/common.dart';
 
 class EventList<T> {
@@ -8,18 +11,20 @@ class EventList<T> {
 
   void add(DateTime date, T event) {
     final eventsOfDate = events[date];
-    if (eventsOfDate == null)
+    if (eventsOfDate == null) {
       events[date] = [event];
-    else
+    } else {
       eventsOfDate.add(event);
+    }
   }
 
   void addAll(DateTime date, List<T> events) {
     final eventsOfDate = this.events[date];
-    if (eventsOfDate == null)
+    if (eventsOfDate == null) {
       this.events[date] = events;
-    else
+    } else {
       eventsOfDate.addAll(events);
+    }
   }
 
   bool remove(DateTime date, T event) {

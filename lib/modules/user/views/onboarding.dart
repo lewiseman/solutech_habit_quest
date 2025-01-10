@@ -127,7 +127,6 @@ class _OnboardingQuestionPageState extends State<OnboardingQuestionPage> {
   int currPage = 0;
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     final screenPadding = MediaQuery.viewPaddingOf(context);
     return Material(
       color: AppTheme.primaryBlue,

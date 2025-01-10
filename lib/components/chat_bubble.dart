@@ -119,81 +119,81 @@ class ChatBubblePainter extends CustomPainter {
   }
 
   void _drawTopArrowBubble(Size size, Path path) {
-    path.moveTo(0, arrowHeight + borderRadius);
-    path.lineTo(0, size.height - borderRadius);
-    path.arcToPoint(
+    path..moveTo(0, arrowHeight + borderRadius)
+    ..lineTo(0, size.height - borderRadius)
+    ..arcToPoint(
       Offset(borderRadius, size.height),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo(size.width - borderRadius, size.height);
-    path.arcToPoint(
+    )
+    ..lineTo(size.width - borderRadius, size.height)
+    ..arcToPoint(
       Offset(size.width, size.height - borderRadius),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo(size.width, arrowHeight + borderRadius);
-    path.arcToPoint(
+    )
+    ..lineTo(size.width, arrowHeight + borderRadius)
+    ..arcToPoint(
       Offset(size.width - borderRadius, arrowHeight),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo((size.width / 2) + (arrowWidth / 2), arrowHeight);
-    path.lineTo(size.width / 2, 0);
-    path.lineTo((size.width / 2) - (arrowWidth / 2), arrowHeight);
-    path.lineTo(borderRadius, arrowHeight);
-    path.arcToPoint(
+    )
+    ..lineTo((size.width / 2) + (arrowWidth / 2), arrowHeight)
+    ..lineTo(size.width / 2, 0)
+    ..lineTo((size.width / 2) - (arrowWidth / 2), arrowHeight)
+    ..lineTo(borderRadius, arrowHeight)
+    ..arcToPoint(
       Offset(0, arrowHeight + borderRadius),
       radius: Radius.circular(borderRadius),
     );
   }
 
   void _drawRightArrowBubble(Size size, Path path) {
-    path.moveTo(borderRadius, 0);
-    path.lineTo(size.width - arrowHeight - borderRadius, 0);
-    path.arcToPoint(
+    path..moveTo(borderRadius, 0)
+    ..lineTo(size.width - arrowHeight - borderRadius, 0)
+    ..arcToPoint(
       Offset(size.width - arrowHeight, borderRadius),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo(size.width - arrowHeight, (size.height / 2) - (arrowWidth / 2));
-    path.lineTo(size.width, size.height / 2);
-    path.lineTo(size.width - arrowHeight, (size.height / 2) + (arrowWidth / 2));
-    path.lineTo(size.width - arrowHeight, size.height - borderRadius);
-    path.arcToPoint(
+    )
+    ..lineTo(size.width - arrowHeight, (size.height / 2) - (arrowWidth / 2))
+    ..lineTo(size.width, size.height / 2)
+    ..lineTo(size.width - arrowHeight, (size.height / 2) + (arrowWidth / 2))
+    ..lineTo(size.width - arrowHeight, size.height - borderRadius)
+    ..arcToPoint(
       Offset(size.width - arrowHeight - borderRadius, size.height),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo(borderRadius, size.height);
-    path.arcToPoint(
+    )
+    ..lineTo(borderRadius, size.height)
+    ..arcToPoint(
       Offset(0, size.height - borderRadius),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo(0, borderRadius);
-    path.arcToPoint(
+    )
+    ..lineTo(0, borderRadius)
+    ..arcToPoint(
       Offset(borderRadius, 0),
       radius: Radius.circular(borderRadius),
     );
   }
 
   void _drawBottomArrowBubble(Size size, Path path) {
-    path.moveTo(borderRadius, 0);
-    path.lineTo(size.width - borderRadius, 0);
-    path.arcToPoint(
+    path..moveTo(borderRadius, 0)
+    ..lineTo(size.width - borderRadius, 0)
+    ..arcToPoint(
       Offset(size.width, borderRadius),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo(size.width, size.height - arrowHeight - borderRadius);
-    path.arcToPoint(
+    )
+    ..lineTo(size.width, size.height - arrowHeight - borderRadius)
+    ..arcToPoint(
       Offset(size.width - borderRadius, size.height - arrowHeight),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo((size.width / 2) + (arrowWidth / 2), size.height - arrowHeight);
-    path.lineTo(size.width / 2, size.height);
-    path.lineTo((size.width / 2) - (arrowWidth / 2), size.height - arrowHeight);
-    path.lineTo(borderRadius, size.height - arrowHeight);
-    path.arcToPoint(
+    )
+    ..lineTo((size.width / 2) + (arrowWidth / 2), size.height - arrowHeight)
+    ..lineTo(size.width / 2, size.height)
+    ..lineTo((size.width / 2) - (arrowWidth / 2), size.height - arrowHeight)
+    ..lineTo(borderRadius, size.height - arrowHeight)
+    ..arcToPoint(
       Offset(0, size.height - arrowHeight - borderRadius),
       radius: Radius.circular(borderRadius),
-    );
-    path.lineTo(0, borderRadius);
-    path.arcToPoint(
+    )
+    ..lineTo(0, borderRadius)
+    ..arcToPoint(
       Offset(borderRadius, 0),
       radius: Radius.circular(borderRadius),
     );

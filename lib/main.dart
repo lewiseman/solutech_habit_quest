@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:habit_quest/common.dart';
 import 'package:habit_quest/firebase_options.dart';
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:habit_quest/router.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   // Required if you'll ran any code before runApp

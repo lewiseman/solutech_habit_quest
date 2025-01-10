@@ -4,7 +4,6 @@ import 'package:habit_quest/repositories/hive/hive_registrar.g.dart';
 import 'package:habit_quest/repositories/models/repository_structure.dart';
 import 'package:habit_quest/repositories/models/sync_entry.dart';
 import 'package:habit_quest/repositories/repository.dart';
-import 'package:hive_ce/hive.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
 class HiveRepository extends StorageRepository {

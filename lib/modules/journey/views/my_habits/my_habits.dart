@@ -93,7 +93,11 @@ class MyHabitsSection extends ConsumerWidget {
     );
   }
 
-  onHabitTap(BuildContext context, Habit habit, WidgetRef ref) async {
+  Future<void> onHabitTap(
+    BuildContext context,
+    Habit habit,
+    WidgetRef ref,
+  ) async {
     final res = await showCupertinoModalPopup<String>(
       context: context,
       builder: (context) {
@@ -157,9 +161,9 @@ class MyHabitsSection extends ConsumerWidget {
     );
     if (res != null) {
       if (res == 'edit') {
-        context.push('/edit_habit/${habit.id}');
+        unawaited(context.push('/edit_habit/${habit.id}'));
       } else if (res == 'pause') {
-        context.showInfoLoad('Pausing habit');
+        unawaited(context.showInfoLoad('Pausing habit'));
         unawaited(
           ref.read(habitsServiceProvider.notifier).pauseHabit(habit).then((_) {
             context.pop();
@@ -170,7 +174,7 @@ class MyHabitsSection extends ConsumerWidget {
           }),
         );
       } else if (res == 'delete') {
-        context.showInfoLoad('Deleting habit');
+        unawaited(context.showInfoLoad('Deleting habit'));
         unawaited(
           ref.read(habitsServiceProvider.notifier).deleteHabit(habit).then((_) {
             context.pop();

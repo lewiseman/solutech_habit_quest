@@ -121,7 +121,7 @@ class NotificationHelper {
 
   static void onDidReceiveNotificationResponse(NotificationResponse response) {}
 
-  static showInstantTest() async {
+  static Future<void> showInstantTest() async {
     const platformChannelSpecifics = NotificationDetails(
       android: AndroidNotificationDetails(
         'testchannel',
@@ -182,7 +182,7 @@ class NotificationHelper {
     );
   }
 
-  static showPlannedTest() async {
+  static Future<void> showPlannedTest() async {
     const platformChannelSpecifics = NotificationDetails(
       android: AndroidNotificationDetails(
         'testchannel',

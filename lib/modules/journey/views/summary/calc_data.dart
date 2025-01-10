@@ -245,10 +245,12 @@ class JourneySummaryData {
       final habitsForDay = habits.where((habit) {
         // Check if the habit is active on this day
         if (habit.frequency == HabitFrequency.daily) return true;
-        if (habit.frequency == HabitFrequency.weekly)
+        if (habit.frequency == HabitFrequency.weekly) {
           return habit.days?.contains(dayName) ?? false;
-        if (habit.frequency == HabitFrequency.once)
+        }
+        if (habit.frequency == HabitFrequency.once) {
           return habit.startDate.isAtSameMomentAs(currentDay);
+        }
         return false;
       }).toList();
 

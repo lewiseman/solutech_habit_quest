@@ -47,7 +47,7 @@ class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
           await NotificationHelper.createNotification(notification.habit);
           created.add(notification);
         } catch (e) {
-          print(e);
+          debugPrint(e.toString());
         }
       }
     }
@@ -60,7 +60,7 @@ class NotificationsNotifier extends StateNotifier<List<HabitNotification>> {
         try {
           await NotificationHelper.instance.cancel(notificationId);
         } catch (e) {
-          print(e);
+          debugPrint(e.toString());
         }
       }
     }

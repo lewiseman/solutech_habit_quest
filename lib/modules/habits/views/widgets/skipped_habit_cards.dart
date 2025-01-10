@@ -85,7 +85,7 @@ class SkippedHabitCards extends StatelessWidget {
                         final showComplete = selectedDate.day == today.day &&
                             selectedDate.month == today.month &&
                             selectedDate.year == today.year;
-                        showCupertinoModalPopup(
+                        showCupertinoModalPopup<void>(
                           context: context,
                           builder: (context) {
                             return Padding(

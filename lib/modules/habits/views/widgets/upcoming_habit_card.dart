@@ -75,7 +75,7 @@ class UpcomingHabitCard extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        showCupertinoModalPopup(
+                        showCupertinoModalPopup<void>(
                           context: context,
                           builder: (context) {
                             return Padding(
