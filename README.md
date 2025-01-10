@@ -5,14 +5,14 @@ Welcome to **Habit Quest**, a gamified habit-tracking app designed to make build
 ---
 
 ## 🌐 **Links**  
-- **Web App:** [Habit Quest Web Version](https://www.papps.io/journey)  
+- **Web App:** [Habit Quest Web Version](https://www.papps.io/)  
 - **Download App:** [Habit Quest APK](https://your-app-download-link.com)  
 
 ---
 
 ## 📌 **Good to Know**
 
-While building this app, I initially started with **Appwrite** for data storage and authentication. However, I faced issues with Appwrite's Google login, so I switched to **Firebase** for authentication while keeping **Appwrite** for data storage.
+While building this app, I initially started with **Appwrite** for data storage and authentication. However, I faced issues with Appwrite's Google login, so I switched to **Firebase** as  last minute solution for authentication while keeping **Appwrite** for data storage.
 
 ---
 
@@ -113,7 +113,7 @@ To streamline development and deployment, I’ve set up CI/CD processes:
 | **Action**          | **Description**                                                                                   |
 |---------------------|--------------------------------------------------------------------------------------------------|
 | **Web Deployment**   | Builds and deploys the web version to **Netlify**.                                               |
-| **Mobile Builds**    | Automatically generates signed APKs and app bundles, uploaded as artifacts via GitHub Actions.   |
+| **Mobile Builds**    | Automatically generates signed APKs and app bundles, uploaded as artifacts via GitHub Actions, the signing key is stored in the repo's secrets.   |
 
 ---
 
