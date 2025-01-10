@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habit_quest/common.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';

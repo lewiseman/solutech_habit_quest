@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:habit_quest/common.dart';
 
 class NotificationSettingsPage extends ConsumerWidget {
@@ -62,8 +64,8 @@ class NotificationSettingsPage extends ConsumerWidget {
                     value: notificationsEnabled,
                     onChanged: (value) async {
                       if (user != null) {
-                        context.showInfoLoad('Updating...');
-                        ref
+                        unawaited(context.showInfoLoad('Updating...'));
+                        unawaited(ref
                             .read(authServiceProvider.notifier)
                             .update(user.copyWith(notifications: value))
                             .then((_) {
@@ -73,7 +75,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                           context
                             ..pop()
                             ..showErrorToast('Failed to update');
-                        });
+                        }),);
                       }
                     },
                   ),

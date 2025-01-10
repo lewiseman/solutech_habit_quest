@@ -10,23 +10,25 @@ Future<void> openLink(String url, [BuildContext? context]) async {
   final canlaunch = await canLaunchUrl(uri);
   if (!canlaunch) {
     if (context == null) return;
-    AppDialog.alert(
-      context,
-      message: 'Could not open the link',
+    unawaited(
+      AppDialog.alert(
+        context,
+        message: 'Could not open the link',
+      ),
     );
   }
   unawaited(launchUrl(uri));
 }
 
-   ThemeMode getThemeMode(String name) {
-    switch (name) {
-      case 'system':
-        return ThemeMode.system;
-      case 'light':
-        return ThemeMode.light;
-      case 'dark':
-        return ThemeMode.dark;
-      default:
-        return ThemeMode.light;
-    }
+ThemeMode getThemeMode(String name) {
+  switch (name) {
+    case 'system':
+      return ThemeMode.system;
+    case 'light':
+      return ThemeMode.light;
+    case 'dark':
+      return ThemeMode.dark;
+    default:
+      return ThemeMode.light;
   }
+}

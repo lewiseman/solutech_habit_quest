@@ -86,6 +86,6 @@ class HabitsActionNotifier extends StateNotifier<List<HabitAction>> {
 
   void updateFromSync(List<HabitAction> habitActions) {
     state = habitActions;
-    print('HabitActions updated');
+    debugPrint('HabitActions updated');
   }
 }

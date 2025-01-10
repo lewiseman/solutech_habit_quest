@@ -77,7 +77,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
         user!.id,
       );
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       setSyncFailed('Unable to fetch remote data');
       return;
     }
@@ -124,7 +124,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
       await deleteAllSyncEntries();
       setSyncOk();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       setSyncFailed('Unable to sync remote data');
     }
   }
@@ -266,7 +266,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
         user!.id,
       );
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       setSyncFailed('Unable to fetch remote data');
       return;
     }
@@ -303,6 +303,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
     );
     try {
       ref.read(habitsServiceProvider.notifier).updateFromSync(latestdata);
+    // ignore: empty_catches
     } catch (e) {}
 
     try {
@@ -310,7 +311,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
       await deleteAllSyncEntries();
       setSyncOk();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       setSyncFailed('Unable to sync remote data');
     }
   }
@@ -468,11 +469,11 @@ class SyncNotifier extends StateNotifier<SyncState> {
   ///
   ///
 
-  setSyncOk() {
+ void setSyncOk() {
     if (mounted) state = SyncedSyncState(DateTime.now());
   }
 
-  setSyncFailed(String message) {
+  void setSyncFailed(String message) {
     if (mounted) state = ErrorSyncState(message);
   }
 
@@ -500,7 +501,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
 
         return deleteSyncEntry(syncEntry);
       } catch (e) {
-        print('Failed sync entry: ${syncEntry.id}\n$e');
+        debugPrint('Failed sync entry: ${syncEntry.id}\n$e');
         setSyncFailed('Unable to sync  data');
       }
     }

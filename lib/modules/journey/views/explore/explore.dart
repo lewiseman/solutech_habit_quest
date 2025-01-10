@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:habit_quest/common.dart';
 import 'package:habit_quest/modules/journey/services/explore_srv.dart';
 import 'package:habit_quest/modules/journey/views/explore/widgets/explore_categories.dart';
@@ -15,7 +17,7 @@ class ExploreSection extends ConsumerWidget {
     return exploreService.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) {
-        print(error);
+        debugPrint(error.toString());
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -86,7 +88,7 @@ class ExploreSection extends ConsumerWidget {
                                 children: [
                                   TextSpan(
                                     text:
-                                        '  - ${(apidata['quote']! as Map)['author']}',
+                                        '''  - ${(apidata['quote']! as Map)['author']}''',
                                     style: const TextStyle(
                                       fontFamily: AppTheme.poppinsFont,
                                       fontWeight: FontWeight.w300,

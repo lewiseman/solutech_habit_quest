@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habit_quest/common.dart';
 import 'package:habit_quest/modules/user/models/quest_user.dart';
@@ -210,7 +212,7 @@ class PickAvatarPage extends ConsumerWidget {
 
     if (confirmedurl != null) {
       // ignore: use_build_context_synchronously
-      context.showInfoLoad('Updating profile image ...');
+      unawaited(context.showInfoLoad('Updating profile image ...'));
       try {
         await ref
             .read(authServiceProvider.notifier)
@@ -221,9 +223,11 @@ class PickAvatarPage extends ConsumerWidget {
           ..pop();
       } catch (e) {
         Navigator.of(context).pop();
-        AppDialog.alert(
-          context,
-          message: 'Unable to update the avatar',
+        unawaited(
+          AppDialog.alert(
+            context,
+            message: 'Unable to update the avatar',
+          ),
         );
       }
     }

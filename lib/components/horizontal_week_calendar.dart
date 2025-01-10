@@ -21,24 +21,8 @@ class HorizontalWeekCalendar extends StatefulWidget {
   final WeekStartFrom? weekStartFrom;
   final void Function(DateTime)? onDateChange;
 
-  /// Active Navigator color
-  ///
-  /// Default value is
-  /// ```dart
-  /// Theme.of(context).primaryColor
-  /// ```
 
-  /// showNavigationButtons
-  ///
-  /// Default value is `true`
-
-  /// monthFormat
-  ///
-  /// If it's current year then
-  /// Default value will be ```MMMM```
-  ///
-  /// Otherwise
-  /// Default value will be `MMMM yyyy`
+  // ignore: avoid_field_initializers_in_const_classes
   final String monthFormat = 'MMMM yyyy';
 
   final DateTime minDate;
@@ -73,7 +57,7 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
 
   DateTime getDate(DateTime d) => DateTime(d.year, d.month, d.day);
 
-  initCalender() {
+ void initCalender() {
     final date = widget.selectedDate;
     selectedDate = widget.selectedDate;
 
@@ -94,7 +78,7 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
     _getMoreNextWeeks();
   }
 
-  _getMorePreviousWeeks() {
+ void _getMorePreviousWeeks() {
     final minus7Days = <DateTime>[];
     final startFrom = listOfWeeks[currentWeekIndex].first;
 
@@ -116,7 +100,7 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
     setState(() {});
   }
 
-  _getMoreNextWeeks() {
+  void _getMoreNextWeeks() {
     final plus7Days = <DateTime>[];
     // DateTime startFrom = currentWeek.last;
     final startFrom = listOfWeeks[currentWeekIndex].last;
@@ -148,22 +132,22 @@ class _HorizontalWeekCalendarState extends State<HorizontalWeekCalendar> {
     setState(() {});
   }
 
-  _onDateSelect(DateTime date) {
+ void _onDateSelect(DateTime date) {
     setState(() {
       selectedDate = date;
     });
     widget.onDateChange?.call(selectedDate);
   }
 
-  _onBackClick() {
+  void _onBackClick() {
     carouselController.nextPage();
   }
 
-  _onNextClick() {
+  void _onNextClick() {
     carouselController.previousPage();
   }
 
-  onWeekChange(int index) {
+  void onWeekChange(int index) {
     if (currentWeekIndex < index) {
       // on back
     }

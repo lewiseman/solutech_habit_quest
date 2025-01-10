@@ -59,7 +59,7 @@ final class CacheStorage {
 
   Future<void> updateUserPrefs(LocalUserPrefs userPrefs) async {
     final res = await _prefs.setString(_userprefsKey, userPrefs.toString());
-    print(res);
+    debugPrint(res.toString());
   }
 
   QuestUser? get questUser {
@@ -78,7 +78,7 @@ final class CacheStorage {
 
   Future<void> updateQuestUser(QuestUser userPrefs) async {
     final res = await _prefs.setString(_questuserKey, userPrefs.toString());
-    print(res);
+    debugPrint(res.toString());
   }
 
   Future<void> delete() async {

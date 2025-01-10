@@ -7,7 +7,11 @@ typedef CustomAppDialog = Widget Function(
 );
 
 class AppDialog {
-  static Future alert(BuildContext context, {String? title, String? message}) {
+  static Future<dynamic> alert(
+    BuildContext context, {
+    String? title,
+    String? message,
+  }) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -124,7 +128,7 @@ class AppDialog {
 }
 
 extension PlaceholderExt on BuildContext {
-  Future showInfoLoad([String? message]) {
+  Future<dynamic> showInfoLoad([String? message]) {
     return showDialog(
       context: this,
       barrierDismissible: false,
