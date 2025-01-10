@@ -45,6 +45,7 @@ class AppDialog {
       builder: (context) {
         final theme = Theme.of(context);
         return AlertDialog(
+          backgroundColor: theme.scaffoldBackgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
           ),
