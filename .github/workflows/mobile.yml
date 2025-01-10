@@ -12,24 +12,45 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-      
+
       - name: Set Up Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17.x'
-          distribution: 'zulu'
+          java-version: "17.x"
+          distribution: "zulu"
 
       - name: Set Up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
           flutter-version: 3.24.5
 
       - name: Install Dependencies
         run: flutter pub get
 
-      - run: flutter build apk
-      - uses: actions/upload-artifact@v4
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=keystore.jks" >> android/key.properties
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build appBundle
+        run: flutter build appbundle
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: build/app/outputs/apk/release/app-release.apk
+          name: Releases
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+            build/ios_build.tar.gz
+
