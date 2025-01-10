@@ -122,17 +122,25 @@ To streamline development and deployment, I’ve set up CI/CD processes:
 Here’s a glimpse of Habit Quest in action:  
 
 ### **Screenshots**
-| ![Dashboard](https://via.placeholder.com/150) | ![Create Habit](https://via.placeholder.com/150) | ![Habit Progress](https://via.placeholder.com/150) |
+| ![Splash](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(2).jpeg?token=GHSAT0AAAAAAC37LLV77WIAWCKWLOE3WJEAZ4AUCPQ) | ![Select Time](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(1).jpeg?token=GHSAT0AAAAAAC37LLV6DSRU3A377ENKDUCUZ4AUC2Q) | ![Goal](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM.jpeg?token=GHSAT0AAAAAAC37LLV6GUO2MPXEVAUPABWYZ4AUDHQ) |
 |-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
-| Dashboard                                      | Create Habit                                     | Habit Progress                                    |
+| Splash                                      | Select Time                                     | Goal                                    |
 
-| ![Analytics](https://via.placeholder.com/150) | ![Profile](https://via.placeholder.com/150)    | ![Badges](https://via.placeholder.com/150)       |
+| ![Sign up](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(3).jpeg?token=GHSAT0AAAAAAC37LLV7LIK2JEML2QIDWKJGZ4AUD3Q) | ![Dashboard](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.06%20AM.jpeg?token=GHSAT0AAAAAAC37LLV7YHHR35EFLXUN73TMZ4AUEKA)    | ![Analytics](https://via.placeholder.com/150)       |
 |-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
-| Analytics                                      | Profile                                          | Badges                                            |
+| Sign up                                      | Dashboard                                          | Analytics                                            |
 
-| ![Challenges](https://via.placeholder.com/150) | ![Notifications](https://via.placeholder.com/150) | ![Themes](https://via.placeholder.com/150)        |
+| ![Explore](https://via.placeholder.com/150) | ![My Habits](https://via.placeholder.com/150)    | ![New Level](https://via.placeholder.com/150)       |
+|-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
+| Explore                                      | My Habits                                          | New Level                                            |
+
+| ![Profile](https://via.placeholder.com/150) | ![Notifications](https://via.placeholder.com/150)    | ![Badges](https://via.placeholder.com/150)       |
+|-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
+| Profile                                      | Notifications                                          | Badges                                            |
+
+| ![Avatars](https://via.placeholder.com/150) | ![Theme](https://via.placeholder.com/150) | ![Share](https://via.placeholder.com/150)        |
 |------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
-| Challenges                                      | Notifications                                     | Themes                                            |
+| Avatars                                      | Theme                                     | Share                                            |
 
 ---
 
