@@ -6,7 +6,7 @@ Welcome to **Habit Quest**, a gamified habit-tracking app designed to make build
 
 ## 🌐 **Links**  
 - **Web App:** [Habit Quest Web Version](https://www.papps.io/)  
-- **Download App:** [Habit Quest APK](https://your-app-download-link.com)  
+- **Download App:** [Habit Quest APK](https://github.com/lewiseman/solutech_habit_quest/blob/main/app_resources/app-release.apk)  
 
 ---
 
@@ -122,23 +122,23 @@ To streamline development and deployment, I’ve set up CI/CD processes:
 Here’s a glimpse of Habit Quest in action:  
 
 ### **Screenshots**
-| ![Splash](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(2).jpeg?token=GHSAT0AAAAAAC37LLV77WIAWCKWLOE3WJEAZ4AUCPQ) | ![Select Time](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(1).jpeg?token=GHSAT0AAAAAAC37LLV6DSRU3A377ENKDUCUZ4AUC2Q) | ![Goal](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM.jpeg?token=GHSAT0AAAAAAC37LLV6GUO2MPXEVAUPABWYZ4AUDHQ) |
+| ![Splash](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(2).jpeg) | ![Select Time](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(1).jpeg) | ![Goal](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM.jpeg) |
 |-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
 | Splash                                      | Select Time                                     | Goal                                    |
 
-| ![Sign up](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(3).jpeg?token=GHSAT0AAAAAAC37LLV7LIK2JEML2QIDWKJGZ4AUD3Q) | ![Dashboard](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.06%20AM.jpeg?token=GHSAT0AAAAAAC37LLV7YHHR35EFLXUN73TMZ4AUEKA)    | ![Analytics](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/firebase_switch/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.06%20AMs.jpeg?token=GHSAT0AAAAAAC37LLV6WFGRDXD5TVQVT336Z4AUIYA)       |
+| ![Sign up](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.05%20AM%20(3).jpeg) | ![Dashboard](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.06%20AM.jpeg)    | ![Analytics](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.06%20AMs.jpeg)       |
 |-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
 | Sign up                                      | Dashboard                                          | Analytics                                            |
 
-| ![Explore](https://via.placeholder.com/150) | ![My Habits](https://via.placeholder.com/150)    | ![New Level](https://via.placeholder.com/150)       |
+| ![Explore](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.06%20AM%20(1).jpeg) | ![My Habits](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.07%20AM.jpeg)    | ![New Level](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.07%20AM%20(1).jpeg)       |
 |-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
 | Explore                                      | My Habits                                          | New Level                                            |
 
-| ![Profile](https://via.placeholder.com/150) | ![Notifications](https://via.placeholder.com/150)    | ![Badges](https://via.placeholder.com/150)       |
+| ![Profile](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.07%20AM%20(2).jpeg) | ![Notifications](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.08.08%20AM.jpeg)    | ![Badges](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.27.02%20AM.jpeg)       |
 |-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
 | Profile                                      | Notifications                                          | Badges                                            |
 
-| ![Avatars](https://via.placeholder.com/150) | ![Theme](https://via.placeholder.com/150) | ![Share](https://via.placeholder.com/150)        |
+| ![Avatars](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.27.01%20AM%20(1).jpeg) | ![Theme](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.27.02%20AM%20(1).jpeg) | ![Share](https://raw.githubusercontent.com/lewiseman/solutech_habit_quest/refs/heads/main/app_resources/WhatsApp%20Image%202025-01-10%20at%206.27.02%20AM%20(2).jpeg)        |
 |------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
 | Avatars                                      | Theme                                     | Share                                            |
 
